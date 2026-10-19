@@ -1,0 +1,12 @@
+# Xcode user state and build products
+DerivedData/
+build/
+*.xcuserstate
+xcuserdata/
+
+# macOS metadata
+.DS_Store
+
+# SwiftPM artifacts
+.build/
+.swiftpm/

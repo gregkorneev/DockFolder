@@ -1,0 +1,11 @@
+{
+    "schema_version": 2,
+    "commit": "253cad0d3b65f71b318a5413fc6e5c32c123e00e",
+    "indexed_at": "2026-10-19T21:56:36Z",
+    "project": "DockFolder",
+    "nodes": 281,
+    "edges": 746,
+    "original_size": 1441792,
+    "compressed_size": 128366,
+    "compression_level": 9
+}
