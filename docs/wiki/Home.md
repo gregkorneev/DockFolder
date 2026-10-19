@@ -1,5 +1,9 @@
 # DockFolders Wiki
 
+Русская версия Wiki: [Home.ru.md](Home.ru.md).
+Русская версия: [Home.ru.md]
+
+
 DockFolders is a native macOS application for grouping installed apps into user-defined folders and opening them from macOS Dock launchers.
 
 ## Languages

@@ -1,4 +1,6 @@
 # DockFolders contributor instructions
+Русская версия: [AGENTS.ru.md]
+
 
 ## Product and platform
 

@@ -1,4 +1,6 @@
 # Wiki changelog
+Русская версия: [Changelog.ru.md]
+
 
 ## 2026-10-20 — Full feature implementation and status reconciliation
 

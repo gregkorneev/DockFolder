@@ -1,4 +1,6 @@
 # Dock integration
+Русская версия: [Dock-Integration.ru.md]
+
 
 ## Stage A — One Dock icon (implemented in 0.1)
 

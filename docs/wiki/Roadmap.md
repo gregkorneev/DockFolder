@@ -1,4 +1,6 @@
 # Roadmap
+Русская версия: [Roadmap.ru.md]
+
 
 Status: core implementation includes the requested 0.1, 0.2 and 1.0 feature scope. Remaining work is host-specific verification and distribution readiness, not the core feature backlog.
 

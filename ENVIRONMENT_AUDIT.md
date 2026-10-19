@@ -1,4 +1,6 @@
 # Environment Audit
+English version: [ENVIRONMENT_AUDIT.en.md]
+
 
 **Дата:** 2026-10-20 (Europe/Moscow)  
 **Проект:** DockFolders  

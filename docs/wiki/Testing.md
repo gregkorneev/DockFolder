@@ -1,4 +1,6 @@
 # Testing
+Русская версия: [Testing.ru.md]
+
 
 ## Recorded verification evidence
 

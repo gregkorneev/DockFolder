@@ -1,4 +1,6 @@
 # Known issues and verification gaps
+Русская версия: [Known-Issues.ru.md]
+
 
 Last reviewed: 2026-10-20.
 

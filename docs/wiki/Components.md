@@ -1,4 +1,6 @@
 # Components
+Русская версия: [Components.ru.md]
+
 
 This page describes the delivered implementation and remaining verification gaps.
 

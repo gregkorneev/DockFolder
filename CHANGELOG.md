@@ -1,4 +1,6 @@
 # Changelog
+Русская версия: [CHANGELOG.ru.md]
+
 
 ## Unreleased — feature-complete implementation; release validation outstanding
 
@@ -13,6 +15,7 @@
 - Added configuration import/export.
 - Added English and Russian interface localization, including Russian plural forms for application counts.
 - Added one generated launcher `.app` per folder under `/Applications/DockFolders`; validated `dockfolders://folder/<UUID>` URLs open the correct folder when DockFolders is running or cold-started.
+- Added Russian translations alongside English for the README, contributor instructions, changelogs, environment audit, and every project Wiki page.
 - Thirteen unit tests pass, including model migration from the old JSON shape, URL validation, launcher bundle generation, ordering, and configuration transfer.
 - Manual launcher smoke check opened a generated launcher through Finder and verified it opened the Code folder with the main app already running and after cold-start.
 - Still unverified: multiple displays and all Dock edges, accessibility/reduced motion, actual login-start registration, hotkey collision behavior, signing/notarization/sandbox/distribution, and manual pinning by users on a clean install.

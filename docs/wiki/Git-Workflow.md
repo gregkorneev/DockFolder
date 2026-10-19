@@ -1,4 +1,6 @@
 # Git workflow
+Русская версия: [Git-Workflow.ru.md]
+
 
 - The project owner has requested that all work be done directly on `main`.
 - Commit small coherent increments using Conventional Commit prefixes (`feat:`, `fix:`, `test:`, `docs:`, `chore:`).

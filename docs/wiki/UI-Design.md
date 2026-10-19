@@ -1,4 +1,6 @@
 # UI design
+Русская версия: [UI-Design.ru.md]
+
 
 All fixed interface labels, explanatory text, dialogs, help text, accessibility labels, and app-owned errors have English and Russian translations. macOS chooses a localized resource from the user's preferred languages. Application counts use locale-specific plural categories.
 

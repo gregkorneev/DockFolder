@@ -1,4 +1,6 @@
 # Implementation status and acceptance
+Русская версия: [Implementation-Plan.ru.md]
+
 
 Last reconciled: 2026-10-20 using the current implementation and recorded verification report.
 
