@@ -14,9 +14,10 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
     func present(folderID: UUID, store: FolderStore) {
         guard let folder = store.folders.first(where: { $0.id == folderID }) else { return }
         close()
-        let width: CGFloat = 430
-        let rows = max(1, Int(ceil(Double(folder.applications.count) / 4)))
-        let height = min(max(190, CGFloat(150 + rows * 96)), 560)
+        let columns = min(max(1, store.settings.gridColumns > 0 ? store.settings.gridColumns : 4), 4)
+        let rows = max(1, Int(ceil(Double(folder.applications.count) / Double(columns))))
+        let width = max(250, CGFloat(columns) * 84 + 36)
+        let height = min(max(162, CGFloat(74 + rows * 88)), 500)
         let panel = FolderPopupPanel(
             contentRect: NSRect(origin: .zero, size: NSSize(width: width, height: height)),
             styleMask: [.titled, .fullSizeContentView],

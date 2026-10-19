@@ -6,7 +6,7 @@ All fixed interface labels, explanatory text, dialogs, help text, accessibility 
 
 ## Implemented
 
-The app uses SwiftUI for folder management/settings and the application grid, with an AppKit Dock-aware popup panel and macOS 27 Liquid Glass. Folder SF Symbols and colors are configurable; folders and apps can be drag-reordered. Grid/icon sizing and theme are settings. The panel closes on Escape, focus loss and successful app launch. Multi-display/Dock-edge geometry and accessibility/reduced motion remain unverified.
+The app uses SwiftUI for folder management/settings and the application grid, with an AppKit Dock-aware popup panel and macOS 27 Liquid Glass. The folder popup uses one compact glass surface with unboxed app icons and small labels; it shows up to four columns, retains inline search, and scrolls for larger folders. Folder SF Symbols and colors are configurable; folders and apps can be drag-reordered. Grid/icon sizing and theme are settings. The panel closes on Escape, focus loss and successful app launch. Multi-display/Dock-edge geometry and accessibility/reduced motion remain unverified.
 
 ## Remaining design verification
 
