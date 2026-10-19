@@ -28,7 +28,15 @@ final class FolderStore {
     func createFolder(named name: String) {
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedName.isEmpty else { return }
-        update { $0.append(DockFolder(name: trimmedName)) }
+        let preset = settings.layoutPresets.first(where: { $0.id == settings.defaultLayoutPresetID }) ?? FolderLayoutPreset.defaults[0]
+        update { $0.append(DockFolder(name: trimmedName, layoutPreset: preset)) }
+    }
+
+    func setLayoutPreset(_ preset: FolderLayoutPreset, for folderID: UUID) {
+        update { folders in
+            guard let index = folders.firstIndex(where: { $0.id == folderID }) else { return }
+            folders[index].layoutPreset = preset
+        }
     }
 
     func renameFolder(id: UUID, to name: String) {

@@ -12,6 +12,7 @@ DockFolders is a native macOS app for organizing installed applications into use
 - Use a native SwiftUI interface with macOS 27 visual materials.
 - Choose folder and Dock launcher icons from categorized, searchable SF Symbols; set the background from curated colors or the system color picker. Dock icons use unmasked square artwork at 1024 × 1024 px and 2× resolution (512 pt), which macOS scales to Dock size. Reorder folders and apps by dragging.
 - Open a compact Liquid Glass folder popup aligned with the clicked Dock icon on its display, adapting to bottom, left, and right Dock positions.
+- Hide or show app names, choose a 3×3/4×4 grid or a single row/column per folder, and build named layout presets in Settings; the selected default preset is applied to folders created afterwards.
 - Adjust grid, icon size, and theme; set a global Control–Option–Space shortcut and login startup preference.
 - Import and export configuration.
 - Generate a launcher app for each folder in `/Applications/DockFolders`, named after the folder (numbered only when names collide); renaming updates the launcher name while preserving its stable `dockfolders://folder/<UUID>` route.

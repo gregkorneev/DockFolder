@@ -18,10 +18,12 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
         close(animated: false)
         let anchor = NSEvent.mouseLocation
         dockAnchor = anchor
-        let columns = min(max(1, store.settings.gridColumns > 0 ? store.settings.gridColumns : 4), 4)
+        let preset = folder.layoutPreset
+        let columns = preset.gridColumns(for: folder.applications.count)
         let rows = max(1, Int(ceil(Double(folder.applications.count) / Double(columns))))
-        let width = max(250, CGFloat(columns) * 84 + 36)
-        let height = min(max(162, CGFloat(74 + rows * 88)), 500)
+        let width: CGFloat = preset.isSingleColumn ? 170 : (preset.isSingleRow ? 370 : min(900, max(250, CGFloat(columns) * 84 + 36)))
+        let rowHeight = preset.showsAppLabels ? 88 : 68
+        let height: CGFloat = preset.isSingleRow ? 160 : min(max(162, CGFloat(74 + min(rows, 5) * rowHeight)), 500)
         let panel = FolderPopupPanel(
             contentRect: NSRect(origin: .zero, size: NSSize(width: width, height: height)),
             styleMask: [.titled, .fullSizeContentView],

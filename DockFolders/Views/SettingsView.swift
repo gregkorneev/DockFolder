@@ -7,6 +7,9 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var transferError: String?
     @State private var loginError: String?
+    @State private var draftPresetName = ""
+    @State private var draftColumns = 4
+    @State private var draftShowsAppLabels = true
 
     var body: some View {
         Form {
@@ -31,6 +34,37 @@ struct SettingsView: View {
                 ), in: 0...12) {
                     Text(verbatim: AppLocalization.gridColumns(store.settings.gridColumns))
                 }
+            }
+
+            Section("Folder layout presets") {
+                Picker("Default for new folders", selection: Binding(
+                    get: { store.settings.defaultLayoutPresetID },
+                    set: { id in store.updateSettings { $0.defaultLayoutPresetID = id } }
+                )) {
+                    ForEach(store.settings.layoutPresets) { preset in
+                        Text(AppLocalization.layoutPresetName(preset)).tag(preset.id)
+                    }
+                }
+                TextField("Preset name", text: $draftPresetName)
+                Picker("Arrangement", selection: $draftColumns) {
+                    ForEach(1...12, id: \.self) { columns in
+                        Text("\(columns) × \(columns)").tag(columns)
+                    }
+                    Text("All in one row").tag(FolderLayoutPreset.rowColumns)
+                    Text("All in one column").tag(FolderLayoutPreset.columnColumns)
+                }
+                Toggle("Show app names", isOn: $draftShowsAppLabels)
+                Button("Save preset and use for new folders") {
+                    let name = draftPresetName.trimmingCharacters(in: .whitespacesAndNewlines)
+                    guard !name.isEmpty else { return }
+                    let preset = FolderLayoutPreset(name: name, columns: draftColumns, showsAppLabels: draftShowsAppLabels)
+                    store.updateSettings {
+                        $0.layoutPresets.append(preset)
+                        $0.defaultLayoutPresetID = preset.id
+                    }
+                    draftPresetName = ""
+                }
+                .disabled(draftPresetName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
 
             Section("Startup") {
@@ -80,7 +114,7 @@ struct SettingsView: View {
         }
         .formStyle(.grouped)
         .padding(18)
-        .frame(width: 480, height: 510)
+        .frame(width: 480, height: 650)
     }
 
     private func exportConfiguration() {

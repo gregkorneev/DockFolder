@@ -7,17 +7,19 @@ struct DockFolder: Codable, Hashable, Identifiable, Sendable {
     var iconName: String
     var colorHex: String
     var hasDockLauncher: Bool
+    var layoutPreset: FolderLayoutPreset
 
-    init(id: UUID = UUID(), name: String, applications: [ApplicationItem] = [], iconName: String = "folder.fill", colorHex: String = "#0A84FF", hasDockLauncher: Bool = false) {
+    init(id: UUID = UUID(), name: String, applications: [ApplicationItem] = [], iconName: String = "folder.fill", colorHex: String = "#0A84FF", hasDockLauncher: Bool = false, layoutPreset: FolderLayoutPreset = FolderLayoutPreset.defaults[0]) {
         self.id = id
         self.name = name
         self.applications = applications
         self.iconName = iconName
         self.colorHex = colorHex
         self.hasDockLauncher = hasDockLauncher
+        self.layoutPreset = layoutPreset
     }
 
-    private enum CodingKeys: String, CodingKey { case id, name, applications, iconName, colorHex, hasDockLauncher }
+    private enum CodingKeys: String, CodingKey { case id, name, applications, iconName, colorHex, hasDockLauncher, layoutPreset }
 
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
@@ -27,6 +29,7 @@ struct DockFolder: Codable, Hashable, Identifiable, Sendable {
         iconName = try values.decodeIfPresent(String.self, forKey: .iconName) ?? "folder.fill"
         colorHex = try values.decodeIfPresent(String.self, forKey: .colorHex) ?? "#0A84FF"
         hasDockLauncher = try values.decodeIfPresent(Bool.self, forKey: .hasDockLauncher) ?? false
+        layoutPreset = try values.decodeIfPresent(FolderLayoutPreset.self, forKey: .layoutPreset) ?? FolderLayoutPreset.defaults[0]
     }
 }
 
