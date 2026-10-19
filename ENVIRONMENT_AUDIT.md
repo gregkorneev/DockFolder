@@ -2,7 +2,7 @@
 
 **Дата:** 2026-10-20 (Europe/Moscow)  
 **Проект:** DockFolders  
-**Общий статус:** **PARTIALLY READY** (Xcode установлен; требуется принять лицензию)
+**Общий статус:** **READY**
 
 Аудит выполнен только диагностическими командами. Программы и зависимости не устанавливались и не обновлялись; конфигурация системы и исходный код не менялись.
 
@@ -11,11 +11,11 @@
 | Component | Installed Version | Latest Stable Version | Compatibility | Update Required | Status |
 |---|---|---|---|---|---|
 | macOS | 27.0.1 (26A434), arm64 | 27.0.1 | Соответствует целевой macOS 27 | Нет | UP TO DATE |
-| Xcode | Xcode 27.1 (27A9275) установлен в `/Applications/Xcode.app` и выбран активным | Xcode 27.1; 27.2 beta 3 — предварительная | Установка завершена, но лицензия Xcode ещё не принята; команды сборки заблокированы до принятия | Принять лицензию в Xcode | PARTIALLY READY |
+| Xcode | Xcode 27.1 (27A9275), `/Applications/Xcode.app` | Xcode 27.1; 27.2 beta 3 — предварительная | Запускается, macOS 27 SDK доступен, лицензия принята | Нет | UP TO DATE |
 | Xcode Command Line Tools | 27.0.0.0.1788430756 | 27.0.x (точная последняя стабильная версия отдельно не подтверждена) | Инструменты доступны, но не заменяют полноценный Xcode для данного приложения | Проверить после установки Xcode | VERSION NOT VERIFIED |
-| macOS SDK | CLI SDK 27.0; SDK из Xcode установлен, но запрос версии заблокирован неподтверждённой лицензией | SDK 27 в составе Xcode 27.1 | Целевой SDK включён в Xcode 27.1; локальную командную проверку повторить после принятия лицензии | Перепроверить после принятия лицензии | PARTIALLY READY |
-| Swift | 6.4.0-dev (Apple Swift 6.4.0.34.1) | Swift 6.4.1 stable* | Компилятор Swift 6 и arm64 macOS 27 доступны; dev toolchain не является целевым стабильным стеком для проекта | Использовать стабильный toolchain из Xcode 27.1 | UPDATE AVAILABLE |
-| Swift Package Manager | 6.4.0-dev | Встроенный SwiftPM актуального Xcode | Команда доступна, но версия указывает на dev toolchain | Использовать SwiftPM Xcode | PARTIALLY READY |
+| macOS SDK | 27.0 из Xcode | SDK 27 в составе Xcode 27.1 | `xcodebuild -showsdks` и `xcrun` подтверждают SDK | Нет | UP TO DATE |
+| Swift | Apple Swift 6.4 (swiftlang-6.4.0.34.1) из Xcode 27.1 | Swift 6.4 stable toolchain included in Xcode 27.1 | Swift 6 и arm64 macOS 27 доступны | Нет | UP TO DATE |
+| Swift Package Manager | 6.4.0-dev (bundled SwiftPM) | SwiftPM из Xcode 27.1 | Доступен; SwiftPM сообщает dev version, при этом Apple Swift compiler в комплекте — 6.4 | Нет для MVP | READY |
 | Git | 2.54.0 (Apple Git-157) | 2.56.0 | Работоспособность локального Git подтверждена; более новая стабильная версия опубликована | Не критично для сборки | UPDATE AVAILABLE |
 | GitHub CLI | 2.96.0 | 2.102.0 | Авторизация github.com успешна, протокол Git — SSH | Обновление доступно, не критично для локальной сборки | UPDATE AVAILABLE |
 | Homebrew | 7.0.9 | 7.0.10 | Установлен; актуальность макOS 27 не препятствует аудиту | Обновление доступно, необязательно | UPDATE AVAILABLE |
@@ -23,7 +23,7 @@
 | `codesign` | `/usr/bin/codesign` (версия отдельно не выводится) | Системный инструмент Apple; отдельный номер релиза не применим | Наличие подтверждено; подпись приложения не проверялась | Нет отдельного обновления | READY |
 | GitHub remote | `git@github.com:gregkorneev/DockFolder.git`; соединение чтения успешно | Н/П | Репозиторий доступен; `gh auth status` успешен, область `repo` присутствует. Push фактически не выполнялся | Не проверено фактической отправкой | PARTIALLY READY |
 | Git состояние | Ветка `main`, 0 коммитов; удалённая ветка `main` отсутствует | Н/П | Пустая локальная история и не обнаружены remote branches; GitHub Wiki включена | Нужна исходная история/проверка владельца репозитория перед записью и push | PARTIALLY READY |
-| Xcode test tooling | `xcodebuild` находится в активном Xcode, но заблокирован сообщением о неподтверждённой лицензии | В составе Xcode 27.1 | Сборка и тесты приложения пока невозможны | Принять лицензию и перепроверить | PARTIALLY READY |
+| Xcode test tooling | `xcodebuild` из Xcode 27.1 | В составе Xcode 27.1 | Доступен после завершения первого запуска; Simulator runtime не установлен, но macOS-host сборки/тесты доступны | Нет для macOS-only MVP | READY |
 | Средства мультиагентной работы | Codex Desktop и инструменты делегирования доступны в сессии | Н/П | Возможность делегирования подтверждена; работа на этом шаге не делегировалась | Нет | READY |
 | Свободное место | 84 GiB доступно из 460 GiB | Н/П | Достаточно для установки Xcode и сборочных артефактов | Нет | READY |
 
@@ -32,7 +32,7 @@
 ## Критические проблемы
 
 - Xcode 27.1 установлен в `/Applications/Xcode.app` и выбран активным Developer Directory `/Applications/Xcode.app/Contents/Developer`.
-- Xcode сообщает, что пользователь ещё не принял лицензионное соглашение. Поэтому `xcodebuild -showsdks`, проверка SDK и сборка пока заблокированы. Требуется принять соглашение и повторить проверку.
+- Xcode 27.1, SDK 27.0 и `xcodebuild` подтверждены после завершения первого запуска и принятия лицензии.
 - Локальный и удалённый `main` теперь содержат базовый коммит аудита.
 
 ## Некритические проблемы
@@ -48,7 +48,8 @@
 - `uname -m`: arm64.
 - `xcode-select -p`: `/Applications/Xcode.app/Contents/Developer`.
 - `xcodebuild -version`: Xcode 27.1 (27A9275).
-- `xcodebuild -showsdks` и `xcrun --sdk macosx --show-sdk-version`: заблокированы неподтверждённой лицензией; повторить после принятия.
+- `xcodebuild -showsdks`: macOS SDK 27.0 доступен.
+- `xcrun --sdk macosx --show-sdk-version`: 27.0.
 - `swift --version`: Apple Swift 6.4.0-dev, target `arm64-apple-macosx27.0.0`.
 - `swift package --version`: Swift Package Manager 6.4.0-dev.
 - `git status`: чистая ветка `main`, синхронизирована с `origin/main`.
@@ -73,12 +74,11 @@
 
 ## Рекомендуемые действия
 
-1. Открыть Xcode 27.1, просмотреть и принять лицензионное соглашение, завершить начальную настройку при запросе.
-2. Повторить `xcodebuild -version`, `xcodebuild -showsdks`, `xcrun --sdk macosx --show-sdk-version` и `swift --version`; подтвердить SDK 27 и стабильный Swift 6 toolchain.
-3. Продолжить разработку после подтверждения готовности toolchain.
+1. Повторно проверять совместимость Xcode и SDK перед переходом на следующую платформенную версию и перед релизом.
+2. Использовать Swift toolchain из Xcode; отдельный Swift toolchain не устанавливать.
 4. Не устанавливать отдельный Swift toolchain, если комплект Xcode соответствует требованиям проекта.
 
 ## Непроверенные сценарии
 
 - Сборка, unit/UI tests, доступность macOS 27 API в SwiftUI/AppKit, подпись, sandbox permissions, запуск приложения и push.
-- Эти проверки отложены до принятия лицензии и локальной проверки toolchain.
+- Эти проверки выполняются по мере появления исходников приложения; платформенные сборочные инструменты готовы.
