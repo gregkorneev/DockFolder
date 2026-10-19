@@ -10,6 +10,7 @@ DockFolders is a native macOS app for organizing installed applications into use
 - Save folders and settings locally between launches.
 - Localize the interface and standard application messages in English and Russian; macOS selects the language from its preferred languages.
 - Use a native SwiftUI interface with macOS 27 visual materials.
+- Use the supplied folder-and-app-grid artwork as the DockFolders app icon; its light 1024 × 1024 PNG is installed without image edits, with original editable layers preserved in [Design/DockFolders_IconComposer](Design/DockFolders_IconComposer/README.md).
 - Choose folder and Dock launcher icons from a searchable catalog of 7,752 SF Symbols 7 names, including Apple device designs; macOS renders the glyph artwork through public AppKit APIs. Set the background from curated colors or the system color picker. Dock icons use unmasked square artwork at 1024 × 1024 px and 2× resolution (512 pt), which macOS scales to Dock size. Reorder folders and apps by dragging.
 - Open a compact Liquid Glass folder popup aligned with the clicked Dock icon on its display, adapting to bottom, left, and right Dock positions.
 - Hide or show app names, choose a grid sized for the folder's app count or a single row/column, and build named layout presets in Settings; undersized grids are hidden, larger choices are offered as needed, and the selected default applies to newly created folders.
@@ -38,6 +39,7 @@ xcodebuild -project DockFolders.xcodeproj -scheme DockFolders -destination 'plat
 - Implementation plan: [docs/wiki/Implementation-Plan.md](docs/wiki/Implementation-Plan.md)
 - Dock constraints: [docs/wiki/Dock-Integration.md](docs/wiki/Dock-Integration.md)
 - SF Symbols source and use: [docs/wiki/SF-Symbols.md](docs/wiki/SF-Symbols.md)
+- App icon selection and source layers: [docs/wiki/App-Icon.md](docs/wiki/App-Icon.md)
 - Full scope and status: [docs/wiki/Roadmap.md](docs/wiki/Roadmap.md)
 - Data model: [docs/wiki/Data-Models.md](docs/wiki/Data-Models.md)
 - Testing and acceptance: [docs/wiki/Testing.md](docs/wiki/Testing.md)

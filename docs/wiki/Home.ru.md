@@ -23,6 +23,7 @@ DockFolders — нативное приложение macOS для группи�
 - [Интеграция с Dock](Dock-Integration.ru.md)
 - [Дизайн интерфейса](UI-Design.ru.md)
 - [Каталог SF Symbols и использование](SF-Symbols.ru.md)
+- [Значок приложения](App-Icon.ru.md)
 - [Модели данных](Data-Models.ru.md)
 - [Тестирование](Testing.ru.md)
 - [Рабочий процесс Git](Git-Workflow.ru.md)

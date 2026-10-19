@@ -5,6 +5,7 @@
 
 ## 2026-10-20 — Full feature implementation and status reconciliation
 
+- Installed the supplied `Preview_Light.png` as the DockFolders app icon without image edits, retained its original layered sources, and documented that Icon Composer 27.1 rejected the supplied `.icon` draft.
 - Expanded the icon picker from a curated subset to the searchable SF Symbols 7.0 catalog (7,752 identifiers), including Apple device designs. Added bilingual documentation of Apple's use restrictions and why Shortcuts assets are not extracted.
 - Added the categorized, searchable symbol picker, system color picker and preset backgrounds; generated Dock launchers now declare a standard multi-resolution `.icns` app icon from a 1024 × 1024 px source, allowing macOS to apply its normal Dock treatment. Tile size and magnification remain controlled by macOS Dock settings.
 - Named generated launcher apps after their folders, preserved UUID routing, handled duplicate names with numeric suffixes, and added rename/collision tests.

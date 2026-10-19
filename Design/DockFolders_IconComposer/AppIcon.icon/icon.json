@@ -1,0 +1,97 @@
+{
+  "color-space-for-untagged-svg-colors": "srgb",
+  "fill-specializations": [
+    {
+      "value": {
+        "linear-gradient": [
+          "srgb:1.00000,1.00000,1.00000,1.00000",
+          "srgb:0.89020,0.93725,0.98431,1.00000"
+        ]
+      }
+    },
+    {
+      "appearance": "dark",
+      "value": {
+        "linear-gradient": [
+          "srgb:0.16863,0.20392,0.27451,1.00000",
+          "srgb:0.07059,0.09412,0.15294,1.00000"
+        ]
+      }
+    },
+    {
+      "appearance": "tinted",
+      "value": "system-light"
+    }
+  ],
+  "groups": [
+    {
+      "name": "01 - Folder Back",
+      "lighting": "combined",
+      "blur-material": 0.08,
+      "specular": true,
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.16
+      },
+      "translucency": {
+        "enabled": true,
+        "value": 0.18
+      },
+      "layers": [
+        {
+          "name": "Folder tab",
+          "image-name": "01_FolderBack.svg",
+          "glass": true,
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "name": "02 - Folder Front",
+      "lighting": "combined",
+      "blur-material": 0.07,
+      "specular": true,
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.16
+      },
+      "translucency": {
+        "enabled": true,
+        "value": 0.12
+      },
+      "layers": [
+        {
+          "name": "Blue folder",
+          "image-name": "02_FolderFront.svg",
+          "glass": true,
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "name": "03 - Four Apps",
+      "lighting": "individual",
+      "blur-material": 0.03,
+      "specular": true,
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.14
+      },
+      "translucency": {
+        "enabled": true,
+        "value": 0.1
+      },
+      "layers": [
+        {
+          "name": "Four white app tiles",
+          "image-name": "03_AppGrid.svg",
+          "glass": true,
+          "opacity": 1
+        }
+      ]
+    }
+  ],
+  "supported-platforms": {
+    "squares": "shared"
+  }
+}

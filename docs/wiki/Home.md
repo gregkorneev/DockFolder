@@ -27,6 +27,7 @@ The interface is available in English and Russian. DockFolders follows the prefe
 - [Dock integration](Dock-Integration.md)
 - [UI design](UI-Design.md)
 - [SF Symbols catalog and usage](SF-Symbols.md)
+- [App icon](App-Icon.md)
 - [Data models](Data-Models.md)
 - [Testing](Testing.md)
 - [Git workflow](Git-Workflow.md)

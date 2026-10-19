@@ -1,0 +1,7 @@
+# Значок приложения
+
+Сейчас DockFolders использует предоставленный светлый эскиз папки с сеткой приложений `Design/DockFolders_IconComposer/Preview_Light.png`. PNG размером 1024 × 1024 побайтно скопирован без изменений в `DockFolders/Resources/Assets.xcassets/AppIcon.appiconset/DockFolders.png`; Xcode собирает из него стандартные размеры значка macOS. Исходные SVG-слои и все остальные варианты сохранены в `Design/DockFolders_IconComposer/` для будущей доработки.
+
+Предоставленный документ `AppIcon.icon` был открыт в Icon Composer 27.1, который отклонил его как файл неверного формата. Поэтому цель приложения использует проверенный PNG из каталога ресурсов, а не этот черновик. Тёмный эскиз пока не подключён как вариант оформления.
+
+См. [английскую страницу](App-Icon.md) и [заметки об исходных материалах](../../Design/DockFolders_IconComposer/README.ru.md).

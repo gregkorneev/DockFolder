@@ -10,6 +10,7 @@ DockFolders — нативное приложение macOS для органи�
 - Локальное сохранение папок и настроек между запусками.
 - Интерфейс и стандартные сообщения приложения локализованы на английский и русский; macOS выбирает язык по предпочтительным языкам пользователя.
 - Нативный интерфейс SwiftUI с визуальными материалами macOS 27.
+- В качестве значка DockFolders используется предоставленный рисунок папки с сеткой приложений: светлый PNG 1024 × 1024 установлен без редактирования; исходные редактируемые слои сохранены в [Design/DockFolders_IconComposer](Design/DockFolders_IconComposer/README.ru.md).
 - Выбирайте значок папки и ярлыка Dock через поиск по каталогу из 7 752 названий SF Symbols 7, включая символы устройств Apple; изображения рисует macOS через публичные API AppKit. Задавайте фон готовым цветом или через системную палитру. Исходное изображение значка Dock квадратное, без маски: 1024 × 1024 px при разрешении 2× (512 pt), macOS масштабирует его под Dock. Меняйте порядок папок и приложений перетаскиванием.
 - Компактное всплывающее окно Liquid Glass привязано к месту нажатия значка Dock на соответствующем дисплее и адаптируется к расположению Dock снизу, слева или справа.
 - Скрывайте или показывайте названия приложений, выбирайте подходящую количеству приложений сетку либо один ряд/столбец для каждой папки. Неподходящие сетки скрываются, размеры подбираются динамически. В настройках можно создавать именные пресеты; выбранный пресет применяется к новым папкам.
@@ -38,6 +39,7 @@ xcodebuild -project DockFolders.xcodeproj -scheme DockFolders -destination 'plat
 - План реализации: [docs/wiki/Implementation-Plan.md](docs/wiki/Implementation-Plan.md) · [русский](docs/wiki/Implementation-Plan.ru.md)
 - Ограничения Dock: [docs/wiki/Dock-Integration.md](docs/wiki/Dock-Integration.md) · [русский](docs/wiki/Dock-Integration.ru.md)
 - Источник и использование SF Symbols: [docs/wiki/SF-Symbols.ru.md](docs/wiki/SF-Symbols.ru.md)
+- Выбор значка приложения и исходные слои: [docs/wiki/App-Icon.ru.md](docs/wiki/App-Icon.ru.md)
 - Объём и состояние работ: [docs/wiki/Roadmap.md](docs/wiki/Roadmap.md) · [русский](docs/wiki/Roadmap.ru.md)
 - Модель данных: [docs/wiki/Data-Models.md](docs/wiki/Data-Models.md) · [русский](docs/wiki/Data-Models.ru.md)
 - Тестирование и критерии приёмки: [docs/wiki/Testing.md](docs/wiki/Testing.md) · [русский](docs/wiki/Testing.ru.md)
