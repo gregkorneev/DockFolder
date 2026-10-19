@@ -2,9 +2,11 @@
 Русская версия: [CHANGELOG.ru.md](CHANGELOG.ru.md)
 
 
-## Unreleased — feature-complete implementation; release validation outstanding
-- Named each generated Dock launcher after its folder, preserved stable UUID routing, and added readable numeric suffixes for duplicate names; renames now update the launcher name.
 
+## Unreleased — feature-complete implementation; release validation outstanding
+
+- Added a categorized, searchable SF Symbols picker, curated background colors and the system color picker for folder and Dock launcher icons; launcher artwork now uses the standard square 1024 × 1024 px source at 2× resolution (512 pt).
+- Named each generated Dock launcher after its folder, preserved stable UUID routing, and added readable numeric suffixes for duplicate names; renames now update the launcher name.
 - Project environment audited and Xcode 27.1 / macOS SDK 27 confirmed.
 - Initial architecture and MVP plan recorded.
 - Added a native SwiftUI macOS app with folder create, rename, and delete flows.
@@ -19,6 +21,6 @@
 - Added Russian translations alongside English for the README, contributor instructions, changelogs, environment audit, and every project Wiki page.
 - Compactified the folder popup with smaller unboxed app icons, labels, inline search, and a scrollable four-column grid.
 - Positioned the popup on the display containing the clicked Dock icon and adapted it to bottom, left, right, and auto-hidden Dock layouts; added geometry tests.
-- Eighteen unit tests pass, including model migration from the old JSON shape, URL validation, launcher bundle generation, ordering, and configuration transfer.
+- Nineteen unit tests pass, including model migration from the old JSON shape, URL validation, launcher bundle generation, ordering, and configuration transfer.
 - Manual launcher smoke check opened a generated launcher through Finder and verified it opened the Code folder with the main app already running and after cold-start.
 - Still unverified: multiple displays and all Dock edges, accessibility/reduced motion, actual login-start registration, hotkey collision behavior, signing/notarization/sandbox/distribution, and manual pinning by users on a clean install.

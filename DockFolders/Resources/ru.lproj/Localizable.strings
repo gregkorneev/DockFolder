@@ -22,6 +22,7 @@
 "Update Dock Icon…" = "Обновить значок Dock…";
 "Create Dock Icon…" = "Создать значок Dock…";
 "Customize Folder…" = "Настроить папку…";
+"Customize Folder & Dock Icon…" = "Настроить папку и значок Dock…";
 "Filter this folder" = "Фильтр в этой папке";
 "Add Apps" = "Добавить приложения";
 "This folder is empty" = "Папка пуста";
@@ -34,7 +35,19 @@
 "Choose a folder from the sidebar or create one." = "Выберите папку в боковом меню или создайте новую.";
 "Customize %@" = "Настроить «%@»";
 "Icon" = "Значок";
+"Symbols" = "Символы";
+"Search Symbols" = "Поиск символов";
 "Color" = "Цвет";
+"Background" = "Фон";
+"Custom background color" = "Свой цвет фона";
+"Work" = "Работа";
+"Communication" = "Общение";
+"Creativity" = "Творчество";
+"Nature" = "Природа";
+"Travel" = "Путешествия";
+"Devices" = "Устройства";
+"Transport" = "Транспорт";
+"Objects" = "Предметы";
 "Choose color %@" = "Выбрать цвет %@";
 "Unavailable" = "Недоступно";
 "Open %@" = "Открыть %@";

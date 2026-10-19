@@ -103,21 +103,42 @@ struct FolderLauncherService {
         }
     }
 
-    private func makeIcon(symbol: String, color: NSColor) -> NSImage {
-        let canvasSize = NSSize(width: 512, height: 512)
-        let image = NSImage(size: canvasSize)
-        image.lockFocus()
-        defer { image.unlockFocus() }
+    func makeIcon(symbol: String, color: NSColor) -> NSImage {
+        let pixelSize = 1_024
+        guard let bitmap = NSBitmapImageRep(
+            bitmapDataPlanes: nil,
+            pixelsWide: pixelSize,
+            pixelsHigh: pixelSize,
+            bitsPerSample: 8,
+            samplesPerPixel: 4,
+            hasAlpha: true,
+            isPlanar: false,
+            colorSpaceName: .deviceRGB,
+            bytesPerRow: 0,
+            bitsPerPixel: 0
+        ), let context = NSGraphicsContext(bitmapImageRep: bitmap) else {
+            return NSImage(size: NSSize(width: pixelSize, height: pixelSize))
+        }
 
-        let inset: CGFloat = 18
-        let background = NSBezierPath(roundedRect: NSRect(x: inset, y: inset, width: 476, height: 476), xRadius: 112, yRadius: 112)
+        NSGraphicsContext.saveGraphicsState()
+        NSGraphicsContext.current = context
+        context.imageInterpolation = .high
+
+        // Supply a square, unmasked 1024 px (@2x) image in the standard
+        // 512 pt maximum icon slot. macOS scales it for system surfaces.
         color.setFill()
-        background.fill()
+        NSBezierPath(rect: NSRect(x: 0, y: 0, width: pixelSize, height: pixelSize)).fill()
 
-        let configuration = NSImage.SymbolConfiguration(pointSize: 260, weight: .medium)
+        let configuration = NSImage.SymbolConfiguration(pointSize: 560, weight: .medium)
             .applying(NSImage.SymbolConfiguration(hierarchicalColor: .white))
-        let glyph = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)?.withSymbolConfiguration(configuration)
-        glyph?.draw(in: NSRect(x: 110, y: 110, width: 292, height: 292))
+        let glyph = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)
+            ?? NSImage(systemSymbolName: "folder.fill", accessibilityDescription: nil)
+        glyph?.withSymbolConfiguration(configuration)?.draw(in: NSRect(x: 240, y: 240, width: 544, height: 544))
+
+        NSGraphicsContext.restoreGraphicsState()
+        bitmap.size = NSSize(width: pixelSize / 2, height: pixelSize / 2)
+        let image = NSImage(size: bitmap.size)
+        image.addRepresentation(bitmap)
         return image
     }
 

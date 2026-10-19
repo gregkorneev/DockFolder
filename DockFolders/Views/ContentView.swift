@@ -165,7 +165,7 @@ struct ContentView: View {
                                     Button(folder.hasDockLauncher ? "Update Dock Icon…" : "Create Dock Icon…", systemImage: "dock.rectangle") {
                                         createDockLauncher(for: folder)
                                     }
-                                    Button("Customize Folder…", systemImage: "paintpalette") {
+                                    Button("Customize Folder & Dock Icon…", systemImage: "paintpalette") {
                                         folderForAppearance = folder
                                     }
                                     Button("Delete Folder", systemImage: "trash", role: .destructive) {
@@ -335,47 +335,113 @@ private struct FolderAppearanceSheet: View {
     let onSave: (String, String) -> Void
     @Environment(\.dismiss) private var dismiss
     @State private var symbol: String
-    @State private var hex: String
+    @State private var backgroundColor: Color
 
-    private let symbols = ["folder.fill", "briefcase.fill", "hammer.fill", "terminal.fill", "paintbrush.pointed.fill", "graduationcap.fill", "star.fill", "heart.fill", "leaf.fill", "gamecontroller.fill", "music.note", "photo.fill"]
-    private let colors = ["#0A84FF", "#30D158", "#FF9F0A", "#FF375F", "#BF5AF2", "#64D2FF", "#8E8E93", "#FFD60A"]
+    private let symbolGroups: [(title: String, symbols: [String])] = [
+        ("Work", ["folder.fill", "briefcase.fill", "calendar", "checklist", "doc.text.fill", "books.vertical.fill", "graduationcap.fill", "pencil.and.outline", "paperclip", "archivebox.fill", "tray.full.fill", "chart.bar.fill", "calculator.fill", "terminal.fill", "hammer.fill", "wrench.and.screwdriver.fill"]),
+        ("Communication", ["message.fill", "envelope.fill", "phone.fill", "video.fill", "person.fill", "person.2.fill", "person.3.fill", "bubble.left.and.bubble.right.fill", "megaphone.fill", "bell.fill", "paperplane.fill", "antenna.radiowaves.left.and.right"]),
+        ("Creativity", ["paintpalette.fill", "paintbrush.pointed.fill", "pencil.tip.crop.circle.fill", "photo.fill", "camera.fill", "music.note", "music.mic", "waveform", "film.fill", "theatermasks.fill", "wand.and.stars", "gamecontroller.fill"]),
+        ("Nature", ["leaf.fill", "tree.fill", "sun.max.fill", "moon.fill", "cloud.fill", "cloud.sun.fill", "flame.fill", "drop.fill", "pawprint.fill", "bird.fill", "fish.fill", "globe.americas.fill"]),
+        ("Travel", ["map.fill", "mappin.and.ellipse", "location.fill", "car.fill", "bus.fill", "tram.fill", "bicycle", "airplane", "sailboat.fill", "fuelpump.fill", "binoculars.fill", "signpost.right.fill"]),
+        ("Devices", ["desktopcomputer", "laptopcomputer", "macbook", "iphone", "ipad", "applewatch", "keyboard.fill", "printer.fill", "headphones", "airpodspro", "display", "externaldrive.fill", "server.rack", "visionpro"]),
+        ("Transport", ["car.2.fill", "car.side.fill", "bus.doubledecker.fill", "tram.fill", "train.side.front.car", "bicycle", "scooter", "fuelpump.fill", "airplane", "ferry.fill", "truck.box.fill", "figure.walk"]),
+        ("Objects", ["house.fill", "heart.fill", "star.fill", "gift.fill", "tag.fill", "bookmark.fill", "lock.fill", "key.fill", "lightbulb.fill", "cup.and.saucer.fill", "basket.fill", "shippingbox.fill"])
+    ]
+    private let colors = [
+        "#FF453A", "#FF375F", "#FF2D55", "#BF5AF2", "#AF52DE", "#5E5CE6", "#007AFF", "#0A84FF",
+        "#32ADE6", "#64D2FF", "#30D158", "#34C759", "#A8E6A1", "#8E8E93", "#636366", "#FF9F0A",
+        "#FF9500", "#FFD60A", "#D0A215", "#A2845E", "#AC8E68", "#D65A31", "#F0EFF4", "#FFFFFF"
+    ]
+
+    private var filteredSymbolGroups: [(title: String, symbols: [String])] {
+        guard !searchText.isEmpty else { return symbolGroups }
+        return symbolGroups.compactMap { group in
+            let matches = group.symbols.filter { $0.localizedCaseInsensitiveContains(searchText) }
+            return matches.isEmpty ? nil : (group.title, matches)
+        }
+    }
+
+    @State private var searchText = ""
+    private var backgroundHex: String { Self.hexString(for: backgroundColor) }
 
     init(folder: DockFolder, onSave: @escaping (String, String) -> Void) {
         self.folder = folder
         self.onSave = onSave
         _symbol = State(initialValue: folder.iconName)
-        _hex = State(initialValue: folder.colorHex)
+        _backgroundColor = State(initialValue: Color(hex: folder.colorHex))
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            Text("Customize \(folder.name)").font(.title2.bold())
-            Text("Icon").font(.headline)
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 6), spacing: 10) {
-                ForEach(symbols, id: \.self) { item in
-                    Button { symbol = item } label: {
-                        Image(systemName: item).font(.title2).frame(maxWidth: .infinity, minHeight: 42)
-                            .background(symbol == item ? Color.accentColor.opacity(0.2) : .clear, in: RoundedRectangle(cornerRadius: 8))
-                    }.buttonStyle(.plain).accessibilityLabel(item)
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(spacing: 14) {
+                Image(systemName: symbol)
+                    .font(.system(size: 32, weight: .medium))
+                    .foregroundStyle(.white)
+                    .frame(width: 72, height: 72)
+                    .background(backgroundColor, in: RoundedRectangle(cornerRadius: 17, style: .continuous))
+                    .accessibilityHidden(true)
+                Text(AppLocalization.format("Customize %@", folder.name)).font(.title2.bold())
+                Spacer()
+            }
+
+            Text("Symbols").font(.headline)
+            TextField("Search Symbols", text: $searchText)
+                .textFieldStyle(.roundedBorder)
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    ForEach(filteredSymbolGroups, id: \.title) { group in
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(group.title).font(.headline)
+                            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 7), count: 8), spacing: 7) {
+                                ForEach(group.symbols, id: \.self) { item in
+                                    Button { symbol = item } label: {
+                                        Image(systemName: item)
+                                            .font(.system(size: 20, weight: .medium))
+                                            .frame(maxWidth: .infinity, minHeight: 40)
+                                            .background(symbol == item ? Color.accentColor.opacity(0.22) : .clear, in: RoundedRectangle(cornerRadius: 8))
+                                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(symbol == item ? Color.accentColor : .clear, lineWidth: 1.5))
+                                    }
+                                    .buttonStyle(.plain)
+                                    .accessibilityLabel(item)
+                                    .help(item)
+                                }
+                            }
+                        }
+                    }
                 }
             }
-            Text("Color").font(.headline)
-            HStack(spacing: 12) {
+            .frame(minHeight: 250, maxHeight: 350)
+
+            HStack {
+                Text("Background").font(.headline)
+                Spacer()
+                ColorPicker("Custom background color", selection: $backgroundColor, supportsOpacity: false)
+                    .labelsHidden()
+            }
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 9), count: 12), spacing: 9) {
                 ForEach(colors, id: \.self) { color in
-                    Button { hex = color } label: {
-                        Circle().fill(Color(hex: color)).frame(width: 28, height: 28)
-                            .overlay(Circle().stroke(hex == color ? Color.primary : .clear, lineWidth: 2).padding(-3))
+                    Button {
+                        backgroundColor = Color(hex: color)
+                    } label: {
+                        Circle().fill(Color(hex: color)).frame(width: 24, height: 24)
+                            .overlay(Circle().stroke(backgroundHex == color ? Color.primary : .clear, lineWidth: 2).padding(-3))
                     }.buttonStyle(.plain).accessibilityLabel("Choose color \(color)")
                 }
             }
             HStack {
                 Spacer()
                 Button("Cancel") { dismiss() }
-                Button("Save") { onSave(symbol, hex); dismiss() }.keyboardShortcut(.defaultAction)
+                Button("Save") { onSave(symbol, backgroundHex); dismiss() }.keyboardShortcut(.defaultAction)
             }
         }
         .padding(24)
-        .frame(width: 420)
+        .frame(width: 620, height: 720)
+    }
+
+    private static func hexString(for color: Color) -> String {
+        let rgbColor = NSColor(color).usingColorSpace(.deviceRGB) ?? NSColor.systemBlue
+        return String(format: "#%02X%02X%02X", Int(rgbColor.redComponent * 255), Int(rgbColor.greenComponent * 255), Int(rgbColor.blueComponent * 255))
     }
 }
 

@@ -10,13 +10,13 @@ DockFolders is a native macOS app for organizing installed applications into use
 - Save folders and settings locally between launches.
 - Localize the interface and standard application messages in English and Russian; macOS selects the language from its preferred languages.
 - Use a native SwiftUI interface with macOS 27 visual materials.
-- Customize folders with SF Symbols and colors; reorder folders and apps by dragging.
+- Choose folder and Dock launcher icons from categorized, searchable SF Symbols; set the background from curated colors or the system color picker. Dock icons use unmasked square artwork at 1024 × 1024 px and 2× resolution (512 pt), which macOS scales to Dock size. Reorder folders and apps by dragging.
 - Open a compact Liquid Glass folder popup aligned with the clicked Dock icon on its display, adapting to bottom, left, and right Dock positions.
 - Adjust grid, icon size, and theme; set a global Control–Option–Space shortcut and login startup preference.
 - Import and export configuration.
 - Generate a launcher app for each folder in `/Applications/DockFolders`, named after the folder (numbered only when names collide); renaming updates the launcher name while preserving its stable `dockfolders://folder/<UUID>` route.
 
-To show a folder in Dock, generate its launcher from DockFolders, open the generated app from `/Applications/DockFolders` in Finder, then use its Dock menu **Options → Keep in Dock**. macOS requires this pinning step from the user; DockFolders does not modify Dock preferences. Edge-position calculations have unit coverage; actual behavior across multiple displays and hidden-Dock configurations, accessibility/reduced motion, login-start registration, shortcut collisions, and signed/notarized distribution still needs host verification.
+To choose its icon, right-click the folder in the sidebar and select **Customize Folder & Dock Icon…**. To show a folder in Dock, generate its launcher from DockFolders, open the generated app from `/Applications/DockFolders` in Finder, then use its Dock menu **Options → Keep in Dock**. macOS requires this pinning step from the user; DockFolders does not modify Dock preferences. Edge-position calculations have unit coverage; actual behavior across multiple displays and hidden-Dock configurations, accessibility/reduced motion, login-start registration, shortcut collisions, and signed/notarized distribution still needs host verification.
 
 ## Requirements
 

@@ -8,12 +8,12 @@ Last reconciled: 2026-10-20 using the current implementation and recorded verifi
 
 - Version 0.1 foundation: native macOS app, folder CRUD, installed-app discovery/search/add/remove/launch, and versioned local persistence.
 - Version 0.2 Dock integration: per-folder launcher `.app` bundles in `/Applications/DockFolders`, validated `dockfolders://folder/<UUID>` routing, and folder selection from the launcher.
-- Version 1.0 features: folder SF Symbol/color customization; folder and app drag ordering; Dock-aware Liquid Glass panel; Escape/focus-loss/successful-launch dismissal; grid, icon size and theme settings; Control–Option–Space hotkey; login-start setting using `SMAppService`; configuration import/export.
+- Version 1.0 features: folder SF Symbol/color customization; searchable symbol categories, custom and preset backgrounds for Dock icons, and a square 1024 × 1024 px launcher icon source at 2× resolution (512 pt); folder and app drag ordering; Dock-aware Liquid Glass panel; Escape/focus-loss/successful-launch dismissal; grid, icon size and theme settings; Control–Option–Space hotkey; login-start setting using `SMAppService`; configuration import/export.
 - Data migration from the former JSON shape, launcher bundle creation, URL validation, ordering, and configuration transfer have unit coverage.
 
 ## Recorded verification
 
-- 18 unit tests pass.
+- 19 unit tests pass.
 - A generated launcher was opened through Finder. It opened the Code folder while DockFolders was running and after a cold start.
 - See [Testing](Testing.md) for the detailed scope and verification gaps.
 

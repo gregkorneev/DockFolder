@@ -129,6 +129,18 @@ final class DockFoldersTests: XCTestCase {
         XCTAssertTrue(FileManager.default.isExecutableFile(atPath: launcher.appendingPathComponent("Contents/MacOS/launch").path))
     }
 
+    func testGeneratedFolderIconUsesStandard1024SquareCanvas() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let image = FolderLauncherService(rootURL: root).makeIcon(symbol: "folder.fill", color: .systemBlue)
+        let bitmap = try XCTUnwrap(image.representations.compactMap { $0 as? NSBitmapImageRep }.first)
+
+        XCTAssertEqual(bitmap.pixelsWide, 1_024)
+        XCTAssertEqual(bitmap.pixelsHigh, 1_024)
+        XCTAssertEqual(bitmap.size.width, 512)
+        XCTAssertEqual(bitmap.size.height, 512)
+    }
+
     func testLauncherNamesTrackFolderRename() throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
         defer { try? FileManager.default.removeItem(at: root) }

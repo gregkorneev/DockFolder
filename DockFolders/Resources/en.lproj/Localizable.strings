@@ -22,6 +22,7 @@
 "Update Dock Icon…" = "Update Dock Icon…";
 "Create Dock Icon…" = "Create Dock Icon…";
 "Customize Folder…" = "Customize Folder…";
+"Customize Folder & Dock Icon…" = "Customize Folder & Dock Icon…";
 "Filter this folder" = "Filter this folder";
 "Add Apps" = "Add Apps";
 "This folder is empty" = "This folder is empty";
@@ -34,7 +35,19 @@
 "Choose a folder from the sidebar or create one." = "Choose a folder from the sidebar or create one.";
 "Customize %@" = "Customize %@";
 "Icon" = "Icon";
+"Symbols" = "Symbols";
+"Search Symbols" = "Search Symbols";
 "Color" = "Color";
+"Background" = "Background";
+"Custom background color" = "Custom background color";
+"Work" = "Work";
+"Communication" = "Communication";
+"Creativity" = "Creativity";
+"Nature" = "Nature";
+"Travel" = "Travel";
+"Devices" = "Devices";
+"Transport" = "Transport";
+"Objects" = "Objects";
 "Choose color %@" = "Choose color %@";
 "Unavailable" = "Unavailable";
 "Open %@" = "Open %@";
