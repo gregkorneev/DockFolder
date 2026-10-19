@@ -2,7 +2,7 @@
 
 ## Stage A — One Dock icon (MVP 0.1)
 
-The user pins DockFolders itself to the Dock. Clicking it shows the regular folder browser. Repeated activation must restore or bring that window forward through public app lifecycle APIs. The app does not add views to, patch, or otherwise modify the system Dock.
+The user pins DockFolders itself to the Dock. Clicking it shows the regular folder browser. The app implements `applicationShouldHandleReopen` to restore or bring that window forward through public app lifecycle APIs. The app does not add views to, patch, or otherwise modify the system Dock. Manual verification of repeated Dock activation remains outstanding.
 
 ## Stage B — One launcher per folder (version 0.2)
 
