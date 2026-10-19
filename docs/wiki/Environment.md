@@ -1,5 +1,5 @@
 # Окружение разработки
-English version: [Environment.en.md]
+English version: [Environment.en.md](Environment.en.md)
 
 
 Последняя проверка: **2026-10-20**. Подробный аудит находится в [ENVIRONMENT_AUDIT.md](../../ENVIRONMENT_AUDIT.md).

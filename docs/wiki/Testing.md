@@ -1,17 +1,17 @@
 # Testing
-Русская версия: [Testing.ru.md]
+Русская версия: [Testing.ru.md](Testing.ru.md)
 
 
 ## Recorded verification evidence
 
 - macOS scheme build completed successfully with Xcode 27.1 / SDK 27.0.
-- Thirteen unit tests pass, including migration from the prior JSON shape, URL validation, launcher bundle creation, ordering, configuration transfer, persistence, discovery and launch errors.
+- Sixteen unit tests pass, including popup position calculations for bottom, left and right Dock layouts and fallback placement when no Dock inset is reported, as well as migration, URL validation, launcher bundles, ordering, configuration transfer, persistence, discovery and launch errors.
 - Manual UI smoke check created a folder, searched for and added Calculator, launched Calculator, and verified folder persistence after relaunch.
 - Manual launcher smoke check opened the generated app through Finder and verified that it selected the Code folder both while DockFolders was running and after a cold start.
 
 ## Explicitly unverified
 
-Popup placement and clipping on multiple displays, all Dock edges, hidden/auto-hide Dock, and display attach/detach; VoiceOver, keyboard-only accessibility and reduced motion; actual login-start registration/removal across restart; hotkey collision behavior; stale Dock alias cleanup; signing/notarization/sandbox/distribution; and clean-install pinning instructions. Popup dismissal and launcher routing have implementation/unit or manual smoke coverage as noted above, but host edge cases remain.
+Actual popup placement and clipping on multiple physical displays, all Dock edges, hidden/auto-hide Dock, and display attach/detach; VoiceOver, keyboard-only accessibility and reduced motion; actual login-start registration/removal across restart; hotkey collision behavior; stale Dock alias cleanup; signing/notarization/sandbox/distribution; and clean-install pinning instructions remain unverified. Dock-edge geometry has unit coverage, but host behavior still needs manual checking.
 
 ## Remaining test matrix
 

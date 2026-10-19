@@ -1,5 +1,5 @@
 # Dock integration
-Русская версия: [Dock-Integration.ru.md]
+Русская версия: [Dock-Integration.ru.md](Dock-Integration.ru.md)
 
 
 ## Stage A — One Dock icon (implemented in 0.1)
@@ -16,7 +16,7 @@ For launchers, create a stable per-folder bundle under `/Applications/DockFolder
 
 ## Stage B — One launcher per folder (implemented)
 
-DockFolders generates one launcher app per folder under `/Applications/DockFolders`. On launch, it migrates existing launchers from `~/Applications/DockFolders` to the new location. Each launcher sends a stable UUID using a custom `dockfolders://folder/<UUID>` URL. The URL is validated before routing to the selected folder. The launcher is generated and managed by DockFolders; pinning remains a separate, user-driven macOS action.
+DockFolders generates one launcher app per folder under `/Applications/DockFolders`. On launch, it migrates existing launchers from `~/Applications/DockFolders` to the new location. Each launcher sends a stable UUID using a custom `dockfolders://folder/<UUID>` URL. The URL is validated before routing to the selected folder. When the popup opens, it uses the pointer location to select the screen and align the panel with the Dock icon that was clicked. `NSScreen.visibleFrame` identifies a reserved bottom, left, or right Dock edge; if no edge is reserved, the clicked point is used to infer the nearest edge. The panel is placed inward from that edge and clamped to the selected screen. Apple documents that `visibleFrame` reflects current system UI settings and can remain smaller than the full screen when Dock auto-hide is enabled ([`NSScreen.visibleFrame`](https://developer.apple.com/documentation/appkit/nsscreen/visibleframe)). The launcher is generated and managed by DockFolders; pinning remains a separate, user-driven macOS action.
 
 ### User setup
 
@@ -29,4 +29,4 @@ DockFolders must not write Dock preference files, invoke private APIs, or automa
 
 ### Remaining verification
 
-Generated launcher routing and cold-start are verified. Multiple display/Dock-edge popup placement, stale Dock shortcut cleanup after folder removal, signing/notarization, and sandbox/distribution behavior remain unverified.
+Generated launcher routing and cold-start are verified. Unit tests cover bottom, left, and right Dock geometry, pointer fallback, and screen anchoring. Actual popup placement on multiple physical displays, Dock auto-hide variants, stale Dock shortcut cleanup after folder removal, signing/notarization, and sandbox/distribution behavior still need manual verification.

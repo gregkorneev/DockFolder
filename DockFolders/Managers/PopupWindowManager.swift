@@ -85,19 +85,76 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
     }
 
     private func origin(for size: NSSize) -> NSPoint {
-        let mouse = NSEvent.mouseLocation
-        let screen = NSScreen.screens.first(where: { $0.frame.contains(mouse) }) ?? NSScreen.main ?? NSScreen.screens[0]
-        let frame = screen.frame
-        let visible = screen.visibleFrame
-        let margin: CGFloat = 12
+        let anchor = NSEvent.mouseLocation
+        guard let screen = NSScreen.screens.first(where: { $0.frame.contains(anchor) }) ?? NSScreen.main else {
+            return NSPoint(x: anchor.x - size.width / 2, y: anchor.y + 44)
+        }
+        return DockPopupPositioning.origin(
+            for: size,
+            anchor: anchor,
+            screenFrame: screen.frame,
+            visibleFrame: screen.visibleFrame
+        )
+    }
+}
 
-        if visible.minX > frame.minX + 1 {
-            return NSPoint(x: visible.minX + margin, y: min(max(mouse.y - size.height / 2, visible.minY + margin), visible.maxY - size.height - margin))
+enum DockPopupPositioning {
+    private enum Edge {
+        case bottom, left, right
+    }
+
+    static func origin(for size: NSSize, anchor: NSPoint, screenFrame: NSRect, visibleFrame: NSRect) -> NSPoint {
+        let margin: CGFloat = 12
+        let dockInset = CGFloat(1)
+        let insets: (left: CGFloat, right: CGFloat, bottom: CGFloat) = (
+            visibleFrame.minX - screenFrame.minX,
+            screenFrame.maxX - visibleFrame.maxX,
+            visibleFrame.minY - screenFrame.minY
+        )
+        let edge: Edge
+        let dockEdgeIsReserved: Bool
+        if insets.left > dockInset {
+            edge = .left
+            dockEdgeIsReserved = true
+        } else if insets.right > dockInset {
+            edge = .right
+            dockEdgeIsReserved = true
+        } else if insets.bottom > dockInset {
+            edge = .bottom
+            dockEdgeIsReserved = true
+        } else {
+            let distances: [(Edge, CGFloat)] = [
+                (.left, anchor.x - screenFrame.minX),
+                (.right, screenFrame.maxX - anchor.x),
+                (.bottom, anchor.y - screenFrame.minY)
+            ]
+            let nearest = distances.min(by: { $0.1 < $1.1 }) ?? (.bottom, 0)
+            edge = nearest.1 < 140 ? nearest.0 : .bottom
+            dockEdgeIsReserved = false
         }
-        if visible.maxX < frame.maxX - 1 {
-            return NSPoint(x: visible.maxX - size.width - margin, y: min(max(mouse.y - size.height / 2, visible.minY + margin), visible.maxY - size.height - margin))
+
+        let x: CGFloat
+        let y: CGFloat
+        switch edge {
+        case .bottom:
+            x = clamp(anchor.x - size.width / 2, screenFrame.minX + margin, screenFrame.maxX - size.width - margin)
+            y = dockEdgeIsReserved ? visibleFrame.minY + margin : anchor.y + 44
+        case .left:
+            x = dockEdgeIsReserved ? visibleFrame.minX + margin : anchor.x + 44
+            y = clamp(anchor.y - size.height / 2, visibleFrame.minY + margin, visibleFrame.maxY - size.height - margin)
+        case .right:
+            x = dockEdgeIsReserved ? visibleFrame.maxX - size.width - margin : anchor.x - size.width - 44
+            y = clamp(anchor.y - size.height / 2, visibleFrame.minY + margin, visibleFrame.maxY - size.height - margin)
         }
-        return NSPoint(x: min(max(mouse.x - size.width / 2, visible.minX + margin), visible.maxX - size.width - margin), y: visible.minY + margin)
+
+        return NSPoint(
+            x: clamp(x, screenFrame.minX + margin, screenFrame.maxX - size.width - margin),
+            y: clamp(y, visibleFrame.minY + margin, visibleFrame.maxY - size.height - margin)
+        )
+    }
+
+    private static func clamp(_ value: CGFloat, _ minimum: CGFloat, _ maximum: CGFloat) -> CGFloat {
+        min(max(value, minimum), maximum)
     }
 }
 

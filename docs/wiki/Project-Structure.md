@@ -1,5 +1,5 @@
 # Project structure
-Русская версия: [Project-Structure.ru.md]
+Русская версия: [Project-Structure.ru.md](Project-Structure.ru.md)
 
 
 Current implementation tree (recorded at package/directory level):

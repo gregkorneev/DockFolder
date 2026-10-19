@@ -1,5 +1,5 @@
 # Architecture decisions
-Русская версия: [Decisions.ru.md]
+Русская версия: [Decisions.ru.md](Decisions.ru.md)
 
 
 ## D-001 — Native SwiftUI/AppKit application (accepted)

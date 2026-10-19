@@ -1,5 +1,5 @@
 # Data models
-Русская версия: [Data-Models.ru.md]
+Русская версия: [Data-Models.ru.md](Data-Models.ru.md)
 
 
 ## Current persisted shape

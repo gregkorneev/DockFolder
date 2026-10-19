@@ -1,5 +1,5 @@
 # Development guide
-Русская версия: [Development-Guide.ru.md]
+Русская версия: [Development-Guide.ru.md](Development-Guide.ru.md)
 
 
 ## Requirements

@@ -1,5 +1,5 @@
 # Git workflow
-Русская версия: [Git-Workflow.ru.md]
+Русская версия: [Git-Workflow.ru.md](Git-Workflow.ru.md)
 
 
 - The project owner has requested that all work be done directly on `main`.

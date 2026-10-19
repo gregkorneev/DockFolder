@@ -1,3 +1,4 @@
+import AppKit
 import Foundation
 import XCTest
 @testable import DockFolders
@@ -30,6 +31,84 @@ final class DockFoldersTests: XCTestCase {
         XCTAssertNil(DockFolderLink.folderID(from: URL(string: "https://folder/\(id)")!))
         XCTAssertNil(DockFolderLink.folderID(from: URL(string: "dockfolders://folder/not-a-uuid")!))
         XCTAssertNil(DockFolderLink.folderID(from: URL(string: "dockfolders://folder/\(id)/extra")!))
+    }
+
+    func testPopupPositioningAnchorsToBottomLeftAndRightDocks() {
+        let screen = NSRect(x: 0, y: 0, width: 1_000, height: 800)
+        let popup = NSSize(width: 360, height: 220)
+
+        let bottom = DockPopupPositioning.origin(
+            for: popup,
+            anchor: NSPoint(x: 500, y: 30),
+            screenFrame: screen,
+            visibleFrame: NSRect(x: 0, y: 60, width: 1_000, height: 740)
+        )
+        XCTAssertEqual(bottom, NSPoint(x: 320, y: 72))
+
+        let left = DockPopupPositioning.origin(
+            for: popup,
+            anchor: NSPoint(x: 30, y: 400),
+            screenFrame: screen,
+            visibleFrame: NSRect(x: 70, y: 0, width: 930, height: 800)
+        )
+        XCTAssertEqual(left, NSPoint(x: 82, y: 290))
+
+        let right = DockPopupPositioning.origin(
+            for: popup,
+            anchor: NSPoint(x: 970, y: 400),
+            screenFrame: screen,
+            visibleFrame: NSRect(x: 0, y: 0, width: 930, height: 800)
+        )
+        XCTAssertEqual(right, NSPoint(x: 558, y: 290))
+    }
+
+    func testPopupPositioningUsesPointerWhenDockInsetIsUnavailable() {
+        let screen = NSRect(x: 0, y: 0, width: 1_000, height: 800)
+        let popup = NSSize(width: 360, height: 220)
+
+        let bottom = DockPopupPositioning.origin(
+            for: popup,
+            anchor: NSPoint(x: 500, y: 30),
+            screenFrame: screen,
+            visibleFrame: screen
+        )
+        XCTAssertEqual(bottom, NSPoint(x: 320, y: 74))
+
+        let left = DockPopupPositioning.origin(
+            for: popup,
+            anchor: NSPoint(x: 30, y: 400),
+            screenFrame: screen,
+            visibleFrame: screen
+        )
+        XCTAssertEqual(left, NSPoint(x: 74, y: 290))
+
+        let right = DockPopupPositioning.origin(
+            for: popup,
+            anchor: NSPoint(x: 970, y: 400),
+            screenFrame: screen,
+            visibleFrame: screen
+        )
+        XCTAssertEqual(right, NSPoint(x: 566, y: 290))
+    }
+
+    func testPopupPositioningRespectsScreenInsetsWithAutoHideDock() {
+        let screen = NSRect(x: 0, y: 0, width: 1_000, height: 800)
+        let popup = NSSize(width: 360, height: 220)
+        let bottom = DockPopupPositioning.origin(
+            for: popup,
+            anchor: NSPoint(x: 500, y: 30),
+            screenFrame: screen,
+            visibleFrame: NSRect(x: 0, y: 60, width: 1_000, height: 740)
+        )
+        XCTAssertEqual(bottom, NSPoint(x: 320, y: 72))
+
+        let left = DockPopupPositioning.origin(
+            for: popup,
+            anchor: NSPoint(x: 30, y: 400),
+            screenFrame: screen,
+            visibleFrame: NSRect(x: 70, y: 0, width: 930, height: 800)
+        )
+        XCTAssertEqual(left, NSPoint(x: 82, y: 290))
     }
 
     func testLauncherBundleContainsStableFolderRoute() throws {
