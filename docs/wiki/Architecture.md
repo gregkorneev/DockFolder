@@ -3,7 +3,7 @@
 ## Current implementation
 
 - **Platform:** macOS 27.0+, Apple Silicon, Swift 6, Xcode 27.1 / SDK 27.
-- **App shape:** main foreground application plus a generated app bundle per folder under `~/Applications/DockFolders`. These apps open the main app with validated `dockfolders://folder/<UUID>` URLs. The user, not DockFolders, pins each launcher in Dock.
+- **App shape:** main foreground application plus a generated app bundle per folder under `/Applications/DockFolders`. These apps open the main app with validated `dockfolders://folder/<UUID>` URLs. The user, not DockFolders, pins each launcher in Dock.
 - **UI:** SwiftUI owns folder management/settings and app-grid state. AppKit `NSPanel` provides a Dock-aware popup which dismisses on Escape, focus loss, and successful app launch. AppKit also handles the lifecycle and app launching.
 - **Data:** Codable folder records and settings are stored locally as versioned JSON. Writes are atomic. Version 0.1 folder JSON migrates to the expanded model; decode/import errors preserve the user's existing data.
 - **Application entries:** store stable IDs, display names, bundle identifiers when available, and a path fallback. Do not serialize `NSImage` or other transient framework objects.

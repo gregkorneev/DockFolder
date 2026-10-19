@@ -19,4 +19,4 @@ CHANGELOG.md                  Root release history
 ENVIRONMENT_AUDIT.md          Original toolchain audit
 ```
 
-Per-folder launcher apps are generated at runtime under `~/Applications/DockFolders`; there is no one checked-in Xcode target per user folder. Remaining work is platform/distribution verification described in [Roadmap](Roadmap.md). Record exact file-level additions after confirming the project tree.
+Per-folder launcher apps are generated at runtime under `/Applications/DockFolders`; there is no one checked-in Xcode target per user folder. Remaining work is platform/distribution verification described in [Roadmap](Roadmap.md). Record exact file-level additions after confirming the project tree.

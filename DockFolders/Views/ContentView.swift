@@ -45,6 +45,7 @@ struct ContentView: View {
         .preferredColorScheme(colorScheme)
         .onAppear {
             if selectedFolderID == nil { selectedFolderID = folderStore.folders.first?.id }
+            migrateLegacyDockLaunchers()
             if let pendingURL = DockIntegrationManager.consumePendingURL() { openFolderURL(pendingURL) }
             GlobalShortcutService.shared.onShortcut = {
                 guard let firstFolderID = folderStore.folders.first?.id else { return }
@@ -278,6 +279,14 @@ struct ContentView: View {
             showingDockLauncherHelp = true
         } catch {
             folderStore.errorMessage = error.localizedDescription
+        }
+    }
+
+    private func migrateLegacyDockLaunchers() {
+        let service = FolderLauncherService()
+        for folder in folderStore.folders where folder.hasDockLauncher {
+            do { try service.migrateLegacyLauncherIfNeeded(for: folder) }
+            catch { folderStore.errorMessage = error.localizedDescription }
         }
     }
 

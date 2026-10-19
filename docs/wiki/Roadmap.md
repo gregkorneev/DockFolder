@@ -9,7 +9,7 @@ Status: core implementation includes the requested 0.1, 0.2 and 1.0 feature scop
 
 ## Version 0.2 — Dock integration (implemented)
 
-- One launcher `.app` per folder under `~/Applications/DockFolders`.
+- One launcher `.app` per folder under `/Applications/DockFolders`.
 - Validated `dockfolders://folder/<UUID>` routing opens the requested folder.
 - Manual Finder smoke check covered running and cold-start cases.
 - User manually adds each launcher to Dock through macOS UI; no Dock preference editing.

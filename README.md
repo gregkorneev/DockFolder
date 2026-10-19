@@ -14,9 +14,9 @@ DockFolders is a native macOS app for organizing installed applications into use
 - Open a Dock-aware Liquid Glass popup, dismissed by Escape, focus loss, or successful app launch.
 - Adjust grid, icon size, and theme; set a global Control–Option–Space shortcut and login startup preference.
 - Import and export configuration.
-- Generate a launcher app for each folder in `~/Applications/DockFolders`; validated `dockfolders://folder/<UUID>` links open the matching folder, including cold launch of DockFolders.
+- Generate a launcher app for each folder in `/Applications/DockFolders`; validated `dockfolders://folder/<UUID>` links open the matching folder, including cold launch of DockFolders.
 
-To show a folder in Dock, generate its launcher from DockFolders, open the generated app from `~/Applications/DockFolders` in Finder, then use its Dock menu **Options → Keep in Dock**. macOS requires this pinning step from the user; DockFolders does not modify Dock preferences. Multiple displays and Dock edges, accessibility/reduced motion, login-start registration, shortcut collisions, and signed/notarized distribution remain unverified.
+To show a folder in Dock, generate its launcher from DockFolders, open the generated app from `/Applications/DockFolders` in Finder, then use its Dock menu **Options → Keep in Dock**. macOS requires this pinning step from the user; DockFolders does not modify Dock preferences. Multiple displays and Dock edges, accessibility/reduced motion, login-start registration, shortcut collisions, and signed/notarized distribution remain unverified.
 
 ## Requirements
 

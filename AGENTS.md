@@ -25,7 +25,7 @@
 - Make small, coherent commits. Push completed stages to `origin/main` and report the commit and push status. Preserve existing commit history; do not squash or rewrite shared history.
 - Update `docs/wiki/` and `CHANGELOG.md` when a stage changes architecture, behavior, or project status.
 - Keep all required Wiki pages listed in `docs/wiki/Home.md` present and consistent with the code. Mark roadmap items `Planned`, `In progress`, or `Complete` with evidence; do not label a phase complete until its acceptance criteria pass.
-- Per-folder launcher apps use validated `dockfolders://folder/<UUID>` links and are generated under `~/Applications/DockFolders`. Users must pin each app to Dock themselves. Do not edit Dock preferences or automate pinning.
+- Per-folder launcher apps use validated `dockfolders://folder/<UUID>` links and are generated under `/Applications/DockFolders`. Existing launchers in `~/Applications/DockFolders` migrate on app launch. Users must pin each app to Dock themselves. Do not edit Dock preferences or automate pinning.
 - Current hotkey is Control–Option–Space; login startup uses ServiceManagement. Do not claim the OS registration or conflict scenarios passed unless those were manually verified on the target macOS host.
 - Run `xcodebuild -list` to inspect schemes, then build and test the macOS scheme with `xcodebuild`. Report only checks that were actually run.
 - Do not install or update toolchains or dependencies automatically.

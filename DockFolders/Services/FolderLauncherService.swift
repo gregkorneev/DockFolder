@@ -14,15 +14,28 @@ enum FolderLauncherError: LocalizedError {
 @MainActor
 struct FolderLauncherService {
     let rootURL: URL
+    private let legacyRootURL: URL?
 
-    init(rootURL: URL = FileManager.default.homeDirectoryForCurrentUser
-        .appendingPathComponent("Applications", isDirectory: true)
-        .appendingPathComponent("DockFolders", isDirectory: true)) {
-        self.rootURL = rootURL
+    init(rootURL: URL? = nil) {
+        let fileManager = FileManager.default
+        self.rootURL = rootURL ?? URL(fileURLWithPath: "/Applications", isDirectory: true)
+            .appendingPathComponent("DockFolders", isDirectory: true)
+        self.legacyRootURL = rootURL == nil
+            ? fileManager.homeDirectoryForCurrentUser
+                .appendingPathComponent("Applications", isDirectory: true)
+                .appendingPathComponent("DockFolders", isDirectory: true)
+            : nil
     }
 
     func launcherURL(for folderID: UUID) -> URL {
         rootURL.appendingPathComponent("\(folderID.uuidString).app", isDirectory: true)
+    }
+
+    func migrateLegacyLauncherIfNeeded(for folder: DockFolder) throws {
+        guard let legacyRootURL else { return }
+        let oldLauncherURL = legacyRootURL.appendingPathComponent("\(folder.id.uuidString).app", isDirectory: true)
+        guard FileManager.default.fileExists(atPath: oldLauncherURL.path) else { return }
+        _ = try createOrUpdate(for: folder)
     }
 
     @discardableResult
@@ -57,13 +70,26 @@ struct FolderLauncherService {
         guard NSWorkspace.shared.setIcon(icon, forFile: appURL.path, options: []) else {
             throw FolderLauncherError.iconCouldNotBeApplied
         }
+        if let legacyRootURL {
+            let legacyLauncherURL = legacyRootURL.appendingPathComponent("\(folder.id.uuidString).app", isDirectory: true)
+            if FileManager.default.fileExists(atPath: legacyLauncherURL.path) {
+                try? FileManager.default.removeItem(at: legacyLauncherURL)
+            }
+        }
         return appURL
     }
 
     func remove(for folderID: UUID) throws {
         let appURL = launcherURL(for: folderID)
-        guard FileManager.default.fileExists(atPath: appURL.path) else { return }
-        try FileManager.default.removeItem(at: appURL)
+        if FileManager.default.fileExists(atPath: appURL.path) {
+            try FileManager.default.removeItem(at: appURL)
+        }
+        if let legacyRootURL {
+            let legacyAppURL = legacyRootURL.appendingPathComponent("\(folderID.uuidString).app", isDirectory: true)
+            if FileManager.default.fileExists(atPath: legacyAppURL.path) {
+                try? FileManager.default.removeItem(at: legacyAppURL)
+            }
+        }
     }
 
     private func makeIcon(symbol: String, color: NSColor) -> NSImage {

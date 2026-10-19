@@ -22,7 +22,7 @@ Use an AppKit panel hosted with SwiftUI, positioned in relation to Dock/screen g
 
 ## D-006 — User-controlled Dock pinning (accepted)
 
-Generated launchers live in `~/Applications/DockFolders`; the user opens each launcher and chooses **Options → Keep in Dock**. Do not modify Dock preferences or automate the UI.
+Generated launchers live in `/Applications/DockFolders`; the user opens each launcher and chooses **Options → Keep in Dock**. Do not modify Dock preferences or automate the UI.
 
 ## D-007 — Distribution policy is open
 

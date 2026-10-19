@@ -12,7 +12,7 @@ This page describes the delivered implementation and remaining verification gaps
 - `ApplicationLauncherService`: launches an app through `NSWorkspace` and reports failures.
 - `ContentView`: folder customization, ordering, app search/add/remove/reorder, grid/theme settings, popup, and import/export flows.
 - `PopupWindowManager`: Dock-aware panel presentation and dismissal on Escape, focus loss, and successful launch.
-- Launcher generation and URL routing: one `.app` per folder in `~/Applications/DockFolders`, with validated `dockfolders://folder/<UUID>` requests.
+- Launcher generation and URL routing: one `.app` per folder in `/Applications/DockFolders`, with validated `dockfolders://folder/<UUID>` requests.
 - `HotkeyManager`: global Control–Option–Space shortcut.
 - Login startup integration: `SMAppService`.
 - Configuration transfer: import/export with validation.
