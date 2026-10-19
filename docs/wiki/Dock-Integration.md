@@ -12,7 +12,7 @@ DockFolders can create and install launcher application bundles, but it must not
 
 AppKit's [`NSDockTile`](https://developer.apple.com/documentation/appkit/nsdocktile) exposes appearance/badge customization for an existing app or window tile. It is not a public API for registering an arbitrary folder as a Dock item or silently pinning a new app. This conclusion follows from the documented scope of `NSDockTile` and Apple's documented user workflow. Do not edit Dock preference databases, invoke private APIs, or automate Dock UI to bypass the user action.
 
-For launchers, create a stable per-folder bundle under `/Applications/DockFolders`, then show its location and a short manual pinning instruction. Deletion/rename behavior must be explicit: renaming a folder should preserve launcher identity and update its displayed name; deleting a folder should offer to remove its launcher bundle from DockFolders-managed storage, while macOS may keep a now-stale Dock shortcut until the user removes it.
+For launchers, create a stable per-folder bundle under `/Applications/DockFolders`, then show its location and a short manual pinning instruction. Deletion/rename behavior must be explicit: renaming a folder should preserve launcher identity and update its displayed name; deleting a folder should offer to remove its launcher bundle from DockFolders-managed storage, while macOS may keep a now-stale Dock shortcut until the user removes it. The folder popup animates from the clicked Dock icon on open and back to that icon on close, unless Reduce Motion is enabled.
 
 ## Stage B — One launcher per folder (implemented)
 

@@ -1,4 +1,5 @@
 import AppKit
+import QuartzCore
 import SwiftUI
 
 @MainActor
@@ -6,6 +7,7 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
     static let shared = PopupWindowManager()
 
     private var panel: NSPanel?
+    private var dockAnchor = NSPoint.zero
     private var escapeMonitor: Any?
     private var deactivationObserver: NSObjectProtocol?
 
@@ -13,7 +15,9 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
 
     func present(folderID: UUID, store: FolderStore) {
         guard let folder = store.folders.first(where: { $0.id == folderID }) else { return }
-        close()
+        close(animated: false)
+        let anchor = NSEvent.mouseLocation
+        dockAnchor = anchor
         let columns = min(max(1, store.settings.gridColumns > 0 ? store.settings.gridColumns : 4), 4)
         let rows = max(1, Int(ceil(Double(folder.applications.count) / Double(columns))))
         let width = max(250, CGFloat(columns) * 84 + 36)
@@ -28,7 +32,7 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
         panel.titleVisibility = .hidden
         panel.titlebarAppearsTransparent = true
         panel.isFloatingPanel = true
-        panel.hidesOnDeactivate = true
+        panel.hidesOnDeactivate = false
         panel.level = .floating
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         panel.backgroundColor = .clear
@@ -41,8 +45,21 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
         case .light: .light
         case .dark: .dark
         }
-        panel.contentView = NSHostingView(rootView: FolderPopupView(store: store, folderID: folderID).preferredColorScheme(colorScheme))
-        panel.setFrameOrigin(origin(for: panel.frame.size))
+        let content = NSHostingView(rootView: FolderPopupView(store: store, folderID: folderID).preferredColorScheme(colorScheme))
+        content.frame = NSRect(origin: .zero, size: panel.contentView?.bounds.size ?? NSSize(width: width, height: height))
+        let animatedContent = NSView(frame: content.frame)
+        animatedContent.wantsLayer = true
+        animatedContent.autoresizingMask = [.width, .height]
+        content.autoresizingMask = [.width, .height]
+        animatedContent.addSubview(content)
+        panel.contentView = animatedContent
+        let finalFrame = NSRect(origin: origin(for: panel.frame.size, anchor: anchor), size: panel.frame.size)
+        panel.setFrameOrigin(finalFrame.origin)
+        let shouldAnimate = !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
+        if shouldAnimate {
+            setCollapsedTransform(on: animatedContent, in: panel, anchor: anchor)
+            panel.alphaValue = 0
+        }
         self.panel = panel
         escapeMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             guard event.keyCode == 53 else { return event }
@@ -62,9 +79,12 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
         }
         NSApp.activate(ignoringOtherApps: true)
         panel.makeKeyAndOrderFront(nil)
+        if shouldAnimate {
+            animateOpen(panel: panel, content: animatedContent)
+        }
     }
 
-    func close() {
+    func close(animated: Bool = true) {
         if let escapeMonitor {
             NSEvent.removeMonitor(escapeMonitor)
             self.escapeMonitor = nil
@@ -76,16 +96,38 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
         guard let panel else { return }
         self.panel = nil
         panel.delegate = nil
-        panel.orderOut(nil)
-        panel.close()
+        guard animated, !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion,
+              let content = panel.contentView, let layer = content.layer else {
+            panel.orderOut(nil)
+            panel.close()
+            return
+        }
+
+        panel.ignoresMouseEvents = true
+        let startingTransform = layer.presentation()?.transform ?? layer.transform
+        let collapsedTransform = DockPopupAnimation.collapsedTransform(
+            scale: 0.035,
+            anchor: anchorInContent(dockAnchor, panel: panel, content: content),
+            center: NSPoint(x: content.bounds.midX, y: content.bounds.midY)
+        )
+        addTransformAnimation(to: layer, from: startingTransform, to: collapsedTransform, easing: .easeIn)
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = DockPopupAnimation.duration
+            context.timingFunction = CAMediaTimingFunction(name: .easeIn)
+            panel.animator().alphaValue = 0
+        }
+        Task { @MainActor in
+            try? await Task.sleep(for: .seconds(DockPopupAnimation.duration))
+            panel.orderOut(nil)
+            panel.close()
+        }
     }
 
     func windowDidResignKey(_ notification: Notification) {
         close()
     }
 
-    private func origin(for size: NSSize) -> NSPoint {
-        let anchor = NSEvent.mouseLocation
+    private func origin(for size: NSSize, anchor: NSPoint) -> NSPoint {
         guard let screen = NSScreen.screens.first(where: { $0.frame.contains(anchor) }) ?? NSScreen.main else {
             return NSPoint(x: anchor.x - size.width / 2, y: anchor.y + 44)
         }
@@ -95,6 +137,64 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
             screenFrame: screen.frame,
             visibleFrame: screen.visibleFrame
         )
+    }
+
+    private func setCollapsedTransform(on content: NSView, in panel: NSWindow, anchor: NSPoint) {
+        guard let layer = content.layer else { return }
+        let anchorPoint = anchorInContent(anchor, panel: panel, content: content)
+        layer.transform = DockPopupAnimation.collapsedTransform(
+            scale: 0.035,
+            anchor: anchorPoint,
+            center: NSPoint(x: content.bounds.midX, y: content.bounds.midY)
+        )
+    }
+
+    private func animateOpen(panel: NSWindow, content: NSView) {
+        guard let layer = content.layer else {
+            panel.alphaValue = 1
+            return
+        }
+        let collapsed = layer.transform
+        layer.transform = CATransform3DIdentity
+        addTransformAnimation(to: layer, from: collapsed, to: CATransform3DIdentity, easing: .easeOut)
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = DockPopupAnimation.duration
+            context.timingFunction = CAMediaTimingFunction(name: .easeOut)
+            panel.animator().alphaValue = 1
+        }
+    }
+
+    private func addTransformAnimation(
+        to layer: CALayer,
+        from start: CATransform3D,
+        to end: CATransform3D,
+        easing: CAMediaTimingFunctionName
+    ) {
+        let animation = CABasicAnimation(keyPath: "transform")
+        animation.fromValue = NSValue(caTransform3D: start)
+        animation.toValue = NSValue(caTransform3D: end)
+        animation.duration = DockPopupAnimation.duration
+        animation.timingFunction = CAMediaTimingFunction(name: easing)
+        layer.add(animation, forKey: "DockFolders.popup.transform")
+    }
+
+    private func anchorInContent(_ screenPoint: NSPoint, panel: NSWindow, content: NSView) -> NSPoint {
+        content.convert(panel.convertPoint(fromScreen: screenPoint), from: nil)
+    }
+}
+
+enum DockPopupAnimation {
+    static let duration: TimeInterval = 0.24
+
+    static func collapsedTransform(scale: CGFloat, anchor: NSPoint, center: NSPoint) -> CATransform3D {
+        var transform = CATransform3DIdentity
+        transform.m11 = scale
+        transform.m22 = scale
+        // A layer transform is applied around its anchorPoint (the center by default),
+        // so translation moves that center directly to the Dock icon's local point.
+        transform.m41 = anchor.x - center.x
+        transform.m42 = anchor.y - center.y
+        return transform
     }
 }
 

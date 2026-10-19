@@ -62,6 +62,18 @@ final class DockFoldersTests: XCTestCase {
         XCTAssertEqual(right, NSPoint(x: 558, y: 290))
     }
 
+    func testPopupCollapsedTransformMovesPanelCenterToDockAnchor() {
+        let center = NSPoint(x: 180, y: 120)
+        let anchor = NSPoint(x: 24, y: 18)
+
+        let transform = DockPopupAnimation.collapsedTransform(scale: 0.035, anchor: anchor, center: center)
+
+        XCTAssertEqual(transform.m11, 0.035, accuracy: 0.0001)
+        XCTAssertEqual(transform.m22, 0.035, accuracy: 0.0001)
+        XCTAssertEqual(transform.m41, anchor.x - center.x, accuracy: 0.0001)
+        XCTAssertEqual(transform.m42, anchor.y - center.y, accuracy: 0.0001)
+    }
+
     func testPopupPositioningUsesPointerWhenDockInsetIsUnavailable() {
         let screen = NSRect(x: 0, y: 0, width: 1_000, height: 800)
         let popup = NSSize(width: 360, height: 220)
