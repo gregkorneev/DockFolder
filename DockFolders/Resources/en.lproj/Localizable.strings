@@ -37,6 +37,10 @@
 "Icon" = "Icon";
 "Symbols" = "Symbols";
 "Search Symbols" = "Search Symbols";
+"Symbols found: %d" = "%d symbols";
+"Symbol catalog unavailable" = "Symbol catalog unavailable";
+"Loading Symbols…" = "Loading Symbols…";
+"Some Apple product symbols have restrictions. Review symbol details in SF Symbols before customizing." = "Some Apple product symbols have restrictions. Review symbol details in SF Symbols before customizing.";
 "Color" = "Color";
 "Background" = "Background";
 "Custom background color" = "Custom background color";

@@ -26,7 +26,9 @@
 		A10000000000000000000018 /* LaunchAtLoginService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000021 /* LaunchAtLoginService.swift */; };
 		A10000000000000000000019 /* GlobalShortcutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000022 /* GlobalShortcutService.swift */; };
 		A10000000000000000000020 /* AppLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000023 /* AppLocalization.swift */; };
+		A10000000000000000000023 /* SystemSymbolCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000027 /* SystemSymbolCatalog.swift */; };
 		A10000000000000000000021 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = G10000000000000000000013 /* Localizable.strings */; };
+		A10000000000000000000022 /* SF-Symbols-7.0.json in Resources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000026 /* SF-Symbols-7.0.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +61,8 @@
 		B10000000000000000000023 /* AppLocalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLocalization.swift; sourceTree = "<group>"; };
 		B10000000000000000000024 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B10000000000000000000025 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B10000000000000000000026 /* SF-Symbols-7.0.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "SF-Symbols-7.0.json"; sourceTree = "<group>"; };
+		B10000000000000000000027 /* SystemSymbolCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSymbolCatalog.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,11 +77,11 @@
 		G10000000000000000000004 /* Products */ = {isa = PBXGroup; name = Products; sourceTree = "<group>"; children = (B10000000000000000000011 /* DockFolders.app */, B10000000000000000000012 /* DockFoldersTests.xctest */,); };
 		G10000000000000000000005 /* App */ = {isa = PBXGroup; path = App; sourceTree = "<group>"; children = (B10000000000000000000001 /* DockFoldersApp.swift */,); };
 		G10000000000000000000006 /* Models */ = {isa = PBXGroup; path = Models; sourceTree = "<group>"; children = (B10000000000000000000002 /* Folder.swift */, B10000000000000000000003 /* ApplicationItem.swift */, B10000000000000000000013 /* AppSettings.swift */,); };
-		G10000000000000000000007 /* Services */ = {isa = PBXGroup; path = Services; sourceTree = "<group>"; children = (B10000000000000000000004 /* FolderPersistenceService.swift */, B10000000000000000000005 /* ApplicationDiscoveryService.swift */, B10000000000000000000006 /* ApplicationLauncherService.swift */, B10000000000000000000014 /* FolderLauncherService.swift */, B10000000000000000000016 /* DockFolderLink.swift */, B10000000000000000000020 /* ConfigurationTransferService.swift */, B10000000000000000000021 /* LaunchAtLoginService.swift */, B10000000000000000000022 /* GlobalShortcutService.swift */, B10000000000000000000023 /* AppLocalization.swift */,); };
+		G10000000000000000000007 /* Services */ = {isa = PBXGroup; path = Services; sourceTree = "<group>"; children = (B10000000000000000000004 /* FolderPersistenceService.swift */, B10000000000000000000005 /* ApplicationDiscoveryService.swift */, B10000000000000000000006 /* ApplicationLauncherService.swift */, B10000000000000000000014 /* FolderLauncherService.swift */, B10000000000000000000016 /* DockFolderLink.swift */, B10000000000000000000020 /* ConfigurationTransferService.swift */, B10000000000000000000021 /* LaunchAtLoginService.swift */, B10000000000000000000022 /* GlobalShortcutService.swift */, B10000000000000000000023 /* AppLocalization.swift */, B10000000000000000000027 /* SystemSymbolCatalog.swift */,); };
 		G10000000000000000000008 /* ViewModels */ = {isa = PBXGroup; path = ViewModels; sourceTree = "<group>"; children = (B10000000000000000000007 /* FolderStore.swift */,); };
 		G10000000000000000000009 /* Views */ = {isa = PBXGroup; path = Views; sourceTree = "<group>"; children = (B10000000000000000000008 /* ContentView.swift */, B10000000000000000000018 /* FolderPopupView.swift */, B10000000000000000000019 /* SettingsView.swift */,); };
 		G10000000000000000000010 /* Managers */ = {isa = PBXGroup; path = Managers; sourceTree = "<group>"; children = (B10000000000000000000009 /* DockIntegrationManager.swift */, B10000000000000000000017 /* PopupWindowManager.swift */,); };
-		G10000000000000000000012 /* Resources */ = {isa = PBXGroup; path = Resources; sourceTree = "<group>"; children = (B10000000000000000000015 /* Info.plist */, G10000000000000000000013 /* Localizable.strings */,); };
+		G10000000000000000000012 /* Resources */ = {isa = PBXGroup; path = Resources; sourceTree = "<group>"; children = (B10000000000000000000015 /* Info.plist */, B10000000000000000000026 /* SF-Symbols-7.0.json */, G10000000000000000000013 /* Localizable.strings */,); };
 		G10000000000000000000013 /* Localizable.strings */ = {isa = PBXVariantGroup; children = (B10000000000000000000024 /* en */, B10000000000000000000025 /* ru */,); name = Localizable.strings; sourceTree = "<group>"; };
 		G10000000000000000000011 /* PBXGroup */ = {isa = PBXGroup; children = (B10000000000000000000011 /* DockFolders.app */,); name = Products; sourceTree = "<group>"; };
 /* End PBXGroup section */
@@ -92,12 +96,12 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		F10000000000000000000004 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000021,); runOnlyForDeploymentPostprocessing = 0; };
+		F10000000000000000000004 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000021, A10000000000000000000022,); runOnlyForDeploymentPostprocessing = 0; };
 		F10000000000000000000006 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		F10000000000000000000003 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000001, A10000000000000000000002, A10000000000000000000003, A10000000000000000000004, A10000000000000000000005, A10000000000000000000006, A10000000000000000000007, A10000000000000000000008, A10000000000000000000009, A10000000000000000000011, A10000000000000000000012, A10000000000000000000013, A10000000000000000000014, A10000000000000000000015, A10000000000000000000016, A10000000000000000000017, A10000000000000000000018, A10000000000000000000019, A10000000000000000000020,); runOnlyForDeploymentPostprocessing = 0; };
+		F10000000000000000000003 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000001, A10000000000000000000002, A10000000000000000000003, A10000000000000000000004, A10000000000000000000005, A10000000000000000000006, A10000000000000000000007, A10000000000000000000008, A10000000000000000000009, A10000000000000000000011, A10000000000000000000012, A10000000000000000000013, A10000000000000000000014, A10000000000000000000015, A10000000000000000000016, A10000000000000000000017, A10000000000000000000018, A10000000000000000000019, A10000000000000000000020, A10000000000000000000023,); runOnlyForDeploymentPostprocessing = 0; };
 		F10000000000000000000005 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000010,); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 

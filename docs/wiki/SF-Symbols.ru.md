@@ -1,0 +1,9 @@
+# Каталог SF Symbols
+
+DockFolders использует системные SF Symbols через публичный API AppKit `NSImage(systemSymbolName:accessibilityDescription:)`. Apple описывает SF Symbols как библиотеку более чем из 7 000 символов и рекомендует этот API для загрузки системного символа по имени.
+
+В каталоге выбора доступно 7 752 идентификатора из списка имён SF Symbols 7.0. В приложение включён только список имён; изображения предоставляет и рисует macOS во время работы. Список сформирован на основе проекта [SFSafeSymbols](https://github.com/SFSafeSymbols/SFSafeSymbols) с лицензией MIT, коммит `cb2e670a213ff42ae08528ee2c401bfb1d799675`; текст лицензии находится в `THIRD_PARTY_NOTICES_SFSafeSymbols.txt`. DockFolders не подключает SFSafeSymbols как зависимость.
+
+Apple не предоставляет публичный API набора значков Shortcuts или отдельный пакет для распространения в сторонних приложениях. Поэтому DockFolders использует SF Symbols и не извлекает ресурсы Shortcuts. Имена и доступность символов меняются с версиями ОС; текущий список соответствует каталогу SF Symbols 7.0, а наличие изображения определяет целевая версия macOS.
+
+Apple указывает, что некоторые SF Symbols изображают продукты или функции Apple: их разрешено показывать в приложении, но нельзя настраивать. В приложении SF Symbols они помечены значком информации, а инспектор описывает ограничения. Публичного API AppKit для получения полного списка символов или метаданных об ограничениях нет, поэтому перед изменением оформления символа продукта проверьте его в приложении SF Symbols. См. [правила Apple для SF Symbols](https://developer.apple.com/design/human-interface-guidelines/sf-symbols) и [инициализатор системного символа AppKit](https://developer.apple.com/documentation/appkit/nsimage/init%28systemsymbolname%3Aaccessibilitydescription%3A%29).

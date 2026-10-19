@@ -337,32 +337,20 @@ private struct FolderAppearanceSheet: View {
     @State private var symbol: String
     @State private var backgroundColor: Color
 
-    private let symbolGroups: [(title: String, symbols: [String])] = [
-        ("Work", ["folder.fill", "briefcase.fill", "calendar", "checklist", "doc.text.fill", "books.vertical.fill", "graduationcap.fill", "pencil.and.outline", "paperclip", "archivebox.fill", "tray.full.fill", "chart.bar.fill", "calculator.fill", "terminal.fill", "hammer.fill", "wrench.and.screwdriver.fill"]),
-        ("Communication", ["message.fill", "envelope.fill", "phone.fill", "video.fill", "person.fill", "person.2.fill", "person.3.fill", "bubble.left.and.bubble.right.fill", "megaphone.fill", "bell.fill", "paperplane.fill", "antenna.radiowaves.left.and.right"]),
-        ("Creativity", ["paintpalette.fill", "paintbrush.pointed.fill", "pencil.tip.crop.circle.fill", "photo.fill", "camera.fill", "music.note", "music.mic", "waveform", "film.fill", "theatermasks.fill", "wand.and.stars", "gamecontroller.fill"]),
-        ("Nature", ["leaf.fill", "tree.fill", "sun.max.fill", "moon.fill", "cloud.fill", "cloud.sun.fill", "flame.fill", "drop.fill", "pawprint.fill", "bird.fill", "fish.fill", "globe.americas.fill"]),
-        ("Travel", ["map.fill", "mappin.and.ellipse", "location.fill", "car.fill", "bus.fill", "tram.fill", "bicycle", "airplane", "sailboat.fill", "fuelpump.fill", "binoculars.fill", "signpost.right.fill"]),
-        ("Devices", ["desktopcomputer", "laptopcomputer", "macbook", "iphone", "ipad", "applewatch", "keyboard.fill", "printer.fill", "headphones", "airpodspro", "display", "externaldrive.fill", "server.rack", "visionpro"]),
-        ("Transport", ["car.2.fill", "car.side.fill", "bus.doubledecker.fill", "tram.fill", "train.side.front.car", "bicycle", "scooter", "fuelpump.fill", "airplane", "ferry.fill", "truck.box.fill", "figure.walk"]),
-        ("Objects", ["house.fill", "heart.fill", "star.fill", "gift.fill", "tag.fill", "bookmark.fill", "lock.fill", "key.fill", "lightbulb.fill", "cup.and.saucer.fill", "basket.fill", "shippingbox.fill"])
-    ]
     private let colors = [
         "#FF453A", "#FF375F", "#FF2D55", "#BF5AF2", "#AF52DE", "#5E5CE6", "#007AFF", "#0A84FF",
         "#32ADE6", "#64D2FF", "#30D158", "#34C759", "#A8E6A1", "#8E8E93", "#636366", "#FF9F0A",
         "#FF9500", "#FFD60A", "#D0A215", "#A2845E", "#AC8E68", "#D65A31", "#F0EFF4", "#FFFFFF"
     ]
 
-    private var filteredSymbolGroups: [(title: String, symbols: [String])] {
-        guard !searchText.isEmpty else { return symbolGroups }
-        return symbolGroups.compactMap { group in
-            let matches = group.symbols.filter { $0.localizedCaseInsensitiveContains(searchText) }
-            return matches.isEmpty ? nil : (group.title, matches)
-        }
-    }
-
     @State private var searchText = ""
+    @State private var symbols: [String] = []
+    @State private var catalogFailed = false
     private var backgroundHex: String { Self.hexString(for: backgroundColor) }
+    private var filteredSymbols: [String] {
+        guard !searchText.isEmpty else { return symbols }
+        return symbols.filter { $0.localizedStandardContains(searchText) }
+    }
 
     init(folder: DockFolder, onSave: @escaping (String, String) -> Void) {
         self.folder = folder
@@ -387,16 +375,26 @@ private struct FolderAppearanceSheet: View {
             Text("Symbols").font(.headline)
             TextField("Search Symbols", text: $searchText)
                 .textFieldStyle(.roundedBorder)
+            Text("Some Apple product symbols have restrictions. Review symbol details in SF Symbols before customizing.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    ForEach(filteredSymbolGroups, id: \.title) { group in
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text(group.title).font(.headline)
-                            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 7), count: 8), spacing: 7) {
-                                ForEach(group.symbols, id: \.self) { item in
+                    if catalogFailed {
+                        ContentUnavailableView("Symbol catalog unavailable", systemImage: "exclamationmark.triangle")
+                    } else if symbols.isEmpty {
+                        ProgressView("Loading Symbols…")
+                            .frame(maxWidth: .infinity, minHeight: 120)
+                    } else {
+                        Text(AppLocalization.format("Symbols found: %d", filteredSymbols.count))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 7), count: 8), spacing: 7) {
+                            ForEach(filteredSymbols, id: \.self) { item in
+                                if let image = NSImage(systemSymbolName: item, accessibilityDescription: item) {
                                     Button { symbol = item } label: {
-                                        Image(systemName: item)
+                                        Image(nsImage: image)
                                             .font(.system(size: 20, weight: .medium))
                                             .frame(maxWidth: .infinity, minHeight: 40)
                                             .background(symbol == item ? Color.accentColor.opacity(0.22) : .clear, in: RoundedRectangle(cornerRadius: 8))
@@ -437,6 +435,14 @@ private struct FolderAppearanceSheet: View {
         }
         .padding(24)
         .frame(width: 620, height: 720)
+        .task {
+            guard symbols.isEmpty, !catalogFailed else { return }
+            do {
+                symbols = try SystemSymbolCatalog.load()
+            } catch {
+                catalogFailed = true
+            }
+        }
     }
 
     private static func hexString(for color: Color) -> String {

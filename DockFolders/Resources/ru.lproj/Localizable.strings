@@ -37,6 +37,10 @@
 "Icon" = "Значок";
 "Symbols" = "Символы";
 "Search Symbols" = "Поиск символов";
+"Symbols found: %d" = "Символов: %d";
+"Symbol catalog unavailable" = "Каталог символов недоступен";
+"Loading Symbols…" = "Загрузка символов…";
+"Some Apple product symbols have restrictions. Review symbol details in SF Symbols before customizing." = "На некоторые символы продуктов Apple распространяются ограничения. Перед настройкой проверьте сведения о символе в приложении SF Symbols.";
 "Color" = "Цвет";
 "Background" = "Фон";
 "Custom background color" = "Свой цвет фона";

@@ -5,6 +5,16 @@ import XCTest
 
 @MainActor
 final class DockFoldersTests: XCTestCase {
+    func testSystemSymbolCatalogContainsSF7NamesAndAppleDeviceSymbols() throws {
+        let symbols = try SystemSymbolCatalog.load()
+
+        XCTAssertEqual(symbols.count, 7_752)
+        XCTAssertTrue(symbols.contains("iphone"))
+        XCTAssertTrue(symbols.contains("visionpro"))
+        XCTAssertEqual(symbols, symbols.sorted())
+        XCTAssertTrue(symbols.allSatisfy { NSImage(systemSymbolName: $0, accessibilityDescription: nil) != nil })
+    }
+
     func testFolderPersistenceRoundTrip() throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
         defer { try? FileManager.default.removeItem(at: directory) }
