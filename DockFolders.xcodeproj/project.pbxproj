@@ -16,6 +16,15 @@
 		A10000000000000000000008 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000008 /* ContentView.swift */; };
 		A10000000000000000000009 /* DockIntegrationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000009 /* DockIntegrationManager.swift */; };
 		A10000000000000000000010 /* DockFoldersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000010 /* DockFoldersTests.swift */; };
+		A10000000000000000000011 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000013 /* AppSettings.swift */; };
+		A10000000000000000000012 /* FolderLauncherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000014 /* FolderLauncherService.swift */; };
+		A10000000000000000000013 /* DockFolderLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000016 /* DockFolderLink.swift */; };
+		A10000000000000000000014 /* PopupWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000017 /* PopupWindowManager.swift */; };
+		A10000000000000000000015 /* FolderPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000018 /* FolderPopupView.swift */; };
+		A10000000000000000000016 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000019 /* SettingsView.swift */; };
+		A10000000000000000000017 /* ConfigurationTransferService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000020 /* ConfigurationTransferService.swift */; };
+		A10000000000000000000018 /* LaunchAtLoginService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000021 /* LaunchAtLoginService.swift */; };
+		A10000000000000000000019 /* GlobalShortcutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000022 /* GlobalShortcutService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +44,16 @@
 		B10000000000000000000010 /* DockFoldersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DockFoldersTests.swift; sourceTree = "<group>"; };
 		B10000000000000000000011 /* DockFolders.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DockFolders.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B10000000000000000000012 /* DockFoldersTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DockFoldersTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B10000000000000000000013 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		B10000000000000000000014 /* FolderLauncherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderLauncherService.swift; sourceTree = "<group>"; };
+		B10000000000000000000015 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B10000000000000000000016 /* DockFolderLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DockFolderLink.swift; sourceTree = "<group>"; };
+		B10000000000000000000017 /* PopupWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupWindowManager.swift; sourceTree = "<group>"; };
+		B10000000000000000000018 /* FolderPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderPopupView.swift; sourceTree = "<group>"; };
+		B10000000000000000000019 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		B10000000000000000000020 /* ConfigurationTransferService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationTransferService.swift; sourceTree = "<group>"; };
+		B10000000000000000000021 /* LaunchAtLoginService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginService.swift; sourceTree = "<group>"; };
+		B10000000000000000000022 /* GlobalShortcutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalShortcutService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,15 +63,16 @@
 
 /* Begin PBXGroup section */
 		G10000000000000000000001 = {isa = PBXGroup; children = (G10000000000000000000002 /* DockFolders */, G10000000000000000000003 /* DockFoldersTests */, G10000000000000000000004 /* Products */,); sourceTree = "<group>"; };
-		G10000000000000000000002 /* DockFolders */ = {isa = PBXGroup; path = DockFolders; sourceTree = "<group>"; children = (G10000000000000000000005 /* App */, G10000000000000000000006 /* Models */, G10000000000000000000007 /* Services */, G10000000000000000000008 /* ViewModels */, G10000000000000000000009 /* Views */, G10000000000000000000010 /* Managers */,); };
+		G10000000000000000000002 /* DockFolders */ = {isa = PBXGroup; path = DockFolders; sourceTree = "<group>"; children = (G10000000000000000000005 /* App */, G10000000000000000000006 /* Models */, G10000000000000000000007 /* Services */, G10000000000000000000008 /* ViewModels */, G10000000000000000000009 /* Views */, G10000000000000000000010 /* Managers */, G10000000000000000000012 /* Resources */,); };
 		G10000000000000000000003 /* DockFoldersTests */ = {isa = PBXGroup; path = DockFoldersTests; sourceTree = "<group>"; children = (B10000000000000000000010 /* DockFoldersTests.swift */,); };
 		G10000000000000000000004 /* Products */ = {isa = PBXGroup; name = Products; sourceTree = "<group>"; children = (B10000000000000000000011 /* DockFolders.app */, B10000000000000000000012 /* DockFoldersTests.xctest */,); };
 		G10000000000000000000005 /* App */ = {isa = PBXGroup; path = App; sourceTree = "<group>"; children = (B10000000000000000000001 /* DockFoldersApp.swift */,); };
-		G10000000000000000000006 /* Models */ = {isa = PBXGroup; path = Models; sourceTree = "<group>"; children = (B10000000000000000000002 /* Folder.swift */, B10000000000000000000003 /* ApplicationItem.swift */,); };
-		G10000000000000000000007 /* Services */ = {isa = PBXGroup; path = Services; sourceTree = "<group>"; children = (B10000000000000000000004 /* FolderPersistenceService.swift */, B10000000000000000000005 /* ApplicationDiscoveryService.swift */, B10000000000000000000006 /* ApplicationLauncherService.swift */,); };
+		G10000000000000000000006 /* Models */ = {isa = PBXGroup; path = Models; sourceTree = "<group>"; children = (B10000000000000000000002 /* Folder.swift */, B10000000000000000000003 /* ApplicationItem.swift */, B10000000000000000000013 /* AppSettings.swift */,); };
+		G10000000000000000000007 /* Services */ = {isa = PBXGroup; path = Services; sourceTree = "<group>"; children = (B10000000000000000000004 /* FolderPersistenceService.swift */, B10000000000000000000005 /* ApplicationDiscoveryService.swift */, B10000000000000000000006 /* ApplicationLauncherService.swift */, B10000000000000000000014 /* FolderLauncherService.swift */, B10000000000000000000016 /* DockFolderLink.swift */, B10000000000000000000020 /* ConfigurationTransferService.swift */, B10000000000000000000021 /* LaunchAtLoginService.swift */, B10000000000000000000022 /* GlobalShortcutService.swift */,); };
 		G10000000000000000000008 /* ViewModels */ = {isa = PBXGroup; path = ViewModels; sourceTree = "<group>"; children = (B10000000000000000000007 /* FolderStore.swift */,); };
-		G10000000000000000000009 /* Views */ = {isa = PBXGroup; path = Views; sourceTree = "<group>"; children = (B10000000000000000000008 /* ContentView.swift */,); };
-		G10000000000000000000010 /* Managers */ = {isa = PBXGroup; path = Managers; sourceTree = "<group>"; children = (B10000000000000000000009 /* DockIntegrationManager.swift */,); };
+		G10000000000000000000009 /* Views */ = {isa = PBXGroup; path = Views; sourceTree = "<group>"; children = (B10000000000000000000008 /* ContentView.swift */, B10000000000000000000018 /* FolderPopupView.swift */, B10000000000000000000019 /* SettingsView.swift */,); };
+		G10000000000000000000010 /* Managers */ = {isa = PBXGroup; path = Managers; sourceTree = "<group>"; children = (B10000000000000000000009 /* DockIntegrationManager.swift */, B10000000000000000000017 /* PopupWindowManager.swift */,); };
+		G10000000000000000000012 /* Resources */ = {isa = PBXGroup; path = Resources; sourceTree = "<group>"; children = (B10000000000000000000015 /* Info.plist */,); };
 		G10000000000000000000011 /* PBXGroup */ = {isa = PBXGroup; children = (B10000000000000000000011 /* DockFolders.app */,); name = Products; sourceTree = "<group>"; };
 /* End PBXGroup section */
 
@@ -71,7 +91,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		F10000000000000000000003 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000001, A10000000000000000000002, A10000000000000000000003, A10000000000000000000004, A10000000000000000000005, A10000000000000000000006, A10000000000000000000007, A10000000000000000000008, A10000000000000000000009,); runOnlyForDeploymentPostprocessing = 0; };
+		F10000000000000000000003 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000001, A10000000000000000000002, A10000000000000000000003, A10000000000000000000004, A10000000000000000000005, A10000000000000000000006, A10000000000000000000007, A10000000000000000000008, A10000000000000000000009, A10000000000000000000011, A10000000000000000000012, A10000000000000000000013, A10000000000000000000014, A10000000000000000000015, A10000000000000000000016, A10000000000000000000017, A10000000000000000000018, A10000000000000000000019,); runOnlyForDeploymentPostprocessing = 0; };
 		F10000000000000000000005 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000010,); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 
@@ -82,8 +102,8 @@
 /* Begin XCBuildConfiguration section */
 		J10000000000000000000001 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {CLANG_ENABLE_MODULES = YES; MACOSX_DEPLOYMENT_TARGET = 27.0; SDKROOT = macosx; SWIFT_VERSION = 6.0; }; name = Debug; };
 		J10000000000000000000002 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {CLANG_ENABLE_MODULES = YES; MACOSX_DEPLOYMENT_TARGET = 27.0; SDKROOT = macosx; SWIFT_VERSION = 6.0; }; name = Release; };
-		J10000000000000000000003 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_IDENTITY = "-"; CODE_SIGNING_REQUIRED = NO; ENABLE_APP_SANDBOX = NO; ENABLE_TESTABILITY = YES; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities"; MACOSX_DEPLOYMENT_TARGET = 27.0; PRODUCT_BUNDLE_IDENTIFIER = com.gregkorneev.DockFolders; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = macosx; SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG; SWIFT_VERSION = 6.0; }; name = Debug; };
-		J10000000000000000000004 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_IDENTITY = "-"; CODE_SIGNING_REQUIRED = NO; ENABLE_APP_SANDBOX = NO; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities"; MACOSX_DEPLOYMENT_TARGET = 27.0; PRODUCT_BUNDLE_IDENTIFIER = com.gregkorneev.DockFolders; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = macosx; SWIFT_VERSION = 6.0; }; name = Release; };
+		J10000000000000000000003 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_IDENTITY = "-"; CODE_SIGNING_REQUIRED = NO; ENABLE_APP_SANDBOX = NO; ENABLE_TESTABILITY = YES; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = DockFolders/Resources/Info.plist; MACOSX_DEPLOYMENT_TARGET = 27.0; PRODUCT_BUNDLE_IDENTIFIER = com.gregkorneev.DockFolders; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = macosx; SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG; SWIFT_VERSION = 6.0; }; name = Debug; };
+		J10000000000000000000004 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_IDENTITY = "-"; CODE_SIGNING_REQUIRED = NO; ENABLE_APP_SANDBOX = NO; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = DockFolders/Resources/Info.plist; MACOSX_DEPLOYMENT_TARGET = 27.0; PRODUCT_BUNDLE_IDENTIFIER = com.gregkorneev.DockFolders; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = macosx; SWIFT_VERSION = 6.0; }; name = Release; };
 		J10000000000000000000005 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {BUNDLE_LOADER = "$(TEST_HOST)"; CODE_SIGN_IDENTITY = "-"; CODE_SIGNING_REQUIRED = NO; GENERATE_INFOPLIST_FILE = YES; MACOSX_DEPLOYMENT_TARGET = 27.0; PRODUCT_BUNDLE_IDENTIFIER = com.gregkorneev.DockFoldersTests; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = macosx; SWIFT_VERSION = 6.0; TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DockFolders.app/Contents/MacOS/DockFolders"; TEST_TARGET_NAME = DockFolders; }; name = Debug; };
 		J10000000000000000000006 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {BUNDLE_LOADER = "$(TEST_HOST)"; CODE_SIGN_IDENTITY = "-"; CODE_SIGNING_REQUIRED = NO; GENERATE_INFOPLIST_FILE = YES; MACOSX_DEPLOYMENT_TARGET = 27.0; PRODUCT_BUNDLE_IDENTIFIER = com.gregkorneev.DockFoldersTests; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = macosx; SWIFT_VERSION = 6.0; TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DockFolders.app/Contents/MacOS/DockFolders"; TEST_TARGET_NAME = DockFolders; }; name = Release; };
 /* End XCBuildConfiguration section */

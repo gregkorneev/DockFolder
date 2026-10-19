@@ -1,46 +1,41 @@
-# MVP implementation plan
+# Implementation status and acceptance
 
-## Stage 0 — Environment audit (complete)
+Last reconciled: 2026-10-20 using the current implementation and recorded verification report.
 
-- Confirm macOS 27.0.1, arm64, Xcode 27.1, SDK 27.0, Swift 6.4, Git/GitHub access, available space, and development tools.
-- Keep beta toolchains out of the project.
-- Record audit in `ENVIRONMENT_AUDIT.md` and this Wiki.
+## Implemented feature scope
 
-## Stage 1 — Project foundation (complete)
+- Version 0.1 foundation: native macOS app, folder CRUD, installed-app discovery/search/add/remove/launch, and versioned local persistence.
+- Version 0.2 Dock integration: per-folder launcher `.app` bundles in `~/Applications/DockFolders`, validated `dockfolders://folder/<UUID>` routing, and folder selection from the launcher.
+- Version 1.0 features: folder SF Symbol/color customization; folder and app drag ordering; Dock-aware Liquid Glass panel; Escape/focus-loss/successful-launch dismissal; grid, icon size and theme settings; Control–Option–Space hotkey; login-start setting using `SMAppService`; configuration import/export.
+- Data migration from the former JSON shape, launcher bundle creation, URL validation, ordering, and configuration transfer have unit coverage.
 
-- Create the native Xcode project, scheme, app target, and test target.
-- Set macOS 27.0 minimum, arm64, and Swift 6.
-- Add contributor instructions, README, changelog, and architecture notes.
-- Verify project listing and a clean baseline build.
+## Recorded verification
 
-## Stage 2 — Folder model and persistence (complete)
+- 13 unit tests pass.
+- A generated launcher was opened through Finder. It opened the Code folder while DockFolders was running and after a cold start.
+- See [Testing](Testing.md) for the detailed scope and verification gaps.
 
-- Codable folder and app-entry models with stable identifiers.
-- Atomic JSON persistence under Application Support, with safe error handling.
-- Create/rename/delete folders. Drag reordering is deferred.
-- Unit tests cover serialization, persistence reload, corrupt data, and unsupported schema versions.
+## Remaining acceptance checks
 
-## Stage 3 — Discover, add, and launch apps (complete)
+### Platform and popup
 
-- Find `.app` bundles in common app directories off the main thread.
-- Search the discovered list; offer a file picker for apps the scan misses.
-- Add/remove applications from folders and persist changes.
-- Launch through `NSWorkspace`; show recoverable launch errors.
-- Test discovery filtering, duplicate membership, persistence, and launch seam.
+- Verify popup placement and screen clamping on multiple displays, all Dock edges, hidden/auto-hide Dock, and display attach/detach or resolution changes.
+- Verify VoiceOver, keyboard-only operation, Dynamic Type/text sizing, contrast, and reduced motion.
+- Verify repeated main-app Dock activation and popup behavior after app termination/reopen.
 
-## Stage 4 — Main interface and activation (MVP complete)
+### System integrations
 
-- SwiftUI folder navigation and application tiles with native icons.
-- Verify the exact Liquid Glass API in the selected SDK and retain a contrast fallback.
-- Implement `applicationShouldHandleReopen` to restore the main window on repeat activation from the Dock.
-- Smoke-test on the local macOS 27 host, including app relaunch and app launch. Repeat Dock activation has not been manually checked.
+- Confirm login-start registration and removal actually succeed on the target host and survive restart; check permission/error reporting.
+- Confirm global hotkey collision behavior and unregister/re-register flows.
+- Test generated launcher refresh/removal, renamed/deleted folders, stale Dock shortcuts, and a clean user install.
+- Dock pinning is intentionally a user step: open the generated app and choose **Options → Keep in Dock**. Confirm the setup instructions are clear on a clean install.
 
-## MVP release gate
+### Distribution
 
-- `xcodebuild -list` reports the app and test schemes.
-- macOS scheme builds and test suite passes.
-- `xcodebuild -list` reports the app and test targets; macOS build succeeds; all eight unit tests pass.
-- UI smoke check verified folder creation, app search/add, Calculator launch, and persistence after relaunch.
-- Document unverified repeated Dock activation, multiple-monitor, accessibility, signing, and sandbox behavior.
+- Choose and verify signing/notarization and sandbox policy for the distribution route.
+- Test install/upgrade/uninstall of the packaged main app and generated launchers outside Xcode.
+- Validate application discovery/launch permissions and IPC under the chosen distribution configuration.
 
-Stages 0–4 are complete for the MVP scope. Drag reordering and separate per-folder Dock launchers remain follow-up work.
+## Completion rule
+
+Core requested features are implemented, but release readiness is not claimed until the remaining checks above are completed and documented. Report implementation status separately from host-specific or distribution verification.

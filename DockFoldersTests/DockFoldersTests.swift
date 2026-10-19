@@ -15,6 +15,40 @@ final class DockFoldersTests: XCTestCase {
         XCTAssertEqual(try service.load().folders, [folder])
     }
 
+    func testVersionOneFolderDataLoadsWithDefaultAppearanceAndSettings() throws {
+        let data = Data("{\"version\":1,\"folders\":[{\"id\":\"8C1E54B7-4E13-4DF0-B9B7-E837C0ABCC0C\",\"name\":\"Old\",\"applications\":[]}]}".utf8)
+        let document = try JSONDecoder().decode(FolderDocument.self, from: data)
+        XCTAssertEqual(document.folders.first?.iconName, "folder.fill")
+        XCTAssertEqual(document.folders.first?.colorHex, "#0A84FF")
+        XCTAssertEqual(document.settings, AppSettings())
+    }
+
+    func testDockFolderLinksValidateSchemePathAndIdentifier() throws {
+        let id = UUID()
+        let url = DockFolderLink.url(for: id)
+        XCTAssertEqual(DockFolderLink.folderID(from: url), id)
+        XCTAssertNil(DockFolderLink.folderID(from: URL(string: "https://folder/\(id)")!))
+        XCTAssertNil(DockFolderLink.folderID(from: URL(string: "dockfolders://folder/not-a-uuid")!))
+        XCTAssertNil(DockFolderLink.folderID(from: URL(string: "dockfolders://folder/\(id)/extra")!))
+    }
+
+    func testLauncherBundleContainsStableFolderRoute() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let id = UUID()
+        let folder = DockFolder(id: id, name: "Code")
+        let service = FolderLauncherService(rootURL: root)
+
+        let launcher = try service.createOrUpdate(for: folder)
+
+        let plist = try XCTUnwrap(NSDictionary(contentsOf: launcher.appendingPathComponent("Contents/Info.plist")) as? [String: Any])
+        XCTAssertEqual(plist["CFBundleDisplayName"] as? String, "Code")
+        XCTAssertEqual(plist["CFBundleIdentifier"] as? String, "com.gregkorneev.DockFolders.launcher.\(id.uuidString.lowercased())")
+        let script = try String(contentsOf: launcher.appendingPathComponent("Contents/MacOS/launch"), encoding: .utf8)
+        XCTAssertTrue(script.contains(DockFolderLink.url(for: id).absoluteString))
+        XCTAssertTrue(FileManager.default.isExecutableFile(atPath: launcher.appendingPathComponent("Contents/MacOS/launch").path))
+    }
+
     func testStoreCreatesAndReloadsFolder() {
         let fileURL = FileManager.default.temporaryDirectory
             .appendingPathComponent(UUID().uuidString, isDirectory: true)
@@ -44,6 +78,42 @@ final class DockFoldersTests: XCTestCase {
         store.deleteFolder(id: id)
         XCTAssertTrue(store.folders.isEmpty)
         XCTAssertTrue(FolderStore(persistence: FolderPersistenceService(fileURL: fileURL)).folders.isEmpty)
+    }
+
+    func testFolderAndApplicationOrderingPersists() throws {
+        let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true).appendingPathComponent("folders.json")
+        defer { try? FileManager.default.removeItem(at: fileURL.deletingLastPathComponent()) }
+        let store = FolderStore(persistence: FolderPersistenceService(fileURL: fileURL))
+        store.createFolder(named: "First")
+        store.createFolder(named: "Second")
+        let firstID = try XCTUnwrap(store.folders.first?.id)
+        let secondID = try XCTUnwrap(store.folders.last?.id)
+        store.moveFolder(id: secondID, before: firstID)
+        XCTAssertEqual(store.folders.map(\.name), ["Second", "First"])
+
+        let one = ApplicationItem(url: URL(fileURLWithPath: "/Applications/One.app"))
+        let two = ApplicationItem(url: URL(fileURLWithPath: "/Applications/Two.app"))
+        store.add(one, to: firstID)
+        store.add(two, to: firstID)
+        store.moveApplication(id: try XCTUnwrap(store.folders.first(where: { $0.id == firstID })?.applications.last?.id), before: one.id, in: firstID)
+        XCTAssertEqual(store.folders.first(where: { $0.id == firstID })?.applications.map(\.name), ["Two", "One"])
+        XCTAssertEqual(FolderStore(persistence: FolderPersistenceService(fileURL: fileURL)).folders.first?.id, secondID)
+    }
+
+    func testConfigurationTransferRoundTrip() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let url = directory.appendingPathComponent("settings.json")
+        let document = FolderDocument(
+            folders: [DockFolder(name: "Dark", iconName: "moon.fill", colorHex: "#222222")],
+            settings: AppSettings(iconSize: 92, gridColumns: 5, appearance: .dark, launchAtLogin: true, globalShortcutEnabled: true)
+        )
+
+        try ConfigurationTransferService().export(document, to: url)
+
+        XCTAssertEqual(try ConfigurationTransferService().import(from: url).folders, document.folders)
+        XCTAssertEqual(try ConfigurationTransferService().import(from: url).settings, document.settings)
     }
 
     func testCorruptSavedFileIsNotOverwritten() throws {
