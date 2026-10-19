@@ -43,6 +43,6 @@ See [Dock-Integration.md](Dock-Integration.md) for the user-action constraint an
 ## Verification
 
 - macOS build succeeds with Xcode 27.1 / SDK 27.0.
-- Twenty unit tests pass, including popup placement calculations for bottom/left/right Dock layouts and fallback placement when no Dock inset is reported.
+- Twenty-two unit tests pass, including popup placement calculations for bottom/left/right Dock layouts and fallback placement when no Dock inset is reported.
 - Manual smoke check opened a generated launcher through Finder, verified it opened the selected Code folder while DockFolders was already open and after cold-start.
 - Actual popup placement on multiple physical displays, accessibility/reduced motion, ServiceManagement registration, hotkey collision, production signing, and sandbox distribution remain unverified.

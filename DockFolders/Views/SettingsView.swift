@@ -47,7 +47,7 @@ struct SettingsView: View {
                 }
                 TextField("Preset name", text: $draftPresetName)
                 Picker("Arrangement", selection: $draftColumns) {
-                    ForEach(1...12, id: \.self) { columns in
+                    ForEach(2...12, id: \.self) { columns in
                         Text("\(columns) × \(columns)").tag(columns)
                     }
                     Text("All in one row").tag(FolderLayoutPreset.rowColumns)

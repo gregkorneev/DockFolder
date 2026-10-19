@@ -13,7 +13,7 @@ Last reconciled: 2026-10-20 using the current implementation and recorded verifi
 
 ## Recorded verification
 
-- 20 unit tests pass.
+- 22 unit tests pass.
 - A generated launcher was opened through Finder. It opened the Code folder while DockFolders was running and after a cold start.
 - See [Testing](Testing.md) for the detailed scope and verification gaps.
 

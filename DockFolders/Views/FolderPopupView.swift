@@ -33,7 +33,7 @@ struct FolderPopupView: View {
                                 store.setLayoutPreset(preset, for: folderID)
                             }
                         )) {
-                            ForEach(store.settings.layoutPresets) { preset in
+                            ForEach(layoutChoices(for: folder)) { preset in
                                 Text(AppLocalization.layoutPresetName(preset)).tag(preset.id)
                             }
                         }
@@ -139,5 +139,18 @@ struct FolderPopupView: View {
         .buttonStyle(.plain)
         .help(AppLocalization.format("Open %@", application.name))
         .accessibilityLabel(application.name)
+    }
+
+    private func layoutChoices(for folder: DockFolder) -> [FolderLayoutPreset] {
+        var choices = store.settings.layoutPresets.filter { $0.fits(folder.applications.count) }
+        let requiredSide = max(2, Int(ceil(sqrt(Double(folder.applications.count)))))
+        for side in requiredSide...(requiredSide + 2) where !choices.contains(where: { !$0.isSingleRow && !$0.isSingleColumn && $0.columns == side }) {
+            choices.append(.dynamicGrid(side: side, showsAppLabels: folder.layoutPreset.showsAppLabels))
+        }
+        return choices.sorted { lhs, rhs in
+            if lhs.isSingleRow || lhs.isSingleColumn { return false }
+            if rhs.isSingleRow || rhs.isSingleColumn { return true }
+            return lhs.columns < rhs.columns
+        }
     }
 }

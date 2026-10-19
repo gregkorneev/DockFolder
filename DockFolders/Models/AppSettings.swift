@@ -64,10 +64,25 @@ struct FolderLayoutPreset: Codable, Hashable, Identifiable, Sendable {
         return columns
     }
 
+    func fits(_ applicationCount: Int) -> Bool {
+        isSingleRow || isSingleColumn || columns >= max(2, Int(ceil(sqrt(Double(applicationCount)))))
+    }
+
+    func fitting(_ applicationCount: Int) -> Self {
+        guard !fits(applicationCount) else { return self }
+        let side = max(2, Int(ceil(sqrt(Double(applicationCount)))))
+        return Self.dynamicGrid(side: side, showsAppLabels: showsAppLabels)
+    }
+
+    static func dynamicGrid(side: Int, showsAppLabels: Bool) -> Self {
+        let size = min(max(side, 2), 64)
+        return FolderLayoutPreset(id: "dynamic-grid-\(size)", name: "\(size) × \(size)", columns: size, showsAppLabels: showsAppLabels)
+    }
+
     init(id: String = UUID().uuidString, name: String, columns: Int, showsAppLabels: Bool = true) {
         self.id = id
         self.name = name
-        self.columns = columns == Self.rowColumns || columns == Self.columnColumns ? columns : min(max(columns, 1), 12)
+        self.columns = columns == Self.rowColumns || columns == Self.columnColumns ? columns : min(max(columns, 2), 64)
         self.showsAppLabels = showsAppLabels
     }
 

@@ -62,6 +62,35 @@ final class DockFoldersTests: XCTestCase {
         XCTAssertEqual(right, NSPoint(x: 558, y: 290))
     }
 
+    func testFolderLayoutPresetsOnlyFitWhenTheyHaveEnoughGridCells() {
+        let twoByTwo = FolderLayoutPreset.dynamicGrid(side: 2, showsAppLabels: true)
+        let threeByThree = FolderLayoutPreset.defaults[1]
+        let fourByFour = FolderLayoutPreset.defaults[0]
+
+        XCTAssertTrue(twoByTwo.fits(4))
+        XCTAssertFalse(twoByTwo.fits(5))
+        XCTAssertFalse(threeByThree.fits(10))
+        XCTAssertTrue(fourByFour.fits(10))
+        XCTAssertEqual(fourByFour.fitting(17).columns, 5)
+    }
+
+    func testAddingAppsAutomaticallyGrowsFolderLayoutWhenGridIsTooSmall() throws {
+        let fileURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+            .appendingPathComponent("folders.json")
+        defer { try? FileManager.default.removeItem(at: fileURL.deletingLastPathComponent()) }
+        let store = FolderStore(persistence: FolderPersistenceService(fileURL: fileURL))
+        store.createFolder(named: "Code")
+        let folderID = try XCTUnwrap(store.folders.first?.id)
+        store.setLayoutPreset(.dynamicGrid(side: 2, showsAppLabels: true), for: folderID)
+
+        for index in 1...5 {
+            store.add(ApplicationItem(url: URL(fileURLWithPath: "/Applications/Test \(index).app")), to: folderID)
+        }
+
+        XCTAssertEqual(store.folders.first?.layoutPreset.columns, 3)
+    }
+
     func testPopupCollapsedTransformMovesPanelCenterToDockAnchor() {
         let center = NSPoint(x: 180, y: 120)
         let anchor = NSPoint(x: 24, y: 18)

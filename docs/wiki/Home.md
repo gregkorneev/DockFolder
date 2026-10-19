@@ -13,7 +13,7 @@ The interface is available in English and Russian. DockFolders follows the prefe
 ## Current status
 
 - **Implemented:** core version 1.0 feature scope: folder CRUD/customization/order, app discovery/search/add/remove/launch/order, Dock-aware popup, generated per-folder launchers, configurable grid/theme, hotkey preference, login-start preference, and import/export.
-- **Verified:** 20 unit tests; manual launcher test through Finder successfully opened the Code folder while DockFolders was running and after cold-start.
+- **Verified:** 22 unit tests; manual launcher test through Finder successfully opened the Code folder while DockFolders was running and after cold-start.
 - **Unverified:** multi-display and all Dock-edge behavior, accessibility/reduced motion, actual login-start registration, hotkey conflicts, signing/notarization/sandbox/distribution, and user pinning flow on a clean install.
 - **Dock pinning:** each generated launcher must be added by the user through macOS Dock controls. DockFolders will not edit Dock preferences or use private APIs.
 

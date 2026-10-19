@@ -117,6 +117,7 @@ final class FolderStore {
             guard let index = folders.firstIndex(where: { $0.id == folderID }),
                   !folders[index].applications.contains(where: { $0.matches(application) }) else { return }
             folders[index].applications.append(application)
+            folders[index].layoutPreset = folders[index].layoutPreset.fitting(folders[index].applications.count)
         }
     }
 

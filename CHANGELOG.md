@@ -23,6 +23,7 @@
 - Positioned the popup on the display containing the clicked Dock icon and adapted it to bottom, left, right, and auto-hidden Dock layouts; added geometry tests.
 - Animated the popup expanding from and collapsing back to its Dock icon, and disabled the transition when macOS Reduce Motion is enabled.
 - Added per-folder label visibility and grid, single-row, and single-column layouts, plus a layout preset builder whose selected default applies to newly created folders.
-- Twenty unit tests pass, including model migration from the old JSON shape, URL validation, launcher bundle generation, ordering, and configuration transfer.
+- Made popup grid choices depend on folder size: layouts with too few cells are hidden and larger square grids are offered automatically as needed.
+- Twenty-two unit tests pass, including dynamic grid capacity and automatic growth, model migration, URL validation, launcher bundle generation, ordering, and configuration transfer.
 - Manual launcher smoke check opened a generated launcher through Finder and verified it opened the Code folder with the main app already running and after cold-start.
 - Still unverified: visual animation behavior across multiple displays and all Dock edges, accessibility, actual login-start registration, hotkey collision behavior, signing/notarization/sandbox/distribution, and manual pinning by users on a clean install.

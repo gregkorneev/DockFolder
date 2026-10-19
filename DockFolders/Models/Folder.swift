@@ -16,7 +16,7 @@ struct DockFolder: Codable, Hashable, Identifiable, Sendable {
         self.iconName = iconName
         self.colorHex = colorHex
         self.hasDockLauncher = hasDockLauncher
-        self.layoutPreset = layoutPreset
+        self.layoutPreset = layoutPreset.fitting(applications.count)
     }
 
     private enum CodingKeys: String, CodingKey { case id, name, applications, iconName, colorHex, hasDockLauncher, layoutPreset }
@@ -29,7 +29,8 @@ struct DockFolder: Codable, Hashable, Identifiable, Sendable {
         iconName = try values.decodeIfPresent(String.self, forKey: .iconName) ?? "folder.fill"
         colorHex = try values.decodeIfPresent(String.self, forKey: .colorHex) ?? "#0A84FF"
         hasDockLauncher = try values.decodeIfPresent(Bool.self, forKey: .hasDockLauncher) ?? false
-        layoutPreset = try values.decodeIfPresent(FolderLayoutPreset.self, forKey: .layoutPreset) ?? FolderLayoutPreset.defaults[0]
+        let decodedPreset = try values.decodeIfPresent(FolderLayoutPreset.self, forKey: .layoutPreset) ?? FolderLayoutPreset.defaults[0]
+        layoutPreset = decodedPreset.fitting(applications.count)
     }
 }
 
