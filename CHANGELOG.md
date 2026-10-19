@@ -5,7 +5,7 @@
 
 ## Unreleased — feature-complete implementation; release validation outstanding
 
-- Added a categorized, searchable SF Symbols picker, curated background colors and the system color picker for folder and Dock launcher icons; launcher artwork now uses the standard square 1024 × 1024 px source at 2× resolution (512 pt).
+- Added a categorized, searchable SF Symbols picker, curated background colors and the system color picker for folder and Dock launcher icons; launcher icons are now bundled as standard multi-resolution `.icns` app icons from a 1024 × 1024 px source, so macOS applies its normal Dock icon treatment. The tile size and magnification remain controlled by macOS Dock settings.
 - Named each generated Dock launcher after its folder, preserved stable UUID routing, and added readable numeric suffixes for duplicate names; renames now update the launcher name.
 - Project environment audited and Xcode 27.1 / macOS SDK 27 confirmed.
 - Initial architecture and MVP plan recorded.

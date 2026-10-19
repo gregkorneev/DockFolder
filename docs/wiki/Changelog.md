@@ -5,7 +5,7 @@
 
 ## 2026-10-20 — Full feature implementation and status reconciliation
 
-- Added the categorized, searchable symbol picker, system color picker and preset backgrounds; generated Dock launcher artwork now uses an unmasked square 1024 × 1024 px source image at 2× resolution (512 pt).
+- Added the categorized, searchable symbol picker, system color picker and preset backgrounds; generated Dock launchers now declare a standard multi-resolution `.icns` app icon from a 1024 × 1024 px source, allowing macOS to apply its normal Dock treatment. Tile size and magnification remain controlled by macOS Dock settings.
 - Named generated launcher apps after their folders, preserved UUID routing, handled duplicate names with numeric suffixes, and added rename/collision tests.
 - Animated the popup expanding from and collapsing back to its Dock icon; the transition respects macOS Reduce Motion.
 - Added per-folder label visibility and grid, single-row, and single-column layouts, with named presets that can be selected as the default for future folders.

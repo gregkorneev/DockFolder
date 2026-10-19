@@ -59,6 +59,7 @@ struct FolderLauncherService {
             "CFBundleDevelopmentRegion": "en",
             "CFBundleDisplayName": folder.name,
             "CFBundleExecutable": "launch",
+            "CFBundleIconFile": "AppIcon.icns",
             "CFBundleIdentifier": "com.gregkorneev.DockFolders.launcher.\(folder.id.uuidString.lowercased())",
             "CFBundleInfoDictionaryVersion": "6.0",
             "CFBundleName": folder.name,
@@ -78,7 +79,9 @@ struct FolderLauncherService {
         try FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: executableURL.path)
 
         let icon = makeIcon(symbol: folder.iconName, color: NSColor(hex: folder.colorHex))
-        guard NSWorkspace.shared.setIcon(icon, forFile: appURL.path, options: []) else {
+        try writeBundleIcon(icon, contentsURL: contentsURL)
+        // Remove legacy Finder custom-icon metadata so Dock reads the standard app-bundle icon.
+        guard NSWorkspace.shared.setIcon(nil, forFile: appURL.path, options: []) else {
             throw FolderLauncherError.iconCouldNotBeApplied
         }
         if let oldURL, oldURL != appURL, FileManager.default.fileExists(atPath: oldURL.path) {
@@ -140,6 +143,61 @@ struct FolderLauncherService {
         let image = NSImage(size: bitmap.size)
         image.addRepresentation(bitmap)
         return image
+    }
+
+    private func writeBundleIcon(_ image: NSImage, contentsURL: URL) throws {
+        let resourcesURL = contentsURL.appendingPathComponent("Resources", isDirectory: true)
+        let iconsetURL = resourcesURL.appendingPathComponent("AppIcon.iconset", isDirectory: true)
+        let iconURL = resourcesURL.appendingPathComponent("AppIcon.icns")
+        try FileManager.default.createDirectory(at: iconsetURL, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: iconsetURL) }
+
+        for points in [16, 32, 128, 256, 512] {
+            for scale in [1, 2] {
+                let pixels = points * scale
+                guard let bitmap = NSBitmapImageRep(
+                    bitmapDataPlanes: nil,
+                    pixelsWide: pixels,
+                    pixelsHigh: pixels,
+                    bitsPerSample: 8,
+                    samplesPerPixel: 4,
+                    hasAlpha: true,
+                    isPlanar: false,
+                    colorSpaceName: .deviceRGB,
+                    bytesPerRow: 0,
+                    bitsPerPixel: 0
+                ), let context = NSGraphicsContext(bitmapImageRep: bitmap) else {
+                    throw FolderLauncherError.iconCouldNotBeApplied
+                }
+                bitmap.size = NSSize(width: pixels, height: pixels)
+                NSGraphicsContext.saveGraphicsState()
+                NSGraphicsContext.current = context
+                context.imageInterpolation = .high
+                image.draw(
+                    in: NSRect(x: 0, y: 0, width: pixels, height: pixels),
+                    from: NSRect(origin: .zero, size: image.size),
+                    operation: .copy,
+                    fraction: 1
+                )
+                NSGraphicsContext.restoreGraphicsState()
+
+                guard let png = bitmap.representation(using: .png, properties: [:]) else {
+                    throw FolderLauncherError.iconCouldNotBeApplied
+                }
+                let suffix = scale == 2 ? "@2x" : ""
+                let fileURL = iconsetURL.appendingPathComponent("icon_\(points)x\(points)\(suffix).png")
+                try png.write(to: fileURL, options: .atomic)
+            }
+        }
+
+        let iconutil = Process()
+        iconutil.executableURL = URL(fileURLWithPath: "/usr/bin/iconutil")
+        iconutil.arguments = ["-c", "icns", "-o", iconURL.path, iconsetURL.path]
+        try iconutil.run()
+        iconutil.waitUntilExit()
+        guard iconutil.terminationStatus == 0 else {
+            throw FolderLauncherError.iconCouldNotBeApplied
+        }
     }
 
     private func safeFilename(for name: String) -> String {
