@@ -4,12 +4,13 @@
 
 ## Статус
 
-**NOT READY** для реализации и тестирования приложения: в активном Developer Directory выбран только Xcode Command Line Tools. Команда `xcodebuild` не может работать без полного Xcode. По ТЗ разработка остановлена до выполнения критических требований.
+**PARTIALLY READY**: Xcode 27.1 установлен и выбран активным Developer Directory, но лицензия Xcode ещё не принята. `xcodebuild` и SDK-проверки заблокированы до принятия соглашения. Сборка и тестирование отложены.
 
 ## Проверенное локальное окружение
 
 - macOS 27.0.1 (26A434), Apple Silicon arm64.
-- Command Line Tools 27.0; macOS SDK 27.0.
+- Xcode 27.1 (27A9275) в `/Applications/Xcode.app`; активный Developer Directory — `/Applications/Xcode.app/Contents/Developer`.
+- Command Line Tools 27.0; SDK-проверку через Xcode требуется повторить после принятия лицензии.
 - Apple Swift 6.4.0-dev и SwiftPM 6.4.0-dev.
 - Git 2.54.0, GitHub CLI 2.96.0 (авторизация есть), Homebrew 7.0.9, Codex CLI 0.142.5.
 - Свободно 84 GiB; `/usr/bin/codesign` доступен.
@@ -17,7 +18,7 @@
 
 ## Действие для возобновления
 
-Установить стабильный Xcode 27.1 (не beta) и выбрать его активным Developer Directory. Затем повторить проверку Xcode, SDK и Swift. Установка/обновление не выполнялись в рамках аудита.
+Открыть Xcode, принять лицензионное соглашение и завершить начальную настройку, если система её запросит. После этого повторить проверку Xcode, SDK и Swift. Установка/обновление не выполнялись в рамках аудита.
 
 ## Последняя проверка stable версий
 
