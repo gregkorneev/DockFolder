@@ -120,12 +120,42 @@ final class DockFoldersTests: XCTestCase {
 
         let launcher = try service.createOrUpdate(for: folder)
 
+        XCTAssertEqual(launcher.lastPathComponent, "Code.app")
         let plist = try XCTUnwrap(NSDictionary(contentsOf: launcher.appendingPathComponent("Contents/Info.plist")) as? [String: Any])
         XCTAssertEqual(plist["CFBundleDisplayName"] as? String, "Code")
         XCTAssertEqual(plist["CFBundleIdentifier"] as? String, "com.gregkorneev.DockFolders.launcher.\(id.uuidString.lowercased())")
         let script = try String(contentsOf: launcher.appendingPathComponent("Contents/MacOS/launch"), encoding: .utf8)
         XCTAssertTrue(script.contains(DockFolderLink.url(for: id).absoluteString))
         XCTAssertTrue(FileManager.default.isExecutableFile(atPath: launcher.appendingPathComponent("Contents/MacOS/launch").path))
+    }
+
+    func testLauncherNamesTrackFolderRename() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let folderID = UUID()
+        let service = FolderLauncherService(rootURL: root)
+
+        let first = try service.createOrUpdate(for: DockFolder(id: folderID, name: "Code"))
+        let renamed = try service.createOrUpdate(for: DockFolder(id: folderID, name: "Разработка"))
+
+        XCTAssertEqual(renamed.lastPathComponent, "Разработка.app")
+        XCTAssertFalse(FileManager.default.fileExists(atPath: first.path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: renamed.path))
+    }
+
+    func testDuplicateFolderNamesGetReadableNumberedLauncherNames() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let service = FolderLauncherService(rootURL: root)
+
+        let first = try service.createOrUpdate(for: DockFolder(name: "Work"))
+        let second = try service.createOrUpdate(for: DockFolder(name: "Work"))
+
+        XCTAssertEqual(first.lastPathComponent, "Work.app")
+        XCTAssertEqual(second.lastPathComponent, "Work 2.app")
+        let firstInfo = try XCTUnwrap(NSDictionary(contentsOf: first.appendingPathComponent("Contents/Info.plist")) as? [String: Any])
+        let secondInfo = try XCTUnwrap(NSDictionary(contentsOf: second.appendingPathComponent("Contents/Info.plist")) as? [String: Any])
+        XCTAssertNotEqual(firstInfo["CFBundleIdentifier"] as? String, secondInfo["CFBundleIdentifier"] as? String)
     }
 
     func testStoreCreatesAndReloadsFolder() {

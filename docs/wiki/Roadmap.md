@@ -21,7 +21,7 @@ Status: core implementation includes the requested 0.1, 0.2 and 1.0 feature scop
 - Folder SF Symbol/color customization and folder/app drag ordering.
 - Dock-aware Liquid Glass popup with Escape, focus-loss and successful-launch dismissal.
 - Grid/icon/theme settings, Control–Option–Space hotkey, `SMAppService` login-start integration, and import/export.
-- 16 unit tests pass, including migration, URL validation, launcher bundle, ordering and configuration transfer.
+- 18 unit tests pass, including migration, URL validation, launcher bundle, ordering and configuration transfer.
 
 ## Remaining release validation
 

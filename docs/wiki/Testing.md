@@ -5,7 +5,7 @@
 ## Recorded verification evidence
 
 - macOS scheme build completed successfully with Xcode 27.1 / SDK 27.0.
-- Sixteen unit tests pass, including popup position calculations for bottom, left and right Dock layouts and fallback placement when no Dock inset is reported, as well as migration, URL validation, launcher bundles, ordering, configuration transfer, persistence, discovery and launch errors.
+- Eighteen unit tests pass, including popup position calculations for bottom, left and right Dock layouts and fallback placement when no Dock inset is reported, as well as migration, URL validation, launcher bundles, ordering, configuration transfer, persistence, discovery and launch errors.
 - Manual UI smoke check created a folder, searched for and added Calculator, launched Calculator, and verified folder persistence after relaunch.
 - Manual launcher smoke check opened the generated app through Finder and verified that it selected the Code folder both while DockFolders was running and after a cold start.
 

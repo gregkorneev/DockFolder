@@ -3,9 +3,10 @@
 
 
 ## 2026-10-20 — Full feature implementation and status reconciliation
+- Named generated launcher apps after their folders, preserved UUID routing, handled duplicate names with numeric suffixes, and added rename/collision tests.
 
 - Updated status to reflect generated per-folder launchers, validated URL routing, popup, folder customization/order, settings, hotkey, login-start integration, and import/export.
-- Recorded 13 passing unit tests and the Finder launcher smoke check covering running and cold-start behavior.
+- Recorded 18 passing unit tests and the Finder launcher smoke check covering running and cold-start behavior.
 - Kept multiple display/Dock-edge behavior, accessibility/reduced motion, actual login-start registration, hotkey collisions, Dock pinning on clean install, and signing/notarization/sandbox/distribution explicitly unverified.
 - Documented that Dock pinning is a macOS user action and excluded preference edits/private APIs.
 
