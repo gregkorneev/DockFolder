@@ -29,7 +29,7 @@ struct SettingsView: View {
                     get: { store.settings.gridColumns },
                     set: { value in store.updateSettings { $0.gridColumns = value } }
                 ), in: 0...12) {
-                    Text(store.settings.gridColumns == 0 ? "Grid columns: Automatic" : "Grid columns: \(store.settings.gridColumns)")
+                    Text(verbatim: AppLocalization.gridColumns(store.settings.gridColumns))
                 }
             }
 

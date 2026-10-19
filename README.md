@@ -8,6 +8,7 @@ DockFolders is a native macOS app for organizing installed applications into use
 - Find installed applications and add/remove them from folders.
 - Launch an application from a folder.
 - Save folders and settings locally between launches.
+- Localize the interface and standard application messages in English and Russian; macOS selects the language from its preferred languages.
 - Use a native SwiftUI interface with macOS 27 visual materials.
 - Customize folders with SF Symbols and colors; reorder folders and apps by dragging.
 - Open a Dock-aware Liquid Glass popup, dismissed by Escape, focus loss, or successful app launch.

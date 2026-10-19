@@ -54,7 +54,7 @@ enum ShortcutError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .registrationFailed(let status): "The global shortcut Control–Option–Space could not be registered (\(status)). It may already be in use."
+        case .registrationFailed(let status): AppLocalization.format("The global shortcut Control–Option–Space could not be registered (%d). It may already be in use.", status)
         }
     }
 }

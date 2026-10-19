@@ -11,6 +11,7 @@
 - Added folder SF Symbol/color customization and manual drag ordering for folders and apps.
 - Added Dock-aware Liquid Glass popup behavior, dismissal on Escape/focus loss/successful app launch, and settings for grid/icon size, theme, login startup, and global hotkey.
 - Added configuration import/export.
+- Added English and Russian interface localization, including Russian plural forms for application counts.
 - Added one generated launcher `.app` per folder under `~/Applications/DockFolders`; validated `dockfolders://folder/<UUID>` URLs open the correct folder when DockFolders is running or cold-started.
 - Thirteen unit tests pass, including model migration from the old JSON shape, URL validation, launcher bundle generation, ordering, and configuration transfer.
 - Manual launcher smoke check opened a generated launcher through Finder and verified it opened the Code folder with the main app already running and after cold-start.

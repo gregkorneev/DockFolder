@@ -79,7 +79,7 @@ struct ContentView: View {
         )) {
             Button("OK", role: .cancel) { folderStore.clearError() }
         } message: {
-            Text(verbatim: folderStore.errorMessage ?? "An unexpected error occurred.")
+            Text(verbatim: folderStore.errorMessage ?? NSLocalizedString("An unexpected error occurred.", comment: ""))
         }
         .alert("Dock icon created", isPresented: $showingDockLauncherHelp) {
             Button("OK", role: .cancel) { }
@@ -189,7 +189,7 @@ struct ContentView: View {
                         Text(folder.name)
                             .font(.largeTitle.bold())
                         .foregroundStyle(Color(hex: folder.colorHex))
-                        Text("\(folder.applications.count) apps")
+                        Text(verbatim: AppLocalization.applicationCount(folder.applications.count))
                             .foregroundStyle(.secondary)
                     }
                     Spacer()
@@ -214,7 +214,7 @@ struct ContentView: View {
                                     do {
                                         try await ApplicationLauncherService().launch(application)
                                     } catch {
-                                        folderStore.errorMessage = "Could not open \(application.name). \(error.localizedDescription)"
+                                        folderStore.errorMessage = AppLocalization.format("Could not open %@. %@", application.name, error.localizedDescription)
                                     }
                                 }
                             }
@@ -295,7 +295,7 @@ struct ContentView: View {
 
     private func chooseReplacement(for application: ApplicationItem, in folder: DockFolder) {
         let panel = NSOpenPanel()
-        panel.title = "Find \(application.name)"
+        panel.title = AppLocalization.format("Find %@", application.name)
         panel.allowedContentTypes = [.applicationBundle]
         panel.canChooseDirectories = false
         guard panel.runModal() == .OK, let url = panel.url else { return }
@@ -305,7 +305,7 @@ struct ContentView: View {
     private func deleteFolder(_ folder: DockFolder) {
         if folder.hasDockLauncher {
             do { try FolderLauncherService().remove(for: folder.id) }
-            catch { folderStore.errorMessage = "The folder launcher could not be removed. \(error.localizedDescription)"; return }
+            catch { folderStore.errorMessage = AppLocalization.format("The folder launcher could not be removed. %@", error.localizedDescription); return }
         }
         folderStore.deleteFolder(id: folder.id)
     }
@@ -313,7 +313,7 @@ struct ContentView: View {
     private func openFolderURL(_ url: URL) {
         guard let id = DockFolderLink.folderID(from: url),
               folderStore.folders.contains(where: { $0.id == id }) else {
-            folderStore.errorMessage = "This DockFolders link is invalid or its folder no longer exists."
+                folderStore.errorMessage = NSLocalizedString("This DockFolders link is invalid or its folder no longer exists.", comment: "")
             return
         }
         selectedFolderID = id

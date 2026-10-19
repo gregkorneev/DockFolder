@@ -40,7 +40,7 @@ struct FolderPopupView: View {
                                     try await ApplicationLauncherService().launch(application)
                                     PopupWindowManager.shared.close()
                                 } catch {
-                                    store.errorMessage = "Could not open \(application.name). \(error.localizedDescription)"
+                                    store.errorMessage = AppLocalization.format("Could not open %@. %@", application.name, error.localizedDescription)
                                 }
                             }
                         }

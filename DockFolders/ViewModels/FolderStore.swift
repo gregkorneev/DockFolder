@@ -21,7 +21,7 @@ final class FolderStore {
             folders = []
             settings = AppSettings()
             loadFailed = true
-            errorMessage = "Saved folders could not be read. The existing file was left untouched. \(error.localizedDescription)"
+            errorMessage = AppLocalization.format("Saved folders could not be read. The existing file was left untouched. %@", error.localizedDescription)
         }
     }
 
@@ -85,7 +85,7 @@ final class FolderStore {
             try persistence.save(FolderDocument(folders: folders, settings: nextSettings))
             settings = nextSettings
         } catch {
-            errorMessage = "Settings could not be saved. Your previous settings are still available. \(error.localizedDescription)"
+            errorMessage = AppLocalization.format("Settings could not be saved. Your previous settings are still available. %@", error.localizedDescription)
         }
     }
 
@@ -96,7 +96,7 @@ final class FolderStore {
             folders = document.folders
             settings = document.settings
         } catch {
-            errorMessage = "Configuration could not be imported. Existing data was left unchanged. \(error.localizedDescription)"
+            errorMessage = AppLocalization.format("Configuration could not be imported. Existing data was left unchanged. %@", error.localizedDescription)
         }
     }
 
@@ -151,7 +151,7 @@ final class FolderStore {
             try persistence.save(FolderDocument(folders: updatedFolders, settings: settings))
             folders = updatedFolders
         } catch {
-            errorMessage = "Changes could not be saved. Your previous folders are still available. \(error.localizedDescription)"
+            errorMessage = AppLocalization.format("Changes could not be saved. Your previous folders are still available. %@", error.localizedDescription)
         }
     }
 }

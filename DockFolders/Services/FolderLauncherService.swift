@@ -6,7 +6,7 @@ enum FolderLauncherError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .iconCouldNotBeApplied: "The folder launcher was created, but its custom Dock icon could not be applied."
+        case .iconCouldNotBeApplied: NSLocalizedString("The folder launcher was created, but its custom Dock icon could not be applied.", comment: "")
         }
     }
 }

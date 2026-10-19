@@ -2,6 +2,10 @@
 
 DockFolders is a native macOS application for grouping installed apps into user-defined folders and opening them from macOS Dock launchers.
 
+## Languages
+
+The interface is available in English and Russian. DockFolders follows the preferred language configured in macOS. Russian folder app counts use the correct plural forms.
+
 ## Current status
 
 - **Implemented:** core version 1.0 feature scope: folder CRUD/customization/order, app discovery/search/add/remove/launch/order, Dock-aware popup, generated per-folder launchers, configurable grid/theme, hotkey preference, login-start preference, and import/export.

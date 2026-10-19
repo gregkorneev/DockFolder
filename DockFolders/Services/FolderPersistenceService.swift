@@ -5,7 +5,7 @@ enum FolderPersistenceError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .unsupportedVersion(let version): "Folder data version \(version) is not supported."
+        case .unsupportedVersion(let version): AppLocalization.format("Folder data version %d is not supported.", version)
         }
     }
 }
