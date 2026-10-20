@@ -33,6 +33,7 @@
 
 ## 2026-10-20 — Hover to Open
 
+- Prevented the regular browser window from lingering when a folder launcher cold-starts DockFolders; the URL handler now hides default windows immediately before showing the folder popup.
 - Verified live pointer-to-Dock-item detection on macOS 27 using global mouse movement events and the public Accessibility API.
 - Added optional Click / Hover / Both modes, configurable open/close delays, an Accessibility permission explanation, and event-driven popup control with an adaptive low-frequency fallback.
 - Sized popups to the available display area and folder contents; overflowing layouts adapt to a grid without scrolling app tiles. Added adaptive layout coverage.

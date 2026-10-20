@@ -21,6 +21,11 @@ final class DockIntegrationManager: NSObject, NSApplicationDelegate {
     func application(_ application: NSApplication, open urls: [URL]) {
         guard let folderURL = urls.first(where: { DockFolderLink.folderID(from: $0) != nil }) else { return }
         Self.pendingURL = folderURL
+        // A cold URL launch can briefly show SwiftUI's default WindowGroup before
+        // ContentView receives the route and presents the compact folder panel.
+        for window in application.windows where window.isVisible {
+            window.orderOut(nil)
+        }
         NotificationCenter.default.post(name: Self.folderLinkOpened, object: folderURL)
     }
 
