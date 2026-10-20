@@ -39,7 +39,8 @@ struct FolderLauncherService {
         guard FileManager.default.fileExists(atPath: oldLauncherURL.path)
                 || FileManager.default.fileExists(atPath: oldCurrentLauncherURL.path)
                 || (existingLauncherURL(for: folder.id) != nil
-                    && !FileManager.default.fileExists(atPath: currentLauncher.path)) else { return }
+                    && !FileManager.default.fileExists(atPath: currentLauncher.path))
+                || (folder.hasDockLauncher && bundleVersion(at: currentLauncher) != "2") else { return }
         _ = try createOrUpdate(for: folder)
     }
 
@@ -64,7 +65,7 @@ struct FolderLauncherService {
             "CFBundleInfoDictionaryVersion": "6.0",
             "CFBundleName": folder.name,
             "CFBundlePackageType": "APPL",
-            "CFBundleVersion": "1",
+            "CFBundleVersion": "2",
             "LSUIElement": true
         ]
         let plist = try PropertyListSerialization.data(fromPropertyList: info, format: .xml, options: 0)
@@ -133,7 +134,7 @@ struct FolderLauncherService {
         NSBezierPath(rect: NSRect(x: 0, y: 0, width: pixelSize, height: pixelSize)).fill()
 
         let configuration = NSImage.SymbolConfiguration(pointSize: 560, weight: .medium)
-            .applying(NSImage.SymbolConfiguration(hierarchicalColor: .white))
+            .applying(NSImage.SymbolConfiguration(paletteColors: [.white, .clear]))
         let glyph = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)
             ?? NSImage(systemSymbolName: "folder.fill", accessibilityDescription: nil)
         glyph?.withSymbolConfiguration(configuration)?.draw(in: NSRect(x: 240, y: 240, width: 544, height: 544))
@@ -248,6 +249,11 @@ struct FolderLauncherService {
     private func bundleID(at appURL: URL) -> String? {
         guard let info = NSDictionary(contentsOf: appURL.appendingPathComponent("Contents/Info.plist")) as? [String: Any] else { return nil }
         return info["CFBundleIdentifier"] as? String
+    }
+
+    private func bundleVersion(at appURL: URL) -> String? {
+        guard let info = NSDictionary(contentsOf: appURL.appendingPathComponent("Contents/Info.plist")) as? [String: Any] else { return nil }
+        return info["CFBundleVersion"] as? String
     }
 
     private func bundleIdentifier(for folderID: UUID) -> String {

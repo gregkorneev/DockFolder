@@ -547,6 +547,7 @@ final class DockFoldersTests: XCTestCase {
         let plist = try XCTUnwrap(NSDictionary(contentsOf: launcher.appendingPathComponent("Contents/Info.plist")) as? [String: Any])
         XCTAssertEqual(plist["CFBundleDisplayName"] as? String, "Code")
         XCTAssertEqual(plist["CFBundleIconFile"] as? String, "AppIcon.icns")
+        XCTAssertEqual(plist["CFBundleVersion"] as? String, "2")
         let iconURL = launcher.appendingPathComponent("Contents/Resources/AppIcon.icns")
         XCTAssertTrue(FileManager.default.fileExists(atPath: iconURL.path))
         let icon = try XCTUnwrap(NSImage(contentsOf: iconURL))
@@ -567,6 +568,18 @@ final class DockFoldersTests: XCTestCase {
         XCTAssertEqual(bitmap.pixelsHigh, 1_024)
         XCTAssertEqual(bitmap.size.width, 512)
         XCTAssertEqual(bitmap.size.height, 512)
+    }
+
+    func testGeneratedMacBookIconKeepsScreenTransparent() throws {
+        let image = FolderLauncherService(rootURL: FileManager.default.temporaryDirectory)
+            .makeIcon(symbol: "macbook", color: NSColor(hex: "#DD5851"))
+        let bitmap = try XCTUnwrap(image.representations.compactMap { $0 as? NSBitmapImageRep }.first)
+        let background = try XCTUnwrap(bitmap.colorAt(x: 100, y: 500)?.usingColorSpace(.deviceRGB))
+        let screen = try XCTUnwrap(bitmap.colorAt(x: 512, y: 500)?.usingColorSpace(.deviceRGB))
+
+        XCTAssertEqual(screen.redComponent, background.redComponent, accuracy: 0.02)
+        XCTAssertEqual(screen.greenComponent, background.greenComponent, accuracy: 0.02)
+        XCTAssertEqual(screen.blueComponent, background.blueComponent, accuracy: 0.02)
     }
 
     func testLauncherNamesTrackFolderRename() throws {

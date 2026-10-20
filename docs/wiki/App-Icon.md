@@ -4,4 +4,6 @@ The DockFolders macOS app currently uses the supplied light folder-and-app-grid 
 
 The supplied `AppIcon.icon` document was opened in Icon Composer 27.1 and rejected because its data is not in the expected format. The app target therefore uses the validated asset catalog PNG, not that draft document. The dark preview is not yet configured as an appearance variant.
 
+Per-folder launcher apps use the folder's selected SF Symbol and color in a standard `.icns` bundle icon. Secondary symbol layers are transparent, preserving outlined details such as the `macbook` screen shown in the folder picker.
+
 See the paired [Russian page](App-Icon.ru.md) and the [design source notes](../../Design/DockFolders_IconComposer/README.md).
