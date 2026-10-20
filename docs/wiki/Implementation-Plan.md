@@ -37,7 +37,7 @@ Last reconciled: 2026-10-20 using the current implementation and recorded verifi
 
 ### Distribution
 
-- Beta 2 is prepared as a drag-to-Applications DMG from the current `main` source. The image checksum, mounted contents, arm64 architecture, macOS 27 deployment target, and app code-signature integrity were checked on this host; installation and upgrade were not exercised.
+- Beta 2 is published as a drag-to-Applications DMG from the current `main` source. The image checksum, mounted contents, arm64 architecture, macOS 27 deployment target, and app code-signature integrity were checked on this host; installation and upgrade were not exercised.
 
 - Choose and verify signing/notarization and sandbox policy for the distribution route.
 - Test install/upgrade/uninstall of the packaged main app and generated launchers outside Xcode.
