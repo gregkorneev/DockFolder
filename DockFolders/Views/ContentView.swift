@@ -45,18 +45,6 @@ struct ContentView: View {
         .preferredColorScheme(colorScheme)
         .onAppear {
             if selectedFolderID == nil { selectedFolderID = folderStore.folders.first?.id }
-            migrateLegacyDockLaunchers()
-            DockHoverMonitor.shared.configure(store: folderStore)
-            if let pendingURL = DockIntegrationManager.consumePendingURL() { openFolderURL(pendingURL) }
-            GlobalShortcutService.shared.onShortcut = {
-                guard let firstFolderID = folderStore.folders.first?.id else { return }
-                if PopupWindowManager.shared.isVisible { PopupWindowManager.shared.close() }
-                else { PopupWindowManager.shared.present(folderID: firstFolderID, store: folderStore) }
-            }
-            if folderStore.settings.globalShortcutEnabled { try? GlobalShortcutService.shared.enable() }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: DockIntegrationManager.folderLinkOpened)) { notification in
-            if let url = notification.object as? URL { openFolderURL(url) }
         }
         .onChange(of: folderStore.folders) { _, folders in
             if !folders.contains(where: { $0.id == selectedFolderID }) {
@@ -286,14 +274,6 @@ struct ContentView: View {
         }
     }
 
-    private func migrateLegacyDockLaunchers() {
-        let service = FolderLauncherService()
-        for folder in folderStore.folders where folder.hasDockLauncher {
-            do { try service.migrateLegacyLauncherIfNeeded(for: folder) }
-            catch { folderStore.errorMessage = error.localizedDescription }
-        }
-    }
-
     private func renameSelectedFolder() {
         guard let selectedFolderID else { return }
         folderStore.renameFolder(id: selectedFolderID, to: renamedFolder)
@@ -323,15 +303,7 @@ struct ContentView: View {
         folderStore.deleteFolder(id: folder.id)
     }
 
-    private func openFolderURL(_ url: URL) {
-        guard let id = DockFolderLink.folderID(from: url),
-              folderStore.folders.contains(where: { $0.id == id }) else {
-                folderStore.errorMessage = NSLocalizedString("This DockFolders link is invalid or its folder no longer exists.", comment: "")
-            return
-        }
-        selectedFolderID = id
-        PopupWindowManager.shared.present(folderID: id, store: folderStore)
-    }
+
 }
 
 private struct FolderAppearanceSheet: View {

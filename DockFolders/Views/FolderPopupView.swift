@@ -114,18 +114,6 @@ struct FolderPopupView: View {
         .accessibilityLabel(application.name)
     }
 
-    private func layoutChoices(for folder: DockFolder) -> [FolderLayoutPreset] {
-        var choices = store.settings.layoutPresets.filter { $0.fits(folder.applications.count) }
-        let requiredSide = max(2, Int(ceil(sqrt(Double(folder.applications.count)))))
-        for side in requiredSide...(requiredSide + 2) where !choices.contains(where: { !$0.isSingleRow && !$0.isSingleColumn && $0.columns == side }) {
-            choices.append(.dynamicGrid(side: side, showsAppLabels: folder.layoutPreset.showsAppLabels))
-        }
-        return choices.sorted { lhs, rhs in
-            if lhs.isSingleRow || lhs.isSingleColumn { return false }
-            if rhs.isSingleRow || rhs.isSingleColumn { return true }
-            return lhs.columns < rhs.columns
-        }
-    }
 }
 
 private struct FolderLayoutOptions: View {
@@ -140,7 +128,7 @@ private struct FolderLayoutOptions: View {
                 Picker("Folder layout", selection: Binding(
                     get: { folder.layoutPreset.id },
                     set: { id in
-                        guard let preset = store.settings.layoutPresets.first(where: { $0.id == id }) else { return }
+                        guard let preset = layoutChoices(for: folder).first(where: { $0.id == id }) else { return }
                         store.setLayoutPreset(preset, for: folderID)
                     }
                 )) {
@@ -178,15 +166,10 @@ private struct FolderLayoutOptions: View {
     }
 
     private func layoutChoices(for folder: DockFolder) -> [FolderLayoutPreset] {
-        var choices = store.settings.layoutPresets.filter { $0.fits(folder.applications.count) }
-        let requiredSide = max(2, Int(ceil(sqrt(Double(folder.applications.count)))))
-        for side in requiredSide...(requiredSide + 2) where !choices.contains(where: { !$0.isSingleRow && !$0.isSingleColumn && $0.columns == side }) {
-            choices.append(.dynamicGrid(side: side, showsAppLabels: folder.layoutPreset.showsAppLabels))
-        }
-        return choices.sorted { lhs, rhs in
-            if lhs.isSingleRow || lhs.isSingleColumn { return false }
-            if rhs.isSingleRow || rhs.isSingleColumn { return true }
-            return lhs.columns < rhs.columns
-        }
+        FolderLayoutPreset.availableChoices(
+            applicationCount: folder.applications.count,
+            presets: store.settings.layoutPresets,
+            showsAppLabels: folder.layoutPreset.showsAppLabels
+        )
     }
 }

@@ -93,24 +93,46 @@ struct FolderLayoutPreset: Codable, Hashable, Identifiable, Sendable {
     }
 
     func fits(_ applicationCount: Int) -> Bool {
-        isSingleRow || isSingleColumn || columns >= max(2, Int(ceil(sqrt(Double(applicationCount)))))
+        isSingleRow || isSingleColumn || columns >= max(1, Int(ceil(sqrt(Double(applicationCount)))))
     }
 
     func fitting(_ applicationCount: Int) -> Self {
         guard !fits(applicationCount) else { return self }
-        let side = max(2, Int(ceil(sqrt(Double(applicationCount)))))
+        let side = max(1, Int(ceil(sqrt(Double(applicationCount)))))
         return Self.dynamicGrid(side: side, showsAppLabels: showsAppLabels)
     }
 
     static func dynamicGrid(side: Int, showsAppLabels: Bool) -> Self {
-        let size = min(max(side, 2), 64)
+        let size = min(max(side, 1), 64)
         return FolderLayoutPreset(id: "dynamic-grid-\(size)", name: "\(size) × \(size)", columns: size, showsAppLabels: showsAppLabels)
+    }
+
+    static func availableChoices(applicationCount: Int, presets: [Self], showsAppLabels: Bool) -> [Self] {
+        let requiredSide = max(1, Int(ceil(sqrt(Double(applicationCount)))))
+        let maximumSide = requiredSide <= 10 ? 10 : min(requiredSide + 2, 64)
+        let fittingPresets = presets.filter { $0.fits(applicationCount) }
+        var squaresBySide: [Int: Self] = [:]
+        for preset in fittingPresets where !preset.isSingleRow && !preset.isSingleColumn && preset.columns <= maximumSide {
+            squaresBySide[preset.columns] = preset
+        }
+
+        if requiredSide <= maximumSide {
+            for side in requiredSide...maximumSide where squaresBySide[side] == nil {
+                squaresBySide[side] = .dynamicGrid(side: side, showsAppLabels: showsAppLabels)
+            }
+        }
+
+        let squares = squaresBySide.keys.sorted().compactMap { squaresBySide[$0] }
+        let specialLayouts = fittingPresets
+            .filter { $0.isSingleRow || $0.isSingleColumn }
+            .sorted { $0.isSingleRow && $1.isSingleColumn }
+        return squares + specialLayouts
     }
 
     init(id: String = UUID().uuidString, name: String, columns: Int, showsAppLabels: Bool = true) {
         self.id = id
         self.name = name
-        self.columns = columns == Self.rowColumns || columns == Self.columnColumns ? columns : min(max(columns, 2), 64)
+        self.columns = columns == Self.rowColumns || columns == Self.columnColumns ? columns : min(max(columns, 1), 64)
         self.showsAppLabels = showsAppLabels
     }
 

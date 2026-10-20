@@ -1,17 +1,41 @@
 import AppKit
+import SwiftUI
 
 @MainActor
 final class DockIntegrationManager: NSObject, NSApplicationDelegate {
-    static var pendingURL: URL?
-    static let folderLinkOpened = Notification.Name("DockFolders.folderLinkOpened")
+    var folderStore = FolderStore()
+    private(set) var mainWindow: NSWindow?
+
+    func applicationWillFinishLaunching(_ notification: Notification) {
+        let service = FolderLauncherService()
+        for folder in folderStore.folders where folder.hasDockLauncher {
+            do { try service.migrateLegacyLauncherIfNeeded(for: folder) }
+            catch { folderStore.errorMessage = error.localizedDescription }
+        }
+        DockHoverMonitor.shared.configure(store: folderStore)
+        GlobalShortcutService.shared.onShortcut = { [weak self] in
+            guard let self, let firstFolderID = folderStore.folders.first?.id else { return }
+            if PopupWindowManager.shared.isVisible { PopupWindowManager.shared.close() }
+            else { PopupWindowManager.shared.present(folderID: firstFolderID, store: folderStore) }
+        }
+        if folderStore.settings.globalShortcutEnabled {
+            do { try GlobalShortcutService.shared.enable() }
+            catch { folderStore.errorMessage = error.localizedDescription }
+        }
+    }
+
+    func applicationShouldOpenUntitledFile(_ sender: NSApplication) -> Bool {
+        true
+    }
+
+    func applicationOpenUntitledFile(_ sender: NSApplication) -> Bool {
+        showMainWindow()
+        return true
+    }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool {
-        if hasVisibleWindows {
-            sender.windows.first(where: \.isVisible)?.makeKeyAndOrderFront(nil)
-            sender.activate()
-            return false
-        }
-        return true
+        showMainWindow()
+        return false
     }
 
     func applicationDidResignActive(_ notification: Notification) {
@@ -19,18 +43,37 @@ final class DockIntegrationManager: NSObject, NSApplicationDelegate {
     }
 
     func application(_ application: NSApplication, open urls: [URL]) {
-        guard let folderURL = urls.first(where: { DockFolderLink.folderID(from: $0) != nil }) else { return }
-        Self.pendingURL = folderURL
-        // A cold URL launch can briefly show SwiftUI's default WindowGroup before
-        // ContentView receives the route and presents the compact folder panel.
-        for window in application.windows where window.isVisible {
-            window.orderOut(nil)
+        guard let id = urls.compactMap({ DockFolderLink.folderID(from: $0) }).first,
+              folderStore.folders.contains(where: { $0.id == id }) else {
+            folderStore.errorMessage = NSLocalizedString("This DockFolders link is invalid or its folder no longer exists.", comment: "")
+            showMainWindow()
+            return
         }
-        NotificationCenter.default.post(name: Self.folderLinkOpened, object: folderURL)
+        PopupWindowManager.shared.present(folderID: id, store: folderStore)
+        if folderStore.errorMessage != nil { showMainWindow() }
     }
 
-    static func consumePendingURL() -> URL? {
-        defer { pendingURL = nil }
-        return pendingURL
+    private func showMainWindow() {
+        PopupWindowManager.shared.close(animated: false)
+        if mainWindow == nil {
+            // Keep window creation explicit: URL launches must never show the manager first.
+            let window = NSWindow(
+                contentRect: NSRect(x: 0, y: 0, width: 900, height: 600),
+                styleMask: [.titled, .closable, .miniaturizable, .resizable],
+                backing: .buffered,
+                defer: false
+            )
+            window.title = "DockFolders"
+            window.isReleasedWhenClosed = false
+            window.contentView = NSHostingView(rootView: ContentView()
+                .environment(folderStore)
+                .frame(minWidth: 760, minHeight: 520))
+            window.contentMinSize = NSSize(width: 760, height: 520)
+            window.center()
+            mainWindow = window
+        }
+        mainWindow?.deminiaturize(nil)
+        mainWindow?.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
     }
 }

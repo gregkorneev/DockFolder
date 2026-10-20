@@ -5,6 +5,67 @@ import XCTest
 
 @MainActor
 final class DockFoldersTests: XCTestCase {
+    func testFolderLinkOpensPopupWithoutCreatingMainWindow() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer {
+            PopupWindowManager.shared.close(animated: false)
+            try? FileManager.default.removeItem(at: directory)
+        }
+        let delegate = DockIntegrationManager()
+        delegate.folderStore = FolderStore(persistence: FolderPersistenceService(fileURL: directory.appendingPathComponent("folders.json")))
+        delegate.folderStore.createFolder(named: "Route test")
+        let folder = try XCTUnwrap(delegate.folderStore.folders.first)
+
+        delegate.application(NSApp, open: [DockFolderLink.url(for: folder.id)])
+
+        XCTAssertNil(delegate.mainWindow)
+        XCTAssertTrue(PopupWindowManager.shared.isVisible)
+        XCTAssertNil(delegate.folderStore.errorMessage)
+    }
+
+    func testOrdinaryOpenAndReopenReuseMainWindowEvenWithPopupVisible() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let delegate = DockIntegrationManager()
+        defer {
+            delegate.mainWindow?.close()
+            PopupWindowManager.shared.close(animated: false)
+            try? FileManager.default.removeItem(at: directory)
+        }
+        delegate.folderStore = FolderStore(persistence: FolderPersistenceService(fileURL: directory.appendingPathComponent("folders.json")))
+        delegate.folderStore.createFolder(named: "Route test")
+        let folder = try XCTUnwrap(delegate.folderStore.folders.first)
+        XCTAssertTrue(delegate.applicationOpenUntitledFile(NSApp))
+        let window = try XCTUnwrap(delegate.mainWindow)
+        XCTAssertTrue(window.isVisible)
+
+        delegate.application(NSApp, open: [DockFolderLink.url(for: folder.id)])
+        XCTAssertFalse(window.isVisible)
+        XCTAssertFalse(delegate.applicationShouldHandleReopen(NSApp, hasVisibleWindows: true))
+        XCTAssertTrue(delegate.mainWindow === window)
+        XCTAssertTrue(window.isVisible)
+        XCTAssertFalse(PopupWindowManager.shared.isVisible)
+
+        window.close()
+        XCTAssertFalse(delegate.applicationShouldHandleReopen(NSApp, hasVisibleWindows: false))
+        XCTAssertTrue(delegate.mainWindow === window)
+        XCTAssertTrue(window.isVisible)
+    }
+
+    func testMissingFolderLinkShowsErrorInMainWindow() {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let delegate = DockIntegrationManager()
+        defer {
+            delegate.mainWindow?.close()
+            try? FileManager.default.removeItem(at: directory)
+        }
+        delegate.folderStore = FolderStore(persistence: FolderPersistenceService(fileURL: directory.appendingPathComponent("folders.json")))
+
+        delegate.application(NSApp, open: [DockFolderLink.url(for: UUID())])
+
+        XCTAssertNotNil(delegate.folderStore.errorMessage)
+        XCTAssertEqual(delegate.mainWindow?.isVisible, true)
+    }
+
     func testSystemSymbolCatalogContainsSF7NamesAndAppleDeviceSymbols() throws {
         let symbols = try SystemSymbolCatalog.load()
 
@@ -100,15 +161,43 @@ final class DockFoldersTests: XCTestCase {
     }
 
     func testFolderLayoutPresetsOnlyFitWhenTheyHaveEnoughGridCells() {
+        let oneByOne = FolderLayoutPreset.dynamicGrid(side: 1, showsAppLabels: true)
         let twoByTwo = FolderLayoutPreset.dynamicGrid(side: 2, showsAppLabels: true)
         let threeByThree = FolderLayoutPreset.defaults[1]
         let fourByFour = FolderLayoutPreset.defaults[0]
 
+        XCTAssertTrue(oneByOne.fits(1))
+        XCTAssertFalse(oneByOne.fits(2))
         XCTAssertTrue(twoByTwo.fits(4))
         XCTAssertFalse(twoByTwo.fits(5))
         XCTAssertFalse(threeByThree.fits(10))
         XCTAssertTrue(fourByFour.fits(10))
         XCTAssertEqual(fourByFour.fitting(17).columns, 5)
+    }
+
+    func testAvailableFolderLayoutsShowOnlyGridsWithEnoughCellsAndScalePastTen() {
+        func squareColumns(for count: Int) -> [Int] {
+            FolderLayoutPreset.availableChoices(
+                applicationCount: count,
+                presets: FolderLayoutPreset.defaults,
+                showsAppLabels: true
+            )
+            .filter { !$0.isSingleRow && !$0.isSingleColumn }
+            .map(\.columns)
+        }
+
+        XCTAssertEqual(squareColumns(for: 1), Array(1...10))
+        XCTAssertEqual(squareColumns(for: 5), Array(3...10))
+        XCTAssertEqual(squareColumns(for: 11), Array(4...10))
+        XCTAssertEqual(squareColumns(for: 101), Array(11...13))
+
+        let fiveApps = FolderLayoutPreset.availableChoices(
+            applicationCount: 5,
+            presets: FolderLayoutPreset.defaults,
+            showsAppLabels: true
+        )
+        XCTAssertTrue(fiveApps.contains(where: \.isSingleRow))
+        XCTAssertTrue(fiveApps.contains(where: \.isSingleColumn))
     }
 
     func testPopupLayoutSizesSingleColumnToItsContentsAndAvoidsScrollCapacityCaps() {
