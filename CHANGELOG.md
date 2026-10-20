@@ -5,6 +5,8 @@
 
 ## Unreleased — feature-complete implementation; release validation outstanding
 
+- Fixed the main-window flash when opening folder launchers by routing URLs independently of the browser and creating its AppKit window only for ordinary app launches, explicit reopens, or errors. Added lifecycle regression tests; visual cold-start validation remains outstanding.
+
 - Added per-folder icon size, grid columns, and glass transparency controls inside the Folder Layout popover; each folder now keeps its own display settings instead of inheriting app-wide values.
 - Expanded dynamic square layouts from 1 × 1 through 10 × 10, showing only sizes that fit every app in the folder; folders over 100 apps also get larger fitting grids.
 - Fixed selected folder text contrast in the sidebar for light and dark appearances.

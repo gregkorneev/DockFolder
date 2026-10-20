@@ -16,6 +16,12 @@ final class DockFoldersTests: XCTestCase {
         delegate.folderStore.createFolder(named: "Route test")
         let folder = try XCTUnwrap(delegate.folderStore.folders.first)
 
+        delegate.applicationDidFinishLaunching(Notification(
+            name: NSApplication.didFinishLaunchingNotification,
+            object: NSApp,
+            userInfo: [NSApplication.launchIsDefaultUserInfoKey: false]
+        ))
+        XCTAssertNil(delegate.mainWindow)
         delegate.application(NSApp, open: [DockFolderLink.url(for: folder.id)])
 
         XCTAssertNil(delegate.mainWindow)
@@ -34,7 +40,11 @@ final class DockFoldersTests: XCTestCase {
         delegate.folderStore = FolderStore(persistence: FolderPersistenceService(fileURL: directory.appendingPathComponent("folders.json")))
         delegate.folderStore.createFolder(named: "Route test")
         let folder = try XCTUnwrap(delegate.folderStore.folders.first)
-        XCTAssertTrue(delegate.applicationOpenUntitledFile(NSApp))
+        delegate.applicationDidFinishLaunching(Notification(
+            name: NSApplication.didFinishLaunchingNotification,
+            object: NSApp,
+            userInfo: [NSApplication.launchIsDefaultUserInfoKey: true]
+        ))
         let window = try XCTUnwrap(delegate.mainWindow)
         XCTAssertTrue(window.isVisible)
 

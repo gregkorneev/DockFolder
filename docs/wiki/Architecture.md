@@ -4,6 +4,8 @@
 
 ## Current implementation
 
+- **Window lifecycle:** `DockIntegrationManager` owns the shared store, startup services, URL routing and the main AppKit window. Folder URLs open the popup without constructing the browser. SwiftUI supplies a Settings scene instead of an automatic main `WindowGroup`; the browser is shown for default launches, explicit app reopens, and errors.
+
 - **Platform:** macOS 27.0+, Apple Silicon, Swift 6, Xcode 27.1 / SDK 27.
 - **App shape:** main foreground application plus a generated app bundle named after each folder under `/Applications/DockFolders` (a numeric suffix resolves duplicate names). Renaming updates the bundle name while preserving its validated `dockfolders://folder/<UUID>` route. The user, not DockFolders, pins each launcher in Dock.
 - **UI:** SwiftUI owns folder management/settings and app-grid state. AppKit `NSPanel` provides a Dock-aware popup which dismisses on Escape, focus loss, and successful app launch. AppKit also handles the lifecycle and app launching.
@@ -27,7 +29,7 @@
 
 ## Main components
 
-- `DockFoldersApp`: app entry and reopen lifecycle.
+- `DockFoldersApp`: app entry and Settings scene; the delegate owns window creation and reopen handling.
 - `Models`: folder and application-entry values.
 - `ViewModels`: observable folder state and application search.
 - `Views`: folder list, folder contents, app picker/grid, popup, and settings surfaces.

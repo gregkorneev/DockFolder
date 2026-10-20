@@ -302,8 +302,6 @@ struct ContentView: View {
         }
         folderStore.deleteFolder(id: folder.id)
     }
-
-
 }
 
 private struct FolderAppearanceSheet: View {

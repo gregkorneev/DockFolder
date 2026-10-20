@@ -6,7 +6,7 @@ This page describes the delivered implementation and remaining verification gaps
 
 ## Implemented
 
-- `DockFoldersApp`: creates the app and injects folder/settings state.
+- `DockFoldersApp`: creates the app and Settings scene. `DockIntegrationManager` owns the shared folder/settings state, startup services, URL handling and explicit main-window creation.
 - `DockFolder` and `ApplicationItem`: Codable folder and app values with customization and ordering metadata.
 - `FolderStore`: main-actor state, folder/app CRUD and reorder operations, persistence, migration, and surfaced errors.
 - `FolderPersistenceService`: versioned JSON document in Application Support, atomic writes, guarded unsupported/corrupt-data handling.

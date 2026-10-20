@@ -24,13 +24,10 @@ final class DockIntegrationManager: NSObject, NSApplicationDelegate {
         }
     }
 
-    func applicationShouldOpenUntitledFile(_ sender: NSApplication) -> Bool {
-        true
-    }
-
-    func applicationOpenUntitledFile(_ sender: NSApplication) -> Bool {
-        showMainWindow()
-        return true
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        if notification.userInfo?[NSApplication.launchIsDefaultUserInfoKey] as? Bool == true {
+            showMainWindow()
+        }
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool {
