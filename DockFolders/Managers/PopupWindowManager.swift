@@ -7,23 +7,42 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
     static let shared = PopupWindowManager()
 
     private var panel: NSPanel?
+    private var hostingView: NSHostingView<AnyView>?
     private var dockAnchor = NSPoint.zero
+    private(set) var isHoverPresentation = false
+    var panelFrame: NSRect? { panel?.frame }
     private var escapeMonitor: Any?
     private var deactivationObserver: NSObjectProtocol?
 
     var isVisible: Bool { panel?.isVisible == true }
 
-    func present(folderID: UUID, store: FolderStore) {
+    func present(folderID: UUID, store: FolderStore, source: Source = .click, anchor: NSPoint? = nil) {
         guard let folder = store.folders.first(where: { $0.id == folderID }) else { return }
+        let anchor = anchor ?? NSEvent.mouseLocation
+        if source == .hover, let panel, let hostingView {
+            dockAnchor = anchor
+            panel.title = folder.name
+            let colorScheme: ColorScheme? = switch store.settings.appearance {
+            case .system: nil
+            case .light: .light
+            case .dark: .dark
+            }
+            hostingView.rootView = AnyView(FolderPopupView(store: store, folderID: folderID).preferredColorScheme(colorScheme))
+            let size = popupSize(for: folder)
+            let frame = NSRect(origin: origin(for: size, anchor: anchor), size: size)
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = 0.12
+                panel.animator().setFrame(frame, display: true)
+            }
+            isHoverPresentation = true
+            return
+        }
         close(animated: false)
-        let anchor = NSEvent.mouseLocation
         dockAnchor = anchor
-        let preset = folder.layoutPreset
-        let columns = preset.gridColumns(for: folder.applications.count)
-        let rows = max(1, Int(ceil(Double(folder.applications.count) / Double(columns))))
-        let width: CGFloat = preset.isSingleColumn ? 170 : (preset.isSingleRow ? 370 : min(900, max(250, CGFloat(columns) * 84 + 36)))
-        let rowHeight = preset.showsAppLabels ? 88 : 68
-        let height: CGFloat = preset.isSingleRow ? 160 : min(max(162, CGFloat(74 + min(rows, 5) * rowHeight)), 500)
+        isHoverPresentation = source == .hover
+        let size = popupSize(for: folder)
+        let width = size.width
+        let height = size.height
         let panel = FolderPopupPanel(
             contentRect: NSRect(origin: .zero, size: NSSize(width: width, height: height)),
             styleMask: [.titled, .fullSizeContentView],
@@ -47,7 +66,8 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
         case .light: .light
         case .dark: .dark
         }
-        let content = NSHostingView(rootView: FolderPopupView(store: store, folderID: folderID).preferredColorScheme(colorScheme))
+        let content = NSHostingView(rootView: AnyView(FolderPopupView(store: store, folderID: folderID).preferredColorScheme(colorScheme)))
+        hostingView = content
         content.frame = NSRect(origin: .zero, size: panel.contentView?.bounds.size ?? NSSize(width: width, height: height))
         let animatedContent = NSView(frame: content.frame)
         animatedContent.wantsLayer = true
@@ -97,6 +117,8 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
         }
         guard let panel else { return }
         self.panel = nil
+        hostingView = nil
+        isHoverPresentation = false
         panel.delegate = nil
         guard animated, !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion,
               let content = panel.contentView, let layer = content.layer else {
@@ -126,7 +148,19 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
     }
 
     func windowDidResignKey(_ notification: Notification) {
-        close()
+        if !isHoverPresentation { close() }
+    }
+
+    enum Source { case click, hover }
+
+    private func popupSize(for folder: DockFolder) -> NSSize {
+        let preset = folder.layoutPreset
+        let columns = preset.gridColumns(for: folder.applications.count)
+        let rows = max(1, Int(ceil(Double(folder.applications.count) / Double(columns))))
+        let width: CGFloat = preset.isSingleColumn ? 170 : (preset.isSingleRow ? 370 : min(900, max(250, CGFloat(columns) * 84 + 36)))
+        let rowHeight = preset.showsAppLabels ? 88 : 68
+        let height: CGFloat = preset.isSingleRow ? 160 : min(max(162, CGFloat(74 + min(rows, 5) * rowHeight)), 500)
+        return NSSize(width: width, height: height)
     }
 
     private func origin(for size: NSSize, anchor: NSPoint) -> NSPoint {

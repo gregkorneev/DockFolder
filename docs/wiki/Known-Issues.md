@@ -25,3 +25,6 @@ The user must pin generated launchers to Dock using standard macOS UI. The proje
 - Packaged lifecycle for generated per-user launchers and stale Dock shortcuts.
 
 Track resolved issues in the changelog and move enduring constraints to [Decisions](Decisions.md).
+
+- Hover detection was confirmed by a live prototype on one macOS 27 setup, but the integrated popup's entry/exit behavior and permission-denied fallback have not been manually exercised.
+- Accessibility coordinate mapping across multiple displays, Dock movement/restart, magnification, auto-hide and fullscreen apps remain unverified.

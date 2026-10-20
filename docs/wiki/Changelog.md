@@ -18,3 +18,10 @@
 - Documented that Dock pinning is a macOS user action and excluded preference edits/private APIs.
 
 For implementation history, see the root [CHANGELOG.md](../../CHANGELOG.md).
+
+## 2026-10-20 — Hover to Open prototype and integration
+
+- Confirmed on macOS 27 that global pointer-movement events plus the public Dock Accessibility hit-test identify the pinned Code launcher without a click.
+- Added opt-in Click / Hover / Both opening modes, persisted configurable delays (180 ms open and 250 ms close by default), and a permission explanation requesting only Accessibility.
+- Added an event-driven Dock hover monitor, folder UUID matching via generated launcher bundle identifiers, pointer transfer grace for the popup, neighbor switching without panel replacement, and an adaptive fallback when event monitors cannot be registered.
+- Integrated hover behavior with the existing popup and kept click-only as the default. Panel interaction and alternate Dock/display configurations still require manual verification.

@@ -1,4 +1,5 @@
 import AppKit
+import ApplicationServices
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -10,6 +11,7 @@ struct SettingsView: View {
     @State private var draftPresetName = ""
     @State private var draftColumns = 4
     @State private var draftShowsAppLabels = true
+    @State private var showingAccessibilityAlert = false
 
     var body: some View {
         Form {
@@ -67,6 +69,35 @@ struct SettingsView: View {
                 .disabled(draftPresetName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
 
+            Section("Hover to Open") {
+                Picker("Open folders", selection: Binding(
+                    get: { store.settings.hoverSettings.mode },
+                    set: { mode in
+                        store.updateSettings { $0.hoverSettings.mode = mode }
+                        DockHoverMonitor.shared.settingsDidChange(store: store)
+                        if mode.enablesHover { requestAccessibilityIfNeeded() }
+                    }
+                )) {
+                    Text("On click").tag(DockFolderOpeningMode.click)
+                    Text("On hover").tag(DockFolderOpeningMode.hover)
+                    Text("On click and hover").tag(DockFolderOpeningMode.both)
+                }
+                Stepper(value: Binding(
+                    get: { store.settings.hoverSettings.openDelayMilliseconds },
+                    set: { value in store.updateSettings { $0.hoverSettings.openDelayMilliseconds = value } }
+                ), in: 80...1_000, step: 20) {
+                    Text(verbatim: AppLocalization.format("Open delay: %d ms", store.settings.hoverSettings.openDelayMilliseconds))
+                }
+                Stepper(value: Binding(
+                    get: { store.settings.hoverSettings.closeDelayMilliseconds },
+                    set: { value in store.updateSettings { $0.hoverSettings.closeDelayMilliseconds = value } }
+                ), in: 80...1_000, step: 20) {
+                    Text(verbatim: AppLocalization.format("Close delay: %d ms", store.settings.hoverSettings.closeDelayMilliseconds))
+                }
+                Text("Hover opening requires Accessibility access so DockFolders can identify its launcher under the pointer. Click opening works without it.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+
             Section("Startup") {
                 Toggle("Launch DockFolders at login", isOn: Binding(
                     get: { LaunchAtLoginService().isEnabled },
@@ -114,7 +145,17 @@ struct SettingsView: View {
         }
         .formStyle(.grouped)
         .padding(18)
-        .frame(width: 480, height: 650)
+        .frame(width: 480, height: 760)
+        .alert("Accessibility access needed", isPresented: $showingAccessibilityAlert) {
+            Button("Open System Settings") {
+                if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
+                    NSWorkspace.shared.open(url)
+                }
+            }
+            Button("Later", role: .cancel) { }
+        } message: {
+            Text("Allow DockFolders in System Settings → Privacy & Security → Accessibility, then restart DockFolders. The app needs this permission to identify its Dock icon under the pointer. No screen recording or input monitoring permission is used.")
+        }
     }
 
     private func exportConfiguration() {
@@ -126,6 +167,13 @@ struct SettingsView: View {
             try ConfigurationTransferService().export(FolderDocument(folders: store.folders, settings: store.settings), to: url)
             transferError = nil
         } catch { transferError = error.localizedDescription }
+    }
+
+    private func requestAccessibilityIfNeeded() {
+        guard !AXIsProcessTrusted() else { return }
+        let options = ["AXTrustedCheckOptionPrompt": true] as CFDictionary
+        _ = AXIsProcessTrustedWithOptions(options)
+        showingAccessibilityAlert = true
     }
 
     private func importConfiguration() {

@@ -5,7 +5,7 @@
 ## Recorded verification evidence
 
 - macOS scheme build completed successfully with Xcode 27.1 / SDK 27.0.
-- Twenty-two unit tests pass, including dynamic grid capacity and automatic growth, an assertion that generated launcher artwork is a square 1024 × 1024 px bitmap at 2× resolution (512 pt), popup position calculations for all Dock edges and the popup's collapse transform targeting its Dock anchor, migration, URL validation, launcher bundles, ordering, configuration transfer, persistence, discovery and launch errors.
+- Twenty-four unit tests pass, including dynamic grid capacity and automatic growth, an assertion that generated launcher artwork is a square 1024 × 1024 px bitmap at 2× resolution (512 pt), popup position calculations for all Dock edges and the popup's collapse transform targeting its Dock anchor, migration, URL validation, launcher bundles, ordering, configuration transfer, persistence, discovery and launch errors.
 - Manual UI smoke check created a folder, searched for and added Calculator, launched Calculator, and verified folder persistence after relaunch.
 - Manual launcher smoke check opened the generated app through Finder and verified that it selected the Code folder both while DockFolders was running and after a cold start.
 
@@ -22,3 +22,9 @@ Actual popup placement, animation and clipping on multiple physical displays, al
 - Release: signing/notarization, selected sandbox policy, packaged clean install/upgrade/uninstall.
 
 Run only checks that the environment supports; record manual setup and observed outcome. A passing build alone is not acceptance evidence for window behavior or distribution.
+
+## Hover verification
+
+The live macOS 27 prototype observed NSEvent.mouseMoved and matched the pointer to the pinned Code.app Accessibility Dock item and its /Applications/DockFolders/Code.app URL without a click. Hover popup entry/exit, neighboring-folder switching, pointer transfer into the popup, and permission-denied behavior have not yet been manually exercised in the built application. Multiple displays, Dock movement/restart, auto-hide, magnification and fullscreen behavior remain unverified.
+
+A 20-second Xcode Instruments Activity Monitor trace was captured while Hover was selected but Accessibility permission was denied. Samples after startup showed 0.0% CPU and about 79 MiB physical footprint. This records the idle app with hover detection disabled; it does not measure active hover behavior or energy while moving over Dock.

@@ -29,3 +29,9 @@
 - Twenty-two unit tests pass, including dynamic grid capacity and automatic growth, model migration, URL validation, launcher bundle generation, ordering, and configuration transfer.
 - Manual launcher smoke check opened a generated launcher through Finder and verified it opened the Code folder with the main app already running and after cold-start.
 - Still unverified: visual animation behavior across multiple displays and all Dock edges, accessibility, actual login-start registration, hotkey collision behavior, signing/notarization/sandbox/distribution, and manual pinning by users on a clean install.
+
+## 2026-10-20 — Hover to Open
+
+- Verified live pointer-to-Dock-item detection on macOS 27 using global mouse movement events and the public Accessibility API.
+- Added optional Click / Hover / Both modes, configurable open/close delays, an Accessibility permission explanation, and event-driven popup control with an adaptive low-frequency fallback.
+- Kept click opening as the default; full popup interaction and alternate display/Dock configurations still require manual validation.
