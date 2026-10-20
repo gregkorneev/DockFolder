@@ -20,7 +20,7 @@ DockFolders generates one launcher app per folder under `/Applications/DockFolde
 
 Each generated bundle declares its launcher artwork through `CFBundleIconFile` and contains a multi-resolution `.icns` resource generated from the 1024 × 1024 px design. This lets macOS present it as a normal application icon and apply the system's Dock treatment. There is no per-icon Dock size setting exposed to applications: macOS controls tile size and pointer magnification through Desktop & Dock settings ([Apple Support: Change Desktop & Dock settings](https://support.apple.com/en-ie/guide/mac-help/mchlp1119/27/mac/27)).
 
-When a launcher URL cold-starts DockFolders, the application delegate immediately hides any visible default `WindowGroup` windows before forwarding the URL to the folder popup. This avoids leaving the full folder browser on screen while the compact panel opens. Launching DockFolders itself still opens the regular browser.
+When a launcher URL cold-starts DockFolders, the regular `WindowGroup` disables stale window restoration, and the application delegate immediately hides any visible default windows before forwarding the URL to the folder popup. This prevents the full folder browser from appearing while the compact panel opens. Launching DockFolders itself still opens the regular browser.
 
 ### User setup
 

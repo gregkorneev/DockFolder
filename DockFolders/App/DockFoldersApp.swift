@@ -12,5 +12,6 @@ struct DockFoldersApp: App {
                 .frame(minWidth: 760, minHeight: 520)
         }
         .windowStyle(.automatic)
+        .restorationBehavior(.disabled)
     }
 }
