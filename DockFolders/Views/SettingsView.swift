@@ -12,6 +12,7 @@ struct SettingsView: View {
     @State private var draftColumns = 4
     @State private var draftShowsAppLabels = true
     @State private var showingAccessibilityAlert = false
+    @State private var accessibilityGranted = false
 
     var body: some View {
         Form {
@@ -63,6 +64,7 @@ struct SettingsView: View {
                     set: { mode in
                         store.updateSettings { $0.hoverSettings.mode = mode }
                         DockHoverMonitor.shared.settingsDidChange(store: store)
+                        accessibilityGranted = AXIsProcessTrusted()
                         if mode.enablesHover { requestAccessibilityIfNeeded() }
                     }
                 )) {
@@ -84,6 +86,13 @@ struct SettingsView: View {
                 }
                 Text("Hover opening requires Accessibility access so DockFolders can identify its launcher under the pointer. Click opening works without it.")
                     .font(.caption).foregroundStyle(.secondary)
+                if store.settings.hoverSettings.mode.enablesHover {
+                    Text(accessibilityGranted ? "Accessibility access granted" : "Accessibility access is not active for this build")
+                        .foregroundStyle(accessibilityGranted ? Color.secondary : Color.red)
+                    if !accessibilityGranted {
+                        Button("Open Accessibility Settings") { requestAccessibilityIfNeeded() }
+                    }
+                }
             }
 
             Section("Startup") {
@@ -134,6 +143,10 @@ struct SettingsView: View {
         .formStyle(.grouped)
         .padding(18)
         .frame(width: 480, height: 760)
+        .onAppear { accessibilityGranted = AXIsProcessTrusted() }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            accessibilityGranted = AXIsProcessTrusted()
+        }
         .alert("Accessibility access needed", isPresented: $showingAccessibilityAlert) {
             Button("Open System Settings") {
                 if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
@@ -142,7 +155,7 @@ struct SettingsView: View {
             }
             Button("Later", role: .cancel) { }
         } message: {
-            Text("Allow DockFolders in System Settings → Privacy & Security → Accessibility, then restart DockFolders. The app needs this permission to identify its Dock icon under the pointer. No screen recording or input monitoring permission is used.")
+            Text("Allow this DockFolders build in System Settings → Privacy & Security → Accessibility. If DockFolders is already enabled, remove its old entry and add the current app again. Then return to DockFolders.")
         }
     }
 
@@ -161,6 +174,7 @@ struct SettingsView: View {
         guard !AXIsProcessTrusted() else { return }
         let options = ["AXTrustedCheckOptionPrompt": true] as CFDictionary
         _ = AXIsProcessTrustedWithOptions(options)
+        accessibilityGranted = AXIsProcessTrusted()
         showingAccessibilityAlert = true
     }
 

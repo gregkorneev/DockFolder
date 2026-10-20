@@ -5,6 +5,8 @@
 
 ## Unreleased — feature-complete implementation; release validation outstanding
 
+- Show the actual Accessibility trust status for the current build in Hover settings and retry monitoring after permission becomes active. Rebuilding the ad-hoc-signed app may require reauthorizing that build.
+
 - Fixed hover opening when the Dock appears beneath a stationary pointer: an adaptive timer now rechecks the Dock item even when a global mouse monitor is installed.
 
 - Preserved the original folder-data load error when a stale or invalid launcher URL is opened, so the recovery problem remains visible.

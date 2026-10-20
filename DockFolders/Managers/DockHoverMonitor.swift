@@ -14,6 +14,7 @@ final class DockHoverMonitor {
     private var localMouseMonitor: Any?
     private var activationObserver: NSObjectProtocol?
     private var fallbackTimer: Timer?
+    private var permissionTimer: Timer?
     private var fallbackInterval: TimeInterval = 0.8
     private var dockProcessID: pid_t = 0
     private var dockElement: AXUIElement?
@@ -38,10 +39,17 @@ final class DockHoverMonitor {
                 }
             }
         }
-        guard store.settings.hoverSettings.mode.enablesHover, AXIsProcessTrusted() else {
+        guard store.settings.hoverSettings.mode.enablesHover else {
             stopMonitoring()
             return
         }
+        guard AXIsProcessTrusted() else {
+            stopMonitoring()
+            startPermissionRetry()
+            return
+        }
+        permissionTimer?.invalidate()
+        permissionTimer = nil
         if globalMouseMonitor == nil {
             globalMouseMonitor = NSEvent.addGlobalMonitorForEvents(matching: .mouseMoved) { [weak self] _ in
                 Task { @MainActor in self?.inspectPointer() }
@@ -68,6 +76,8 @@ final class DockHoverMonitor {
         localMouseMonitor = nil
         fallbackTimer?.invalidate()
         fallbackTimer = nil
+        permissionTimer?.invalidate()
+        permissionTimer = nil
         dockElement = nil
         dockProcessID = 0
         candidateFolderID = nil
@@ -77,6 +87,16 @@ final class DockHoverMonitor {
         closeTask = nil
         if PopupWindowManager.shared.isVisible, PopupWindowManager.shared.isHoverPresentation {
             PopupWindowManager.shared.close()
+        }
+    }
+
+    private func startPermissionRetry() {
+        guard permissionTimer == nil else { return }
+        permissionTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                guard let self, let store = self.store, AXIsProcessTrusted() else { return }
+                self.configure(store: store)
+            }
         }
     }
 

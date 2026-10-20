@@ -123,7 +123,10 @@
 "Open delay: %d ms" = "Задержка открытия: %d мс";
 "Close delay: %d ms" = "Задержка закрытия: %d мс";
 "Hover opening requires Accessibility access so DockFolders can identify its launcher under the pointer. Click opening works without it." = "Для открытия наведением требуется разрешение «Универсальный доступ»: оно позволяет DockFolders определить свой ярлык под курсором. Открытие нажатием работает и без него.";
+"Accessibility access granted" = "Доступ к «Универсальному доступу» разрешён";
+"Accessibility access is not active for this build" = "Для этой сборки доступ к «Универсальному доступу» не действует";
+"Open Accessibility Settings" = "Открыть настройки «Универсального доступа»";
 "Accessibility access needed" = "Нужно разрешение «Универсальный доступ»";
 "Open System Settings" = "Открыть системные настройки";
 "Later" = "Позже";
-"Allow DockFolders in System Settings → Privacy & Security → Accessibility, then return to DockFolders. It needs this permission to identify its Dock icon under the pointer. No screen recording or input monitoring permission is used." = "Разрешите DockFolders доступ в «Системные настройки» → «Конфиденциальность и безопасность» → «Универсальный доступ», затем вернитесь в DockFolders. Это нужно, чтобы определять значок приложения под курсором. Запись экрана и мониторинг ввода не запрашиваются.";
+"Allow this DockFolders build in System Settings → Privacy & Security → Accessibility. If DockFolders is already enabled, remove its old entry and add the current app again. Then return to DockFolders." = "Разрешите этой сборке DockFolders доступ в «Системные настройки» → «Конфиденциальность и безопасность» → «Универсальный доступ». Если DockFolders уже включён, удалите старую запись и добавьте текущее приложение заново. Затем вернитесь в DockFolders.";
