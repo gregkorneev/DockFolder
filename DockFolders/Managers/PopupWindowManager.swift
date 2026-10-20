@@ -270,34 +270,43 @@ enum DockPopupLayout {
         let outerWidth: CGFloat = 28
         let outerHeight: CGFloat = 84
         let minimumWidth: CGFloat = 360
-        let columnSpacing: CGFloat = 12
-        let rowSpacing: CGFloat = 12
         let availableWidth = max(1, availableSize.width)
         let availableHeight = max(72, availableSize.height)
         if let requestedRows = preset.rows {
             let requestedIconSize = min(max(preferredIconSize, 24), 128)
-            let widthFitIconSize = (availableWidth - outerWidth - CGFloat(preset.columns - 1) * columnSpacing) / CGFloat(preset.columns) - 16
-            let maximumIconSize = max(1, min(requestedIconSize, widthFitIconSize))
-            let iconSize: CGFloat
-            if customGridHeight(rows: requestedRows, iconSize: maximumIconSize, showsLabels: labels, rowSpacing: rowSpacing, outerHeight: outerHeight) <= availableHeight {
-                iconSize = maximumIconSize
-            } else {
-                var lowerBound: CGFloat = 1
-                var upperBound = maximumIconSize
-                for _ in 0..<20 {
-                    let candidate = (lowerBound + upperBound) / 2
-                    let candidateHeight = customGridHeight(rows: requestedRows, iconSize: candidate, showsLabels: labels, rowSpacing: rowSpacing, outerHeight: outerHeight)
-                    if candidateHeight <= availableHeight {
-                        lowerBound = candidate
-                    } else {
-                        upperBound = candidate
-                    }
+            var lowerBound: CGFloat = 1
+            var upperBound = requestedIconSize
+            for _ in 0..<24 {
+                let candidate = (lowerBound + upperBound) / 2
+                if customGridFits(
+                    rows: requestedRows,
+                    columns: preset.columns,
+                    iconSize: candidate,
+                    showsLabels: labels,
+                    availableWidth: availableWidth,
+                    availableHeight: availableHeight,
+                    outerWidth: outerWidth,
+                    outerHeight: outerHeight
+                ) {
+                    lowerBound = candidate
+                } else {
+                    upperBound = candidate
                 }
-                iconSize = lowerBound
             }
+            let iconSize = customGridFits(
+                rows: requestedRows,
+                columns: preset.columns,
+                iconSize: requestedIconSize,
+                showsLabels: labels,
+                availableWidth: availableWidth,
+                availableHeight: availableHeight,
+                outerWidth: outerWidth,
+                outerHeight: outerHeight
+            ) ? requestedIconSize : lowerBound
+            let gridSpacing = spacing(for: iconSize)
             let cellWidth = iconSize + 16
-            let contentWidth = outerWidth + CGFloat(preset.columns) * cellWidth + CGFloat(preset.columns - 1) * columnSpacing
-            let contentHeight = customGridHeight(rows: requestedRows, iconSize: iconSize, showsLabels: labels, rowSpacing: rowSpacing, outerHeight: outerHeight)
+            let contentWidth = outerWidth + CGFloat(preset.columns) * cellWidth + CGFloat(preset.columns - 1) * gridSpacing
+            let contentHeight = customGridHeight(rows: requestedRows, iconSize: iconSize, showsLabels: labels, rowSpacing: gridSpacing, outerHeight: outerHeight)
             return Result(
                 columns: preset.columns,
                 iconSize: iconSize,
@@ -310,22 +319,28 @@ enum DockPopupLayout {
         let startIconSize = min(max(preferredIconSize, 24), 128)
 
         for iconSize in stride(from: startIconSize, through: CGFloat(24), by: -2) {
+            let gridSpacing = spacing(for: iconSize)
             let cellWidth = iconSize + 16
-            let maxColumns = max(1, min(count, Int((availableWidth - outerWidth + columnSpacing) / (cellWidth + columnSpacing))))
+            let maxColumns = max(1, min(count, Int((availableWidth - outerWidth + gridSpacing) / (cellWidth + gridSpacing))))
             let rowHeight = iconSize + (labels ? 37 : 0)
-            let maxRows = max(1, Int((availableHeight - outerHeight + rowSpacing) / (rowHeight + rowSpacing)))
+            let maxRows = max(1, Int((availableHeight - outerHeight + gridSpacing) / (rowHeight + gridSpacing)))
             let minimumColumns = max(1, Int(ceil(Double(count) / Double(maxRows))))
             let columns = min(maxColumns, max(min(max(targetColumns, 1), maxColumns), minimumColumns))
             let rows = Int(ceil(Double(count) / Double(columns)))
-            let width = min(availableWidth, max(minimumWidth, outerWidth + CGFloat(columns) * cellWidth + CGFloat(max(0, columns - 1)) * columnSpacing))
-            let height = outerHeight + CGFloat(rows) * rowHeight + CGFloat(max(0, rows - 1)) * rowSpacing
+            let width = min(availableWidth, max(minimumWidth, outerWidth + CGFloat(columns) * cellWidth + CGFloat(max(0, columns - 1)) * gridSpacing))
+            let height = outerHeight + CGFloat(rows) * rowHeight + CGFloat(max(0, rows - 1)) * gridSpacing
             if width <= availableWidth, height <= availableHeight {
                 return Result(columns: columns, iconSize: iconSize, size: NSSize(width: width, height: height))
             }
         }
 
-        let columns = max(1, min(count, Int((availableWidth - outerWidth + columnSpacing) / (40 + columnSpacing))))
+        let fallbackSpacing = spacing(for: 24)
+        let columns = max(1, min(count, Int((availableWidth - outerWidth + fallbackSpacing) / (40 + fallbackSpacing))))
         return Result(columns: columns, iconSize: 24, size: NSSize(width: availableWidth, height: availableHeight))
+    }
+
+    static func spacing(for iconSize: CGFloat) -> CGFloat {
+        min(12, max(4, iconSize * 12 / 68))
     }
 
     static func labelFontSize(for iconSize: CGFloat) -> CGFloat {
@@ -344,6 +359,22 @@ enum DockPopupLayout {
         let labelHeight = showsLabels ? labelHeight(for: iconSize) : 0
         let labelSpacing = showsLabels ? labelSpacing(for: iconSize) : 0
         return outerHeight + CGFloat(rows) * (iconSize + labelHeight + labelSpacing) + CGFloat(rows - 1) * rowSpacing
+    }
+
+    private static func customGridFits(
+        rows: Int,
+        columns: Int,
+        iconSize: CGFloat,
+        showsLabels: Bool,
+        availableWidth: CGFloat,
+        availableHeight: CGFloat,
+        outerWidth: CGFloat,
+        outerHeight: CGFloat
+    ) -> Bool {
+        let gridSpacing = spacing(for: iconSize)
+        let contentWidth = outerWidth + CGFloat(columns) * (iconSize + 16) + CGFloat(columns - 1) * gridSpacing
+        let contentHeight = customGridHeight(rows: rows, iconSize: iconSize, showsLabels: showsLabels, rowSpacing: gridSpacing, outerHeight: outerHeight)
+        return contentWidth <= availableWidth && contentHeight <= availableHeight
     }
 }
 

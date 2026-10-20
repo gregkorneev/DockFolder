@@ -330,6 +330,13 @@ final class DockFoldersTests: XCTestCase {
         XCTAssertEqual(result.columns, 2)
     }
 
+    func testGridSpacingShrinksWithIconSize() {
+        XCTAssertEqual(DockPopupLayout.spacing(for: 68), 12, accuracy: 0.001)
+        XCTAssertEqual(DockPopupLayout.spacing(for: 34), 6, accuracy: 0.001)
+        XCTAssertLessThan(DockPopupLayout.spacing(for: 24), DockPopupLayout.spacing(for: 34))
+        XCTAssertEqual(DockPopupLayout.spacing(for: 10), 4, accuracy: 0.001)
+    }
+
     func testCustomGridKeepsIndependentRowsAndColumnsAndScrollsOverflow() throws {
         let preset = FolderLayoutPreset.customGrid(rows: 2, columns: 3, showsAppLabels: true)
         let folder = DockFolder(name: "Code", applications: (1...8).map {

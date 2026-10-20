@@ -67,6 +67,7 @@ struct FolderPopupView: View {
                 let visibleApplications = folder.applications.filter {
                     searchText.isEmpty || $0.name.localizedCaseInsensitiveContains(searchText)
                 }
+                let gridSpacing = DockPopupLayout.spacing(for: iconSize)
                 if visibleApplications.isEmpty {
                     Text("No matching apps")
                         .font(.caption)
@@ -74,7 +75,7 @@ struct FolderPopupView: View {
                         .frame(maxWidth: .infinity, minHeight: 44)
                 } else {
                     if let rows = preset.rows {
-                        let grid = LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: preset.columns), spacing: 12) {
+                        let grid = LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: gridSpacing), count: preset.columns), spacing: gridSpacing) {
                             ForEach(visibleApplications) { application in
                                 applicationButton(application, showsLabel: preset.showsAppLabels)
                             }
@@ -90,7 +91,7 @@ struct FolderPopupView: View {
                         }
                     } else {
                         let activeColumns = folder.gridColumns > 0 ? min(folder.gridColumns, visibleApplications.count) : columns
-                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: max(activeColumns, 1)), spacing: 12) {
+                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: gridSpacing), count: max(activeColumns, 1)), spacing: gridSpacing) {
                             ForEach(visibleApplications) { application in
                                 applicationButton(application, showsLabel: preset.showsAppLabels)
                             }
