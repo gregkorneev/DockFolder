@@ -39,6 +39,13 @@ final class FolderStore {
         }
     }
 
+    func updateFolderLayout(_ folderID: UUID, change: (inout DockFolder) -> Void) {
+        update { folders in
+            guard let index = folders.firstIndex(where: { $0.id == folderID }) else { return }
+            change(&folders[index])
+        }
+    }
+
     func renameFolder(id: UUID, to name: String) {
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedName.isEmpty else { return }

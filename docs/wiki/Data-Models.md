@@ -4,7 +4,7 @@
 
 ## Current persisted shape
 
-`DockFolder` stores a UUID, name, SF Symbol, color and order, a snapshot of its layout preset, plus an ordered array of `ApplicationItem`. `ApplicationItem` stores a UUID, display name, filesystem path, and optional bundle identifier. User settings persist named layout presets and the default for new folders, grid/icon size, theme, login-start preference and global hotkey preference. JSON is versioned and written atomically under Application Support. Framework image objects are resolved at runtime and are not serialized.
+`DockFolder` stores a UUID, name, SF Symbol, color and order, its layout preset, grid columns, icon size, glass transparency, plus an ordered array of `ApplicationItem`. `ApplicationItem` stores a UUID, display name, filesystem path, and optional bundle identifier. App settings persist named layout presets and the default for new folders, theme, login-start preference and global hotkey preference. JSON is versioned and written atomically under Application Support. Framework image objects are resolved at runtime and are not serialized.
 
 ## Migration, preferences, and transfer
 

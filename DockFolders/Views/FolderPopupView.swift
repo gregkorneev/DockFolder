@@ -7,6 +7,7 @@ struct FolderPopupView: View {
     let columns: Int
     let iconSize: CGFloat
     @State private var searchText = ""
+    @State private var showingLayoutOptions = false
 
     private var folder: DockFolder? { store.folders.first(where: { $0.id == folderID }) }
 
@@ -27,33 +28,21 @@ struct FolderPopupView: View {
                         .padding(.vertical, 5)
                         .background(.quaternary, in: Capsule())
                     Spacer(minLength: 8)
-                    Menu {
-                        Picker("Folder layout", selection: Binding(
-                            get: { folder.layoutPreset.id },
-                            set: { id in
-                                guard let preset = store.settings.layoutPresets.first(where: { $0.id == id }) else { return }
-                                store.setLayoutPreset(preset, for: folderID)
-                            }
-                        )) {
-                            ForEach(layoutChoices(for: folder)) { preset in
-                                Text(AppLocalization.layoutPresetName(preset)).tag(preset.id)
-                            }
-                        }
-                        Toggle("Show app names", isOn: Binding(
-                            get: { folder.layoutPreset.showsAppLabels },
-                            set: { show in
-                                var preset = folder.layoutPreset
-                                preset.showsAppLabels = show
-                                store.setLayoutPreset(preset, for: folderID)
-                            }
-                        ))
+                    Button {
+                        showingLayoutOptions.toggle()
                     } label: {
                         Image(systemName: "rectangle.grid.2x2")
                             .font(.system(size: 13))
                             .foregroundStyle(.secondary)
                     }
-                    .menuStyle(.borderlessButton)
+                    .buttonStyle(.plain)
                     .accessibilityLabel("Folder layout options")
+                    .popover(isPresented: $showingLayoutOptions, arrowEdge: .top) {
+                        FolderLayoutOptions(store: store, folderID: folderID)
+                    }
+                    .onChange(of: showingLayoutOptions) { _, isPresented in
+                        PopupWindowManager.shared.layoutOptionsDidChange(isPresented: isPresented)
+                    }
                     Button { PopupWindowManager.shared.close() } label: {
                         Image(systemName: "xmark.circle.fill")
                             .font(.system(size: 14))
@@ -74,7 +63,8 @@ struct FolderPopupView: View {
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, minHeight: 44)
                 } else {
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: columns), spacing: 12) {
+                    let activeColumns = folder.gridColumns > 0 ? min(folder.gridColumns, visibleApplications.count) : columns
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: max(activeColumns, 1)), spacing: 12) {
                         ForEach(visibleApplications) { application in
                             applicationButton(application, showsLabel: preset.showsAppLabels)
                         }
@@ -85,7 +75,7 @@ struct FolderPopupView: View {
         .padding(14)
         .background {
             RoundedRectangle(cornerRadius: 22)
-                .fill(Color(nsColor: NSColor.windowBackgroundColor).opacity((1 - store.settings.glassTransparency) * 0.7))
+                .fill(Color(nsColor: NSColor.windowBackgroundColor).opacity((1 - (folder?.glassTransparency ?? 0.55)) * 0.7))
         }
         .glassEffect(.clear, in: RoundedRectangle(cornerRadius: 22))
         .onExitCommand { PopupWindowManager.shared.close() }
@@ -107,7 +97,7 @@ struct FolderPopupView: View {
                 Image(nsImage: NSWorkspace.shared.icon(forFile: application.path))
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: iconSize, height: iconSize)
+                    .frame(width: min(iconSize, CGFloat(folder?.iconSize ?? 68)), height: min(iconSize, CGFloat(folder?.iconSize ?? 68)))
                 if showsLabel {
                     Text(application.name)
                         .font(.system(size: 11))
@@ -122,6 +112,69 @@ struct FolderPopupView: View {
         .buttonStyle(.plain)
         .help(AppLocalization.format("Open %@", application.name))
         .accessibilityLabel(application.name)
+    }
+
+    private func layoutChoices(for folder: DockFolder) -> [FolderLayoutPreset] {
+        var choices = store.settings.layoutPresets.filter { $0.fits(folder.applications.count) }
+        let requiredSide = max(2, Int(ceil(sqrt(Double(folder.applications.count)))))
+        for side in requiredSide...(requiredSide + 2) where !choices.contains(where: { !$0.isSingleRow && !$0.isSingleColumn && $0.columns == side }) {
+            choices.append(.dynamicGrid(side: side, showsAppLabels: folder.layoutPreset.showsAppLabels))
+        }
+        return choices.sorted { lhs, rhs in
+            if lhs.isSingleRow || lhs.isSingleColumn { return false }
+            if rhs.isSingleRow || rhs.isSingleColumn { return true }
+            return lhs.columns < rhs.columns
+        }
+    }
+}
+
+private struct FolderLayoutOptions: View {
+    @Bindable var store: FolderStore
+    let folderID: UUID
+
+    private var folder: DockFolder? { store.folders.first(where: { $0.id == folderID }) }
+
+    var body: some View {
+        if let folder {
+            Form {
+                Picker("Folder layout", selection: Binding(
+                    get: { folder.layoutPreset.id },
+                    set: { id in
+                        guard let preset = store.settings.layoutPresets.first(where: { $0.id == id }) else { return }
+                        store.setLayoutPreset(preset, for: folderID)
+                    }
+                )) {
+                    ForEach(layoutChoices(for: folder)) { preset in
+                        Text(AppLocalization.layoutPresetName(preset)).tag(preset.id)
+                    }
+                }
+                Toggle("Show app names", isOn: Binding(
+                    get: { folder.layoutPreset.showsAppLabels },
+                    set: { show in store.updateFolderLayout(folderID) { $0.layoutPreset.showsAppLabels = show } }
+                ))
+                Slider(value: Binding(
+                    get: { folder.iconSize },
+                    set: { value in store.updateFolderLayout(folderID) { $0.iconSize = value } }
+                ), in: 36...128, step: 4) {
+                    Text("App icon size")
+                } minimumValueLabel: { Text("Small") } maximumValueLabel: { Text("Large") }
+                Stepper(value: Binding(
+                    get: { folder.gridColumns },
+                    set: { value in store.updateFolderLayout(folderID) { $0.gridColumns = value } }
+                ), in: 0...12) {
+                    Text(verbatim: AppLocalization.gridColumns(folder.gridColumns))
+                }
+                Slider(value: Binding(
+                    get: { folder.glassTransparency },
+                    set: { value in store.updateFolderLayout(folderID) { $0.glassTransparency = value } }
+                ), in: 0...1, step: 0.05) {
+                    Text("Glass transparency")
+                } minimumValueLabel: { Text("Matte") } maximumValueLabel: { Text("Clear") }
+            }
+            .formStyle(.grouped)
+            .padding(12)
+            .frame(width: 360)
+        }
     }
 
     private func layoutChoices(for folder: DockFolder) -> [FolderLayoutPreset] {

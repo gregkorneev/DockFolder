@@ -28,9 +28,9 @@ struct ContentView: View {
         }
     }
 
-    private var applicationGridColumns: [GridItem] {
-        if folderStore.settings.gridColumns > 0 {
-            return Array(repeating: GridItem(.flexible(), spacing: 18), count: folderStore.settings.gridColumns)
+    private func applicationGridColumns(for folder: DockFolder) -> [GridItem] {
+        if folder.gridColumns > 0 {
+            return Array(repeating: GridItem(.flexible(), spacing: 18), count: folder.gridColumns)
         }
         return [GridItem(.adaptive(minimum: 112), spacing: 18)]
     }
@@ -209,9 +209,9 @@ struct ContentView: View {
                     ContentUnavailableView("This folder is empty", systemImage: "square.grid.2x2", description: Text("Add applications to keep them together."))
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
-                    LazyVGrid(columns: applicationGridColumns, spacing: 18) {
+                    LazyVGrid(columns: applicationGridColumns(for: folder), spacing: 18) {
                         ForEach(filteredApplications(in: folder)) { application in
-                            ApplicationTile(application: application, iconSize: CGFloat(folderStore.settings.iconSize), onDrop: { id in
+                            ApplicationTile(application: application, iconSize: CGFloat(folder.iconSize), glassTransparency: folder.glassTransparency, onDrop: { id in
                                 guard searchText.isEmpty else { return }
                                 folderStore.moveApplication(id: id, before: application.id, in: folder.id)
                             }) {
@@ -460,9 +460,9 @@ private extension Color {
 }
 
 struct ApplicationTile: View {
-    @Environment(FolderStore.self) private var store
     let application: ApplicationItem
     var iconSize: CGFloat = 56
+    var glassTransparency: Double = 0.55
     var onDrop: (UUID) -> Void = { _ in }
     let action: () -> Void
 
@@ -491,7 +491,7 @@ struct ApplicationTile: View {
         .buttonStyle(.plain)
         .background {
             RoundedRectangle(cornerRadius: 18)
-                .fill(Color(nsColor: NSColor.windowBackgroundColor).opacity((1 - store.settings.glassTransparency) * 0.7))
+                .fill(Color(nsColor: NSColor.windowBackgroundColor).opacity((1 - glassTransparency) * 0.7))
         }
         .glassEffect(.clear, in: RoundedRectangle(cornerRadius: 18))
         .draggable(application.id.uuidString)

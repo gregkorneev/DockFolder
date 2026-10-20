@@ -1,21 +1,15 @@
 import Foundation
 
 struct AppSettings: Codable, Hashable, Sendable {
-    var iconSize: Double
-    var gridColumns: Int
     var appearance: AppearanceMode
-    var glassTransparency: Double
     var launchAtLogin: Bool
     var globalShortcutEnabled: Bool
     var layoutPresets: [FolderLayoutPreset]
     var defaultLayoutPresetID: String
     var hoverSettings: HoverSettings
 
-    init(iconSize: Double = 68, gridColumns: Int = 0, appearance: AppearanceMode = .system, glassTransparency: Double = 0.55, launchAtLogin: Bool = false, globalShortcutEnabled: Bool = false, layoutPresets: [FolderLayoutPreset] = FolderLayoutPreset.defaults, defaultLayoutPresetID: String = FolderLayoutPreset.defaultID, hoverSettings: HoverSettings = HoverSettings()) {
-        self.iconSize = min(max(iconSize, 36), 128)
-        self.gridColumns = min(max(gridColumns, 0), 12)
+    init(appearance: AppearanceMode = .system, launchAtLogin: Bool = false, globalShortcutEnabled: Bool = false, layoutPresets: [FolderLayoutPreset] = FolderLayoutPreset.defaults, defaultLayoutPresetID: String = FolderLayoutPreset.defaultID, hoverSettings: HoverSettings = HoverSettings()) {
         self.appearance = appearance
-        self.glassTransparency = min(max(glassTransparency, 0), 1)
         self.launchAtLogin = launchAtLogin
         self.globalShortcutEnabled = globalShortcutEnabled
         let presets = layoutPresets.isEmpty ? FolderLayoutPreset.defaults : layoutPresets
@@ -24,16 +18,13 @@ struct AppSettings: Codable, Hashable, Sendable {
         self.hoverSettings = hoverSettings
     }
 
-    private enum CodingKeys: String, CodingKey { case iconSize, gridColumns, appearance, glassTransparency, launchAtLogin, globalShortcutEnabled, layoutPresets, defaultLayoutPresetID, hoverSettings }
+    private enum CodingKeys: String, CodingKey { case appearance, launchAtLogin, globalShortcutEnabled, layoutPresets, defaultLayoutPresetID, hoverSettings }
 
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         let presets = try values.decodeIfPresent([FolderLayoutPreset].self, forKey: .layoutPresets) ?? FolderLayoutPreset.defaults
         self.init(
-            iconSize: try values.decodeIfPresent(Double.self, forKey: .iconSize) ?? 68,
-            gridColumns: try values.decodeIfPresent(Int.self, forKey: .gridColumns) ?? 0,
             appearance: try values.decodeIfPresent(AppearanceMode.self, forKey: .appearance) ?? .system,
-            glassTransparency: try values.decodeIfPresent(Double.self, forKey: .glassTransparency) ?? 0.55,
             launchAtLogin: try values.decodeIfPresent(Bool.self, forKey: .launchAtLogin) ?? false,
             globalShortcutEnabled: try values.decodeIfPresent(Bool.self, forKey: .globalShortcutEnabled) ?? false,
             layoutPresets: presets,

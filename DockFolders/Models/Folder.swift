@@ -8,8 +8,11 @@ struct DockFolder: Codable, Hashable, Identifiable, Sendable {
     var colorHex: String
     var hasDockLauncher: Bool
     var layoutPreset: FolderLayoutPreset
+    var iconSize: Double
+    var gridColumns: Int
+    var glassTransparency: Double
 
-    init(id: UUID = UUID(), name: String, applications: [ApplicationItem] = [], iconName: String = "folder.fill", colorHex: String = "#0A84FF", hasDockLauncher: Bool = false, layoutPreset: FolderLayoutPreset = FolderLayoutPreset.defaults[0]) {
+    init(id: UUID = UUID(), name: String, applications: [ApplicationItem] = [], iconName: String = "folder.fill", colorHex: String = "#0A84FF", hasDockLauncher: Bool = false, layoutPreset: FolderLayoutPreset = FolderLayoutPreset.defaults[0], iconSize: Double = 68, gridColumns: Int = 0, glassTransparency: Double = 0.55) {
         self.id = id
         self.name = name
         self.applications = applications
@@ -17,9 +20,12 @@ struct DockFolder: Codable, Hashable, Identifiable, Sendable {
         self.colorHex = colorHex
         self.hasDockLauncher = hasDockLauncher
         self.layoutPreset = layoutPreset.fitting(applications.count)
+        self.iconSize = min(max(iconSize, 36), 128)
+        self.gridColumns = min(max(gridColumns, 0), 12)
+        self.glassTransparency = min(max(glassTransparency, 0), 1)
     }
 
-    private enum CodingKeys: String, CodingKey { case id, name, applications, iconName, colorHex, hasDockLauncher, layoutPreset }
+    private enum CodingKeys: String, CodingKey { case id, name, applications, iconName, colorHex, hasDockLauncher, layoutPreset, iconSize, gridColumns, glassTransparency }
 
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
@@ -31,6 +37,9 @@ struct DockFolder: Codable, Hashable, Identifiable, Sendable {
         hasDockLauncher = try values.decodeIfPresent(Bool.self, forKey: .hasDockLauncher) ?? false
         let decodedPreset = try values.decodeIfPresent(FolderLayoutPreset.self, forKey: .layoutPreset) ?? FolderLayoutPreset.defaults[0]
         layoutPreset = decodedPreset.fitting(applications.count)
+        iconSize = min(max(try values.decodeIfPresent(Double.self, forKey: .iconSize) ?? 68, 36), 128)
+        gridColumns = min(max(try values.decodeIfPresent(Int.self, forKey: .gridColumns) ?? 0, 0), 12)
+        glassTransparency = min(max(try values.decodeIfPresent(Double.self, forKey: .glassTransparency) ?? 0.55, 0), 1)
     }
 }
 

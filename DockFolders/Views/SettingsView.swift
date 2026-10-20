@@ -24,24 +24,6 @@ struct SettingsView: View {
                     Text("Light").tag(AppearanceMode.light)
                     Text("Dark").tag(AppearanceMode.dark)
                 }
-                Slider(value: Binding(
-                    get: { store.settings.glassTransparency },
-                    set: { value in store.updateSettings { $0.glassTransparency = value } }
-                ), in: 0...1, step: 0.05) {
-                    Text("Glass transparency")
-                } minimumValueLabel: { Text("Matte") } maximumValueLabel: { Text("Clear") }
-                Slider(value: Binding(
-                    get: { store.settings.iconSize },
-                    set: { value in store.updateSettings { $0.iconSize = value } }
-                ), in: 36...128, step: 4) {
-                    Text("App icon size")
-                } minimumValueLabel: { Text("Small") } maximumValueLabel: { Text("Large") }
-                Stepper(value: Binding(
-                    get: { store.settings.gridColumns },
-                    set: { value in store.updateSettings { $0.gridColumns = value } }
-                ), in: 0...12) {
-                    Text(verbatim: AppLocalization.gridColumns(store.settings.gridColumns))
-                }
             }
 
             Section("Folder layout presets") {

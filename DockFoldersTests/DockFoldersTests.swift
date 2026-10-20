@@ -45,15 +45,20 @@ final class DockFoldersTests: XCTestCase {
         XCTAssertEqual(settings.closeDelayMilliseconds, 1_000)
     }
 
-    func testGlassTransparencyDefaultsAndPersistsWithinRange() throws {
-        let oldSettings = try JSONDecoder().decode(AppSettings.self, from: Data("{}".utf8))
-        XCTAssertEqual(oldSettings.glassTransparency, 0.55)
+    func testFolderLayoutAppearanceSettingsAreIndependentAndPersisted() throws {
+        let folder = DockFolder(name: "Photo", iconSize: 92, gridColumns: 5, glassTransparency: 0.8)
+        let otherFolder = DockFolder(name: "Work")
+        let decoded = try JSONDecoder().decode(DockFolder.self, from: JSONEncoder().encode(folder))
 
-        let settings = AppSettings(glassTransparency: 0.8)
-        let decoded = try JSONDecoder().decode(AppSettings.self, from: JSONEncoder().encode(settings))
+        XCTAssertEqual(decoded.iconSize, 92)
+        XCTAssertEqual(decoded.gridColumns, 5)
         XCTAssertEqual(decoded.glassTransparency, 0.8)
-        XCTAssertEqual(AppSettings(glassTransparency: 2).glassTransparency, 1)
-        XCTAssertEqual(AppSettings(glassTransparency: -1).glassTransparency, 0)
+        XCTAssertEqual(otherFolder.iconSize, 68)
+        XCTAssertEqual(otherFolder.gridColumns, 0)
+        XCTAssertEqual(otherFolder.glassTransparency, 0.55)
+        XCTAssertEqual(DockFolder(name: "Clamp", iconSize: 200, gridColumns: 20, glassTransparency: -1).iconSize, 128)
+        XCTAssertEqual(DockFolder(name: "Clamp", iconSize: 200, gridColumns: 20, glassTransparency: -1).gridColumns, 12)
+        XCTAssertEqual(DockFolder(name: "Clamp", iconSize: 200, gridColumns: 20, glassTransparency: -1).glassTransparency, 0)
     }
 
     func testDockFolderLinksValidateSchemePathAndIdentifier() throws {
@@ -124,6 +129,19 @@ final class DockFoldersTests: XCTestCase {
         XCTAssertLessThanOrEqual(manyApps.size.width, 900)
         XCTAssertLessThanOrEqual(manyApps.size.height, 600)
         XCTAssertGreaterThanOrEqual(manyApps.columns * Int(ceil(Double(24) / Double(manyApps.columns))), 24)
+    }
+
+    func testPopupLayoutRespectsPerFolderIconSizeAndGridColumns() {
+        let result = DockPopupLayout.calculate(
+            applicationCount: 6,
+            preset: FolderLayoutPreset.defaults[0],
+            availableSize: NSSize(width: 1_200, height: 800),
+            preferredIconSize: 92,
+            preferredColumns: 2
+        )
+
+        XCTAssertEqual(result.iconSize, 92)
+        XCTAssertEqual(result.columns, 2)
     }
 
     func testAddingAppsAutomaticallyGrowsFolderLayoutWhenGridIsTooSmall() throws {
@@ -325,8 +343,8 @@ final class DockFoldersTests: XCTestCase {
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         let url = directory.appendingPathComponent("settings.json")
         let document = FolderDocument(
-            folders: [DockFolder(name: "Dark", iconName: "moon.fill", colorHex: "#222222")],
-            settings: AppSettings(iconSize: 92, gridColumns: 5, appearance: .dark, launchAtLogin: true, globalShortcutEnabled: true)
+            folders: [DockFolder(name: "Dark", iconName: "moon.fill", colorHex: "#222222", iconSize: 92, gridColumns: 5, glassTransparency: 0.8)],
+            settings: AppSettings(appearance: .dark, launchAtLogin: true, globalShortcutEnabled: true)
         )
 
         try ConfigurationTransferService().export(document, to: url)

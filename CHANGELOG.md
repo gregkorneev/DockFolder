@@ -5,7 +5,7 @@
 
 ## Unreleased — feature-complete implementation; release validation outstanding
 
-- Replaced the two glass style presets with a persisted transparency slider, ranging from matte to clear and applied to app tiles and the Dock popup; the balanced default is 55%.
+- Added per-folder icon size, grid columns, and glass transparency controls inside the Folder Layout popover; each folder now keeps its own display settings instead of inheriting app-wide values.
 - Fixed selected folder text contrast in the sidebar for light and dark appearances.
 - Installed the supplied `Preview_Light.png` as the DockFolders app icon without image edits; preserved the original layered draft for future Icon Composer work.
 - Expanded the icon picker from a curated subset to the searchable SF Symbols 7.0 catalog (7,752 identifiers), including Apple device designs; artwork remains provided at runtime by macOS.

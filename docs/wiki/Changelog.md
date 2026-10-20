@@ -1,7 +1,7 @@
 # Wiki changelog
 Русская версия: [Changelog.ru.md](Changelog.ru.md)
 
-- Replaced the two glass style presets with a persisted transparency slider, ranging from matte to clear and applied to app tiles and the Dock popup; the balanced default is 55%.
+- Added per-folder icon size, grid columns, and glass transparency controls inside the Folder Layout popover; each folder now keeps its own display settings instead of inheriting app-wide values.
 
 
 
