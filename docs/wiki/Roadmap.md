@@ -21,8 +21,8 @@ Status: core implementation includes the requested 0.1, 0.2 and 1.0 feature scop
 - Folder SF Symbol/color customization and folder/app drag ordering.
 - Dock-aware Liquid Glass popup with Escape, focus-loss and successful-launch dismissal.
 - Grid/icon/theme settings, Control–Option–Space hotkey, `SMAppService` login-start integration, and import/export.
-- 35 Debug unit tests pass, including migration, URL validation, launcher bundle, ordering, adaptive popup sizing and configuration transfer.
-- The development build adds per-folder editable 1–10 row and column counts; manual UI validation remains in progress.
+- 43 Debug unit tests pass, including migration, URL validation, launcher bundle, ordering, adaptive popup sizing and configuration transfer.
+- Beta 3 includes per-folder editable 1–10 row and column counts; manual UI validation remains in progress.
 
 ## Hover to Open — In progress
 
@@ -32,7 +32,7 @@ Status: core implementation includes the requested 0.1, 0.2 and 1.0 feature scop
 
 ## Remaining release validation
 
-- Beta 2 is published as an arm64 DMG from the current `main` source. Image and app signature integrity are checked; clean install, upgrade, Developer ID signing and notarization remain open.
+- Beta 3 is published as an arm64 DMG from the current `main` source. Image and app signature integrity are checked; clean install, upgrade, Developer ID signing and notarization remain open.
 
 - Multi-display behavior, every Dock edge, hidden Dock and screen changes.
 - Accessibility, VoiceOver, keyboard-only workflows, contrast and reduced motion.

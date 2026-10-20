@@ -1,45 +1,41 @@
-# DockFolders 1.0 — Beta 2
+# DockFolders 1.0 — Beta 3
 
 ## English
 
-Beta 2 adds editable folder grids and includes fixes to folder launcher startup, hover opening, and persistence error handling.
+Beta 3 makes the folder popup easier to use and keeps DockFolders visible while it works in the background.
 
-### What's new
+### Changes since Beta 2
 
-- Set each folder's row and column counts independently from 1 to 10. A value of 0 is clamped to 1.
-- Custom grids keep their selected size. Scroll the folder popup to reach apps beyond its visible cells or available screen area.
-- Hover settings report whether Accessibility access applies to the current build and resume monitoring after access is granted.
-- Fixed hover opening when the Dock appears under a stationary pointer, and prevented a brief main-window flash when opening a folder launcher.
-- Improved error handling when folders cannot be saved or launcher links contain stale data.
+- The DockFolders icon now stays in the macOS menu bar. Use its menu to open the manager or quit the app completely. If DockFolders is not pinned, its Dock icon appears only while the manager window is open.
+- Folder popups show every cell in the selected grid without cutting off app icons. Icons sit closer together, and changing their size updates the popup layout.
+- Folder layout settings stay open when the pointer leaves the Dock launcher. The visible row and column captions were removed.
+- The icon picker groups SF Symbols by category and shows larger previews. Generated launcher icons preserve outlined symbol details, including the `macbook` screen.
+- New folders start with the standard layout; the redundant default-for-new-folders setting is gone. A four-page welcome guide appears on first ordinary launch and can be reopened from Help.
 
-### Install and use
+### Install
 
-1. On an Apple Silicon Mac running macOS 27.0 or later, open `DockFolders-1.0.0-beta.2-macOS-arm64.dmg` and drag `DockFolders.app` to `Applications`. Quit an older copy before replacing it.
-2. Open DockFolders and create a folder. Generate its launcher, open the generated app from `/Applications/DockFolders`, then choose **Options → Keep in Dock** from its Dock menu. Pinning is a user action controlled by macOS.
-3. For optional hover opening, select **On hover** or **On click and hover** in Settings and grant the installed DockFolders app Accessibility access. Click opening does not need this permission.
+On an Apple Silicon Mac running macOS 27.0 or later, open `DockFolders-1.0.0-beta.3-macOS-arm64.dmg` and drag `DockFolders.app` to Applications. Quit and remove an older development copy first. Your folders and settings are stored separately and are not removed with the app. Pin each generated folder launcher through the macOS Dock menu (**Options → Keep in Dock**).
 
-The DMG contains an ad-hoc-signed, unnotarized app. macOS may require manual security approval. Accessibility permission granted to an earlier ad-hoc build may need to be granted again. Developer ID signing, notarization, clean installation and upgrades, and alternate Dock/display configurations remain unverified; this is a prerelease.
+This DMG contains an ad-hoc-signed, unnotarized app. macOS may require manual approval in System Settings → Privacy & Security. Hover opening requires Accessibility access for the installed Beta 3 app; an earlier build's permission may not carry over. Click opening does not require that permission. Clean installation, upgrade behavior, Developer ID signing, notarization, and alternate Dock/display setups remain unverified.
 
-DMG SHA-256: `faad38481d47a262cd3f63b1d79d9d7e9a2d275ab8256596c95e50b0393832cf`
+DMG SHA-256: `373026366efabb71f31e94a674e82af734efe92e49767d8a84f444f3c6b1db66`
 
 ## Русский
 
-В Beta 2 появились настраиваемые сетки папок, а также исправления запуска ярлыка папки, открытия наведением и обработки ошибок сохранения.
+В Beta 3 улучшена сетка папки, а значок DockFolders теперь показывает работу приложения в фоне.
 
-### Изменения
+### Изменения после Beta 2
 
-- Для каждой папки можно отдельно задать число строк и столбцов от 1 до 10. Значение 0 ограничивается единицей.
-- Пользовательская сетка сохраняет выбранный размер. Прокручивайте popup, чтобы открыть приложения, которые не помещаются в видимые ячейки или на экран.
-- В настройках наведения показано, действует ли разрешение «Универсальный доступ» для текущей сборки; после выдачи разрешения мониторинг возобновляется.
-- Исправлено открытие наведением, когда Dock появляется под неподвижным курсором; при запуске ярлыка папки главное окно больше не мигает.
-- Улучшена обработка ошибок, если папку не удаётся сохранить или ссылка ярлыка содержит устаревшие данные.
+- Значок DockFolders остаётся в строке меню macOS. Через его меню можно открыть управление папками или полностью завершить приложение. Если DockFolders не закреплён, его значок в Dock появляется только при открытом окне управления.
+- Popup папки показывает все ячейки выбранной сетки без обрезания значков. Расстояние между значками уменьшено; изменение их размера сразу меняет макет панели.
+- Настройки макета остаются открытыми, когда курсор уходит с ярлыка в Dock. Видимые подписи строк и столбцов убраны.
+- Символы в выборе значка сгруппированы по категориям, их предпросмотр стал крупнее. Значки ярлыков сохраняют контурные детали символов, в том числе экран `macbook`.
+- Новые папки начинают со стандартного макета; лишняя настройка макета для новых папок убрана. При первом обычном запуске показывается руководство из четырёх экранов, которое можно снова открыть через меню «Справка».
 
-### Установка и использование
+### Установка
 
-1. На Mac с Apple Silicon и macOS 27.0 или новее откройте `DockFolders-1.0.0-beta.2-macOS-arm64.dmg` и перетащите `DockFolders.app` в «Программы». Перед заменой закройте прежнюю копию.
-2. Откройте DockFolders и создайте папку. Создайте для неё ярлык, откройте приложение-ярлык из `/Applications/DockFolders`, затем выберите в меню Dock **Параметры → Оставить в Dock**. Закрепление выполняет сам пользователь через macOS.
-3. Для открытия наведением выберите в настройках «При наведении» или «По нажатию и наведению» и разрешите установленному DockFolders доступ к «Универсальному доступу». Для открытия нажатием это разрешение не требуется.
+На Mac с Apple Silicon и macOS 27.0 или новее откройте `DockFolders-1.0.0-beta.3-macOS-arm64.dmg` и перетащите `DockFolders.app` в «Программы». Сначала завершите и удалите старую сборку для разработки. Данные папок и настройки хранятся отдельно и при удалении приложения сохраняются. Каждый созданный ярлык папки закрепляется пользователем через меню Dock (**Параметры → Оставить в Dock**).
 
-DMG содержит приложение с временной подписью без нотариального заверения. macOS может потребовать ручного подтверждения безопасности. Разрешение, выданное прежней сборке с временной подписью, возможно, потребуется выдать заново. Подпись Developer ID, нотариальное заверение, чистая установка и обновление, а также другие конфигурации Dock и дисплеев ещё не проверены; это предварительный релиз.
+DMG содержит приложение с временной подписью без нотариального заверения. macOS может потребовать разрешить открытие в «Системных настройках → Конфиденциальность и безопасность». Для открытия наведением нужен доступ к «Универсальному доступу» для установленной Beta 3; разрешение от прежней сборки может не подойти. Для открытия нажатием разрешение не требуется. Чистая установка, обновление, подпись Developer ID, нотариальное заверение и другие конфигурации Dock и дисплеев ещё не проверены.
 
-SHA-256 DMG: `faad38481d47a262cd3f63b1d79d9d7e9a2d275ab8256596c95e50b0393832cf`
+SHA-256 DMG: `373026366efabb71f31e94a674e82af734efe92e49767d8a84f444f3c6b1db66`

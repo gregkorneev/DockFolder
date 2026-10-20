@@ -1,7 +1,7 @@
 # Changelog
 Русская версия: [CHANGELOG.ru.md](CHANGELOG.ru.md)
 
-## Unreleased — development
+## 2026-10-21 — 1.0.0 Beta 3
 
 - Show the DockFolders app icon in the macOS menu bar while it runs in the background, with commands to open the manager or quit the app completely.
 - Tighten folder popup icon rows and columns by using icon-sized grid cells instead of stretching each cell across the panel.

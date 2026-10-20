@@ -32,7 +32,7 @@ DockFolders — нативное приложение macOS для органи�
 
 ## Версия для разработки
 
-Beta 2 доступна в виде DMG для Apple Silicon на [странице релизов GitHub](https://github.com/gregkorneev/DockFolder/releases). Разработка продолжается в `main`.
+Beta 3 доступна в виде DMG для Apple Silicon на [странице релизов GitHub](https://github.com/gregkorneev/DockFolder/releases). Разработка продолжается в `main`.
 
 Для сборки из исходников используйте Xcode 27.1 или новее с macOS 27 SDK.
 

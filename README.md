@@ -31,7 +31,7 @@ If DockFolders itself was previously pinned, remove that pin manually with **Opt
 
 ## Development builds
 
-Beta 2 is available as an Apple Silicon DMG on [GitHub Releases](https://github.com/gregkorneev/DockFolder/releases). Development continues on `main`.
+Beta 3 is available as an Apple Silicon DMG on [GitHub Releases](https://github.com/gregkorneev/DockFolder/releases). Development continues on `main`.
 
 To build from source, use Xcode 27.1 or later with the macOS 27 SDK.
 
