@@ -241,7 +241,7 @@ enum DockPopupLayout {
         let count = max(1, applicationCount)
         let labels = preset.showsAppLabels
         let outerWidth: CGFloat = 28
-        let outerHeight: CGFloat = 56
+        let outerHeight: CGFloat = 72
         let minimumWidth: CGFloat = 360
         let columnSpacing: CGFloat = 12
         let rowSpacing: CGFloat = 12

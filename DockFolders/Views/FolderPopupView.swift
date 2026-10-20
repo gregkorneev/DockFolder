@@ -72,7 +72,7 @@ struct FolderPopupView: View {
                 }
             }
         }
-        .padding(14)
+        .padding(.init(top: 14, leading: 14, bottom: 30, trailing: 14))
         .background {
             RoundedRectangle(cornerRadius: 22)
                 .fill(Color(nsColor: NSColor.windowBackgroundColor).opacity((1 - (folder?.glassTransparency ?? 0.55)) * 0.7))
