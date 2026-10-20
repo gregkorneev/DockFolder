@@ -1,14 +1,9 @@
 # Changelog
 Русская версия: [CHANGELOG.ru.md](CHANGELOG.ru.md)
 
-## Unreleased — development
-
-- Replaced the popup's preset-only layout selector with editable row and column counts from 1 to 10. Custom grids keep their chosen dimensions and scroll when their apps exceed the visible cells or screen space.
-- Withdrew the Beta 2 GitHub release and tag while development continues; Beta 1 remains published.
-
-
-
 ## 2026-10-20 — 1.0.0 Beta 2
+
+- Added editable row and column counts from 1 to 10 in each folder's layout menu. Custom grids keep their chosen dimensions and scroll when apps exceed the visible cells or screen space.
 
 - Show the actual Accessibility trust status for the current build in Hover settings and retry monitoring after permission becomes active. Rebuilding the ad-hoc-signed app may require reauthorizing that build.
 

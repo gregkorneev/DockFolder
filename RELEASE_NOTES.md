@@ -1,20 +1,16 @@
-# DockFolders 1.0 — Beta 2 (withdrawn)
-
-The Beta 2 GitHub release and tag were removed while development continues. These notes are kept as a historical build record.
-
-Релиз и тег Beta 2 удалены с GitHub на время разработки. Эти заметки сохранены как запись о прежней сборке.
+# DockFolders 1.0 — Beta 2
 
 ## English
 
-This beta fixes Dock folder opening and ships as a drag-to-Applications DMG.
+Beta 2 adds editable folder grids and includes fixes to folder launcher startup, hover opening, and persistence error handling.
 
-### Changes since Beta 1
+### What's new
 
-- Folder launchers no longer briefly show the main DockFolders window when opening a folder.
-- Hover opening rechecks a stationary pointer when the Dock appears beneath it.
-- Hover settings show whether the current app build actually has Accessibility access and monitoring resumes after access is granted.
-- Folder deletion and stale launcher links preserve and show persistence errors instead of hiding them.
-- The folder popup has more space below its app icons.
+- Set each folder's row and column counts independently from 1 to 10. A value of 0 is clamped to 1.
+- Custom grids keep their selected size. Scroll the folder popup to reach apps beyond its visible cells or available screen area.
+- Hover settings report whether Accessibility access applies to the current build and resume monitoring after access is granted.
+- Fixed hover opening when the Dock appears under a stationary pointer, and prevented a brief main-window flash when opening a folder launcher.
+- Improved error handling when folders cannot be saved or launcher links contain stale data.
 
 ### Install and use
 
@@ -26,15 +22,15 @@ The DMG contains an ad-hoc-signed, unnotarized app. macOS may require manual sec
 
 ## Русский
 
-В этой бета-версии исправлено открытие папок Dock; приложение распространяется в DMG с установкой перетаскиванием.
+В Beta 2 появились настраиваемые сетки папок, а также исправления запуска ярлыка папки, открытия наведением и обработки ошибок сохранения.
 
-### Изменения после Beta 1
+### Изменения
 
-- При открытии папки ярлык больше не показывает на мгновение главное окно DockFolders.
-- Открытие наведением повторно проверяет неподвижный курсор после появления Dock под ним.
-- В настройках показано, действует ли разрешение «Универсальный доступ» для текущей сборки; после выдачи доступа мониторинг возобновляется.
-- Ошибки сохранения при удалении папки и устаревших ссылках ярлыка остаются видны пользователю.
-- Под значками приложений во всплывающей папке стало больше места.
+- Для каждой папки можно отдельно задать число строк и столбцов от 1 до 10. Значение 0 ограничивается единицей.
+- Пользовательская сетка сохраняет выбранный размер. Прокручивайте popup, чтобы открыть приложения, которые не помещаются в видимые ячейки или на экран.
+- В настройках наведения показано, действует ли разрешение «Универсальный доступ» для текущей сборки; после выдачи разрешения мониторинг возобновляется.
+- Исправлено открытие наведением, когда Dock появляется под неподвижным курсором; при запуске ярлыка папки главное окно больше не мигает.
+- Улучшена обработка ошибок, если папку не удаётся сохранить или ссылка ярлыка содержит устаревшие данные.
 
 ### Установка и использование
 
@@ -43,5 +39,3 @@ The DMG contains an ad-hoc-signed, unnotarized app. macOS may require manual sec
 3. Для открытия наведением выберите в настройках «При наведении» или «По нажатию и наведению» и разрешите установленному DockFolders доступ к «Универсальному доступу». Для открытия нажатием это разрешение не требуется.
 
 DMG содержит приложение с временной подписью без нотариального заверения. macOS может потребовать ручного подтверждения безопасности. Разрешение, выданное прежней сборке с временной подписью, возможно, потребуется выдать заново. Подпись Developer ID, нотариальное заверение, чистая установка и обновление, а также другие конфигурации Dock и дисплеев ещё не проверены; это предварительный релиз.
-
-SHA-256 / Контрольная сумма DMG: `c175415109bb6aa46de3064f85dd45eeb5042d1054bc7f8a6176267fed1015c1`

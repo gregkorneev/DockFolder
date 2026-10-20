@@ -27,7 +27,7 @@ To choose its icon, right-click the folder in the sidebar and select **Customize
 
 ## Development builds
 
-Development continues on `main`. Beta 2 and its DMG have been withdrawn from GitHub; the older Beta 1 prerelease remains available in [GitHub Releases](https://github.com/gregkorneev/DockFolder/releases). The current grid editor is available only in a development build.
+Beta 2 is available as an Apple Silicon DMG on [GitHub Releases](https://github.com/gregkorneev/DockFolder/releases). Development continues on `main`.
 
 To build from source, use Xcode 27.1 or later with the macOS 27 SDK.
 
