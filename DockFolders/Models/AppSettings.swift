@@ -5,20 +5,18 @@ struct AppSettings: Codable, Hashable, Sendable {
     var launchAtLogin: Bool
     var globalShortcutEnabled: Bool
     var layoutPresets: [FolderLayoutPreset]
-    var defaultLayoutPresetID: String
     var hoverSettings: HoverSettings
 
-    init(appearance: AppearanceMode = .system, launchAtLogin: Bool = false, globalShortcutEnabled: Bool = false, layoutPresets: [FolderLayoutPreset] = FolderLayoutPreset.defaults, defaultLayoutPresetID: String = FolderLayoutPreset.defaultID, hoverSettings: HoverSettings = HoverSettings()) {
+    init(appearance: AppearanceMode = .system, launchAtLogin: Bool = false, globalShortcutEnabled: Bool = false, layoutPresets: [FolderLayoutPreset] = FolderLayoutPreset.defaults, hoverSettings: HoverSettings = HoverSettings()) {
         self.appearance = appearance
         self.launchAtLogin = launchAtLogin
         self.globalShortcutEnabled = globalShortcutEnabled
         let presets = layoutPresets.isEmpty ? FolderLayoutPreset.defaults : layoutPresets
         self.layoutPresets = presets
-        self.defaultLayoutPresetID = presets.first(where: { $0.id == defaultLayoutPresetID })?.id ?? presets[0].id
         self.hoverSettings = hoverSettings
     }
 
-    private enum CodingKeys: String, CodingKey { case appearance, launchAtLogin, globalShortcutEnabled, layoutPresets, defaultLayoutPresetID, hoverSettings }
+    private enum CodingKeys: String, CodingKey { case appearance, launchAtLogin, globalShortcutEnabled, layoutPresets, hoverSettings }
 
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
@@ -28,7 +26,6 @@ struct AppSettings: Codable, Hashable, Sendable {
             launchAtLogin: try values.decodeIfPresent(Bool.self, forKey: .launchAtLogin) ?? false,
             globalShortcutEnabled: try values.decodeIfPresent(Bool.self, forKey: .globalShortcutEnabled) ?? false,
             layoutPresets: presets,
-            defaultLayoutPresetID: try values.decodeIfPresent(String.self, forKey: .defaultLayoutPresetID) ?? FolderLayoutPreset.defaultID,
             hoverSettings: try values.decodeIfPresent(HoverSettings.self, forKey: .hoverSettings) ?? HoverSettings()
         )
     }

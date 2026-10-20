@@ -28,14 +28,6 @@ struct SettingsView: View {
             }
 
             Section("Folder layout presets") {
-                Picker("Default for new folders", selection: Binding(
-                    get: { store.settings.defaultLayoutPresetID },
-                    set: { id in store.updateSettings { $0.defaultLayoutPresetID = id } }
-                )) {
-                    ForEach(store.settings.layoutPresets) { preset in
-                        Text(AppLocalization.layoutPresetName(preset)).tag(preset.id)
-                    }
-                }
                 TextField("Preset name", text: $draftPresetName)
                 Picker("Arrangement", selection: $draftColumns) {
                     ForEach(2...12, id: \.self) { columns in
@@ -45,13 +37,12 @@ struct SettingsView: View {
                     Text("All in one column").tag(FolderLayoutPreset.columnColumns)
                 }
                 Toggle("Show app names", isOn: $draftShowsAppLabels)
-                Button("Save preset and use for new folders") {
+                Button("Save preset") {
                     let name = draftPresetName.trimmingCharacters(in: .whitespacesAndNewlines)
                     guard !name.isEmpty else { return }
                     let preset = FolderLayoutPreset(name: name, columns: draftColumns, showsAppLabels: draftShowsAppLabels)
                     store.updateSettings {
                         $0.layoutPresets.append(preset)
-                        $0.defaultLayoutPresetID = preset.id
                     }
                     draftPresetName = ""
                 }

@@ -318,12 +318,18 @@ private struct FolderAppearanceSheet: View {
     ]
 
     @State private var searchText = ""
+    @State private var selectedCategory: SystemSymbolCatalog.Category = .all
     @State private var symbols: [String] = []
     @State private var catalogFailed = false
     private var backgroundHex: String { Self.hexString(for: backgroundColor) }
     private var filteredSymbols: [String] {
-        guard !searchText.isEmpty else { return symbols }
-        return symbols.filter { $0.localizedStandardContains(searchText) }
+        symbols.filter {
+            (selectedCategory == .all || SystemSymbolCatalog.category(for: $0) == selectedCategory)
+                && (searchText.isEmpty || $0.localizedStandardContains(searchText))
+        }
+    }
+    private var groupedSymbols: [SystemSymbolCatalog.Category: [String]] {
+        Dictionary(grouping: filteredSymbols, by: SystemSymbolCatalog.category(for:))
     }
 
     init(folder: DockFolder, onSave: @escaping (String, String) -> Void) {
@@ -347,6 +353,11 @@ private struct FolderAppearanceSheet: View {
             }
 
             Text("Symbols").font(.headline)
+            Picker("Category", selection: $selectedCategory) {
+                ForEach(SystemSymbolCatalog.Category.allCases) { category in
+                    Text(verbatim: category.title).tag(category)
+                }
+            }
             TextField("Search Symbols", text: $searchText)
                 .textFieldStyle(.roundedBorder)
             Text("Some Apple product symbols have restrictions. Review symbol details in SF Symbols before customizing.")
@@ -364,19 +375,27 @@ private struct FolderAppearanceSheet: View {
                         Text(AppLocalization.format("Symbols found: %d", filteredSymbols.count))
                             .font(.caption)
                             .foregroundStyle(.secondary)
-                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 7), count: 8), spacing: 7) {
-                            ForEach(filteredSymbols, id: \.self) { item in
-                                if let image = NSImage(systemSymbolName: item, accessibilityDescription: item) {
-                                    Button { symbol = item } label: {
-                                        Image(nsImage: image)
-                                            .font(.system(size: 20, weight: .medium))
-                                            .frame(maxWidth: .infinity, minHeight: 40)
-                                            .background(symbol == item ? Color.accentColor.opacity(0.22) : .clear, in: RoundedRectangle(cornerRadius: 8))
-                                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(symbol == item ? Color.accentColor : .clear, lineWidth: 1.5))
+                        LazyVStack(alignment: .leading, spacing: 18) {
+                            ForEach(SystemSymbolCatalog.Category.allCases.filter { $0 != .all && groupedSymbols[$0] != nil }) { category in
+                                Text(verbatim: category.title)
+                                    .font(.subheadline.weight(.semibold))
+                                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 6), spacing: 8) {
+                                    ForEach(groupedSymbols[category] ?? [], id: \.self) { item in
+                                        if let image = NSImage(systemSymbolName: item, accessibilityDescription: item) {
+                                            Button { symbol = item } label: {
+                                                Image(nsImage: image)
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                    .frame(width: 34, height: 34)
+                                                    .frame(maxWidth: .infinity, minHeight: 64)
+                                                    .background(symbol == item ? Color.accentColor.opacity(0.22) : .clear, in: RoundedRectangle(cornerRadius: 8))
+                                                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(symbol == item ? Color.accentColor : .clear, lineWidth: 1.5))
+                                            }
+                                            .buttonStyle(.plain)
+                                            .accessibilityLabel(item)
+                                            .help(item)
+                                        }
                                     }
-                                    .buttonStyle(.plain)
-                                    .accessibilityLabel(item)
-                                    .help(item)
                                 }
                             }
                         }
