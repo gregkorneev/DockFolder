@@ -3,7 +3,7 @@
 
 
 
-## Unreleased — feature-complete implementation; release validation outstanding
+## 2026-10-20 — 1.0.0 Beta 2
 
 - Show the actual Accessibility trust status for the current build in Hover settings and retry monitoring after permission becomes active. Rebuilding the ad-hoc-signed app may require reauthorizing that build.
 
@@ -15,6 +15,8 @@
 
 - Increased the popup's bottom breathing room beneath the app icons.
 - Fixed the main-window flash when opening folder launchers by routing URLs independently of the browser and creating its AppKit window only for ordinary app launches, explicit reopens, or errors. Added lifecycle regression tests; visual cold-start validation remains outstanding.
+
+## 2026-10-20 — 1.0.0 Beta 1
 
 - Added per-folder icon size, grid columns, and glass transparency controls inside the Folder Layout popover; each folder now keeps its own display settings instead of inheriting app-wide values.
 - Expanded dynamic square layouts from 1 × 1 through 10 × 10, showing only sizes that fit every app in the folder; folders over 100 apps also get larger fitting grids.
@@ -44,7 +46,7 @@
 - Manual launcher smoke check opened a generated launcher through Finder and verified it opened the Code folder with the main app already running and after cold-start.
 - Still unverified: visual animation behavior across multiple displays and all Dock edges, accessibility, actual login-start registration, hotkey collision behavior, signing/notarization/sandbox/distribution, and manual pinning by users on a clean install.
 
-## 2026-10-20 — Hover to Open
+### 2026-10-20 — Hover to Open
 
 - Prevented the regular browser window from appearing during folder launcher startup by disabling stale window restoration and hiding any default windows before showing the folder popup.
 - Verified live pointer-to-Dock-item detection on macOS 27 using global mouse movement events and the public Accessibility API.

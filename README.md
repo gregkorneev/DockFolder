@@ -24,7 +24,12 @@ To choose its icon, right-click the folder in the sidebar and select **Customize
 ## Requirements
 
 - macOS 27.0 or later, Apple Silicon.
-- Xcode 27.1 or later with the macOS SDK.
+
+## Beta download
+
+Download the latest `DockFolders-…-macOS-arm64.dmg` from [GitHub Releases](https://github.com/gregkorneev/DockFolder/releases). Open the disk image and drag `DockFolders.app` onto the `Applications` shortcut. Quit an older DockFolders version before replacing it. This beta is ad-hoc signed and not notarized; macOS may require a manual security approval. Xcode is required only when building from source.
+
+To build from source, use Xcode 27.1 or later with the macOS 27 SDK.
 
 Open `DockFolders.xcodeproj` in Xcode, select the DockFolders scheme and My Mac destination, then build and run. Command-line verification:
 
