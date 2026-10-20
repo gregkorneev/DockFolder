@@ -4,6 +4,7 @@
 ## Unreleased — development
 
 - Keep a hover-open folder visible while its layout settings are open, hide the visible row/column captions, and resize the popup grid continuously with the icon-size slider.
+- Make custom grid cells expand across the popup and fit every selected row and column on screen. The selected capacity is visible without scrolling; only apps beyond that capacity scroll, and labels/icons scale down on constrained displays.
 
 ## 2026-10-20 — 1.0.0 Beta 2
 

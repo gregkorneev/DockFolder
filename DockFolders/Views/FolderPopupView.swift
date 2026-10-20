@@ -63,16 +63,20 @@ struct FolderPopupView: View {
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, minHeight: 44)
                 } else {
-                    if preset.isCustomGrid {
-                        let cellWidth = iconSize + 16
-                        let contentWidth = CGFloat(preset.columns) * cellWidth + CGFloat(preset.columns - 1) * 12
-                        ScrollView([.horizontal, .vertical]) {
-                            LazyVGrid(columns: Array(repeating: GridItem(.fixed(cellWidth), spacing: 12), count: preset.columns), spacing: 12) {
-                                ForEach(visibleApplications) { application in
-                                    applicationButton(application, showsLabel: preset.showsAppLabels)
-                                }
+                    if let rows = preset.rows {
+                        let grid = LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: preset.columns), spacing: 12) {
+                            ForEach(visibleApplications) { application in
+                                applicationButton(application, showsLabel: preset.showsAppLabels)
                             }
-                            .frame(width: contentWidth)
+                        }
+                        .frame(maxWidth: .infinity)
+                        if visibleApplications.count > rows * preset.columns {
+                            ScrollView(.vertical) {
+                                grid
+                            }
+                            .frame(maxWidth: .infinity)
+                        } else {
+                            grid
                         }
                     } else {
                         let activeColumns = folder.gridColumns > 0 ? min(folder.gridColumns, visibleApplications.count) : columns
@@ -114,17 +118,17 @@ struct FolderPopupView: View {
                 }
             }
         } label: {
-            VStack(spacing: showsLabel ? 5 : 0) {
+            VStack(spacing: showsLabel ? DockPopupLayout.labelSpacing(for: iconSize) : 0) {
                 Image(nsImage: NSWorkspace.shared.icon(forFile: application.path))
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: min(iconSize, CGFloat(folder?.iconSize ?? 68)), height: min(iconSize, CGFloat(folder?.iconSize ?? 68)))
                 if showsLabel {
                     Text(application.name)
-                        .font(.system(size: 11))
+                        .font(.system(size: DockPopupLayout.labelFontSize(for: iconSize)))
                         .lineLimit(2)
                         .multilineTextAlignment(.center)
-                        .frame(maxWidth: .infinity, minHeight: 27, alignment: .top)
+                        .frame(maxWidth: .infinity, minHeight: DockPopupLayout.labelHeight(for: iconSize), alignment: .top)
                 }
             }
             .frame(maxWidth: .infinity)

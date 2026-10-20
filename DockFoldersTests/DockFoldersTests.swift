@@ -317,7 +317,7 @@ final class DockFoldersTests: XCTestCase {
             preferredIconSize: 68
         )
         XCTAssertEqual(layout.columns, 3)
-        XCTAssertEqual(layout.size.height, 72 + 2 * (68 + 32 + 5) + 12)
+        XCTAssertEqual(layout.size.height, 84 + 2 * (68 + DockPopupLayout.labelHeight(for: 68) + DockPopupLayout.labelSpacing(for: 68)) + 12)
         XCTAssertEqual(FolderLayoutPreset.customGrid(rows: 0, columns: 11, showsAppLabels: true).rows, 1)
         XCTAssertEqual(FolderLayoutPreset.customGrid(rows: 0, columns: 11, showsAppLabels: true).columns, 10)
 
@@ -335,6 +335,30 @@ final class DockFoldersTests: XCTestCase {
         )
         XCTAssertLessThan(compact.size.width, enlarged.size.width)
         XCTAssertLessThan(compact.size.height, enlarged.size.height)
+    }
+
+    func testCustomGridFitsSelectedCellsWithinAvailableDisplay() {
+        let layout = DockPopupLayout.calculate(
+            applicationCount: 4,
+            preset: .customGrid(rows: 2, columns: 2, showsAppLabels: false),
+            availableSize: NSSize(width: 800, height: 500),
+            preferredIconSize: 68
+        )
+
+        XCTAssertEqual(layout.columns, 2)
+        XCTAssertEqual(layout.iconSize, 68)
+        XCTAssertEqual(layout.size.width, 360)
+        XCTAssertEqual(layout.size.height, 84 + 2 * 68 + 12)
+
+        let constrained = DockPopupLayout.calculate(
+            applicationCount: 100,
+            preset: .customGrid(rows: 10, columns: 10, showsAppLabels: true),
+            availableSize: NSSize(width: 500, height: 400),
+            preferredIconSize: 128
+        )
+        XCTAssertLessThan(constrained.iconSize, 128)
+        XCTAssertLessThanOrEqual(constrained.size.width, 500)
+        XCTAssertLessThanOrEqual(constrained.size.height, 400)
     }
 
     func testHoverPopupStaysOpenWhileLayoutOptionsArePresented() throws {
