@@ -3,6 +3,10 @@
 
 ## Unreleased — development
 
+- Keep the DockFolders Dock icon hidden when a folder popup opens from the manager, and give popup content enough height to display complete app icons at every chosen grid size.
+- Group all SF Symbols in the icon picker by category and enlarge their previews.
+- Remove the default-layout-for-new-folders setting; new folders start with the standard layout, while saved presets remain available for individual folders.
+- Show a four-page welcome guide on first ordinary launch, with a Help menu command to reopen it.
 - Reduce horizontal and vertical grid spacing as app icons shrink, so more icons fit in the same popup area.
 - Keep DockFolders out of the Dock while it runs folder popups; add a gear button to open the manager, showing the app in Dock only while its window is open.
 - Keep a hover-open folder visible while its layout settings are open, hide the visible row/column captions, and resize the popup grid continuously with the icon-size slider.

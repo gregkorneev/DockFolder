@@ -5,6 +5,9 @@ import SwiftUI
 final class DockIntegrationManager: NSObject, NSApplicationDelegate, NSWindowDelegate {
     var folderStore = FolderStore()
     private(set) var mainWindow: NSWindow?
+    private(set) var welcomeWindow: NSWindow?
+    var showsWelcomeOnFirstLaunch = true
+    private static let welcomeCompletedKey = "DockFolders.welcomeCompleted"
 
     func applicationWillFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
@@ -49,13 +52,36 @@ final class DockIntegrationManager: NSObject, NSApplicationDelegate, NSWindowDel
             if folderStore.errorMessage == nil {
                 folderStore.errorMessage = NSLocalizedString("This DockFolders link is invalid or its folder no longer exists.", comment: "")
             }
-            showMainWindow()
+            showMainWindow(presentWelcome: false)
             return
         }
         PopupWindowManager.shared.present(folderID: id, store: folderStore)
     }
 
-    private func showMainWindow() {
+    func showWelcome() {
+        showMainWindow(presentWelcome: false)
+        guard let mainWindow else { return }
+        if let welcomeWindow {
+            welcomeWindow.makeKeyAndOrderFront(nil)
+            return
+        }
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 520, height: 390),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false
+        )
+        window.title = NSLocalizedString("Welcome to DockFolders", comment: "")
+        window.isReleasedWhenClosed = false
+        window.contentView = NSHostingView(rootView: WelcomeView { [weak self] in
+            UserDefaults.standard.set(true, forKey: Self.welcomeCompletedKey)
+            if let window = self?.welcomeWindow { mainWindow.endSheet(window) }
+        })
+        welcomeWindow = window
+        mainWindow.beginSheet(window) { [weak self] _ in self?.welcomeWindow = nil }
+    }
+
+    private func showMainWindow(presentWelcome: Bool = true) {
         PopupWindowManager.shared.close(animated: false)
         NSApp.setActivationPolicy(.regular)
         if mainWindow == nil {
@@ -79,6 +105,10 @@ final class DockIntegrationManager: NSObject, NSApplicationDelegate, NSWindowDel
         mainWindow?.deminiaturize(nil)
         mainWindow?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
+        if presentWelcome && showsWelcomeOnFirstLaunch && welcomeWindow == nil
+            && !UserDefaults.standard.bool(forKey: Self.welcomeCompletedKey) {
+            showWelcome()
+        }
     }
 
     func windowWillClose(_ notification: Notification) {

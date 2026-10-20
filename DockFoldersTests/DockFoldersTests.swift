@@ -69,6 +69,7 @@ final class DockFoldersTests: XCTestCase {
     func testOrdinaryOpenAndReopenReuseMainWindowEvenWithPopupVisible() throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         let delegate = DockIntegrationManager()
+        delegate.showsWelcomeOnFirstLaunch = false
         let originalActivationPolicy = NSApp.activationPolicy()
         defer {
             delegate.mainWindow?.close()
@@ -90,6 +91,7 @@ final class DockFoldersTests: XCTestCase {
 
         delegate.application(NSApp, open: [DockFolderLink.url(for: folder.id)])
         XCTAssertFalse(window.isVisible)
+        XCTAssertEqual(NSApp.activationPolicy(), .accessory)
         XCTAssertFalse(delegate.applicationShouldHandleReopen(NSApp, hasVisibleWindows: true))
         XCTAssertTrue(delegate.mainWindow === window)
         XCTAssertTrue(window.isVisible)
@@ -123,6 +125,24 @@ final class DockFoldersTests: XCTestCase {
         XCTAssertEqual(NSApp.activationPolicy(), .regular)
         window.close()
         XCTAssertEqual(NSApp.activationPolicy(), .accessory)
+    }
+
+    func testWelcomeGuideOpensFromManagerAsOneSheet() throws {
+        let delegate = DockIntegrationManager()
+        let originalActivationPolicy = NSApp.activationPolicy()
+        defer {
+            if let welcomeWindow = delegate.welcomeWindow {
+                delegate.mainWindow?.endSheet(welcomeWindow)
+            }
+            delegate.mainWindow?.close()
+            NSApp.setActivationPolicy(originalActivationPolicy)
+        }
+
+        delegate.showWelcome()
+        let firstWindow = try XCTUnwrap(delegate.welcomeWindow)
+        XCTAssertTrue(delegate.mainWindow?.attachedSheet === firstWindow)
+        delegate.showWelcome()
+        XCTAssertTrue(delegate.welcomeWindow === firstWindow)
     }
 
     func testMissingFolderLinkShowsErrorInMainWindow() {
@@ -171,6 +191,22 @@ final class DockFoldersTests: XCTestCase {
         XCTAssertTrue(symbols.contains("visionpro"))
         XCTAssertEqual(symbols, symbols.sorted())
         XCTAssertTrue(symbols.allSatisfy { NSImage(systemSymbolName: $0, accessibilityDescription: nil) != nil })
+    }
+
+    func testSymbolCatalogAssignsEverySymbolToAVisibleCategory() throws {
+        let symbols = try SystemSymbolCatalog.load()
+        XCTAssertTrue(symbols.allSatisfy { SystemSymbolCatalog.category(for: $0) != .all })
+        XCTAssertEqual(SystemSymbolCatalog.category(for: "iphone"), .devices)
+        XCTAssertEqual(SystemSymbolCatalog.category(for: "figure.walk"), .people)
+        XCTAssertEqual(SystemSymbolCatalog.category(for: "0.circle"), .numbers)
+    }
+
+    func testNewFoldersUseStandardLayout() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let store = FolderStore(persistence: FolderPersistenceService(fileURL: directory.appendingPathComponent("folders.json")))
+        store.createFolder(named: "New")
+        XCTAssertEqual(try XCTUnwrap(store.folders.first).layoutPreset.id, FolderLayoutPreset.defaultID)
     }
 
     func testFolderPersistenceRoundTrip() throws {
@@ -355,7 +391,7 @@ final class DockFoldersTests: XCTestCase {
             preferredIconSize: 68
         )
         XCTAssertEqual(layout.columns, 3)
-        XCTAssertEqual(layout.size.height, 84 + 2 * (68 + DockPopupLayout.labelHeight(for: 68) + DockPopupLayout.labelSpacing(for: 68)) + 12)
+        XCTAssertEqual(layout.size.height, 100 + 2 * (68 + DockPopupLayout.labelHeight(for: 68) + DockPopupLayout.labelSpacing(for: 68)) + 12)
         XCTAssertEqual(FolderLayoutPreset.customGrid(rows: 0, columns: 11, showsAppLabels: true).rows, 1)
         XCTAssertEqual(FolderLayoutPreset.customGrid(rows: 0, columns: 11, showsAppLabels: true).columns, 10)
 
@@ -386,7 +422,7 @@ final class DockFoldersTests: XCTestCase {
         XCTAssertEqual(layout.columns, 2)
         XCTAssertEqual(layout.iconSize, 68)
         XCTAssertEqual(layout.size.width, 360)
-        XCTAssertEqual(layout.size.height, 84 + 2 * 68 + 12)
+        XCTAssertEqual(layout.size.height, 100 + 2 * 68 + 12)
 
         let constrained = DockPopupLayout.calculate(
             applicationCount: 100,
