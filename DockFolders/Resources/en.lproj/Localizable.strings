@@ -111,3 +111,15 @@
 "The global shortcut Control–Option–Space could not be registered (%d). It may already be in use." = "The global shortcut Control–Option–Space could not be registered (%d). It may already be in use.";
 "applicationCount.one" = "%d app";
 "applicationCount.other" = "%d apps";
+"Hover to Open" = "Hover to Open";
+"Open folders" = "Open folders";
+"On click" = "On click";
+"On hover" = "On hover";
+"On click and hover" = "On click and hover";
+"Open delay: %d ms" = "Open delay: %d ms";
+"Close delay: %d ms" = "Close delay: %d ms";
+"Hover opening requires Accessibility access so DockFolders can identify its launcher under the pointer. Click opening works without it." = "Hover opening requires Accessibility access so DockFolders can identify its launcher under the pointer. Click opening works without it.";
+"Accessibility access needed" = "Accessibility access needed";
+"Open System Settings" = "Open System Settings";
+"Later" = "Later";
+"Allow DockFolders in System Settings → Privacy & Security → Accessibility, then return to DockFolders. It needs this permission to identify its Dock icon under the pointer. No screen recording or input monitoring permission is used." = "Allow DockFolders in System Settings → Privacy & Security → Accessibility, then return to DockFolders. It needs this permission to identify its Dock icon under the pointer. No screen recording or input monitoring permission is used.";

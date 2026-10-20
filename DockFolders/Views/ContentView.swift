@@ -46,6 +46,7 @@ struct ContentView: View {
         .onAppear {
             if selectedFolderID == nil { selectedFolderID = folderStore.folders.first?.id }
             migrateLegacyDockLaunchers()
+            DockHoverMonitor.shared.configure(store: folderStore)
             if let pendingURL = DockIntegrationManager.consumePendingURL() { openFolderURL(pendingURL) }
             GlobalShortcutService.shared.onShortcut = {
                 guard let firstFolderID = folderStore.folders.first?.id else { return }
@@ -61,6 +62,9 @@ struct ContentView: View {
             if !folders.contains(where: { $0.id == selectedFolderID }) {
                 selectedFolderID = folders.first?.id
             }
+        }
+        .onChange(of: folderStore.settings.hoverSettings) { _, _ in
+            DockHoverMonitor.shared.settingsDidChange(store: folderStore)
         }
         .alert("Create Folder", isPresented: $showingCreateFolder) {
             TextField("Folder name", text: $newFolderName)

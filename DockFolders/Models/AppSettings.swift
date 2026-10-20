@@ -8,8 +8,9 @@ struct AppSettings: Codable, Hashable, Sendable {
     var globalShortcutEnabled: Bool
     var layoutPresets: [FolderLayoutPreset]
     var defaultLayoutPresetID: String
+    var hoverSettings: HoverSettings
 
-    init(iconSize: Double = 68, gridColumns: Int = 0, appearance: AppearanceMode = .system, launchAtLogin: Bool = false, globalShortcutEnabled: Bool = false, layoutPresets: [FolderLayoutPreset] = FolderLayoutPreset.defaults, defaultLayoutPresetID: String = FolderLayoutPreset.defaultID) {
+    init(iconSize: Double = 68, gridColumns: Int = 0, appearance: AppearanceMode = .system, launchAtLogin: Bool = false, globalShortcutEnabled: Bool = false, layoutPresets: [FolderLayoutPreset] = FolderLayoutPreset.defaults, defaultLayoutPresetID: String = FolderLayoutPreset.defaultID, hoverSettings: HoverSettings = HoverSettings()) {
         self.iconSize = min(max(iconSize, 36), 128)
         self.gridColumns = min(max(gridColumns, 0), 12)
         self.appearance = appearance
@@ -18,9 +19,10 @@ struct AppSettings: Codable, Hashable, Sendable {
         let presets = layoutPresets.isEmpty ? FolderLayoutPreset.defaults : layoutPresets
         self.layoutPresets = presets
         self.defaultLayoutPresetID = presets.first(where: { $0.id == defaultLayoutPresetID })?.id ?? presets[0].id
+        self.hoverSettings = hoverSettings
     }
 
-    private enum CodingKeys: String, CodingKey { case iconSize, gridColumns, appearance, launchAtLogin, globalShortcutEnabled, layoutPresets, defaultLayoutPresetID }
+    private enum CodingKeys: String, CodingKey { case iconSize, gridColumns, appearance, launchAtLogin, globalShortcutEnabled, layoutPresets, defaultLayoutPresetID, hoverSettings }
 
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
@@ -32,9 +34,41 @@ struct AppSettings: Codable, Hashable, Sendable {
             launchAtLogin: try values.decodeIfPresent(Bool.self, forKey: .launchAtLogin) ?? false,
             globalShortcutEnabled: try values.decodeIfPresent(Bool.self, forKey: .globalShortcutEnabled) ?? false,
             layoutPresets: presets,
-            defaultLayoutPresetID: try values.decodeIfPresent(String.self, forKey: .defaultLayoutPresetID) ?? FolderLayoutPreset.defaultID
+            defaultLayoutPresetID: try values.decodeIfPresent(String.self, forKey: .defaultLayoutPresetID) ?? FolderLayoutPreset.defaultID,
+            hoverSettings: try values.decodeIfPresent(HoverSettings.self, forKey: .hoverSettings) ?? HoverSettings()
         )
     }
+}
+
+struct HoverSettings: Codable, Hashable, Sendable {
+    var mode: DockFolderOpeningMode
+    var openDelayMilliseconds: Int
+    var closeDelayMilliseconds: Int
+
+    init(mode: DockFolderOpeningMode = .click, openDelayMilliseconds: Int = 180, closeDelayMilliseconds: Int = 250) {
+        self.mode = mode
+        self.openDelayMilliseconds = min(max(openDelayMilliseconds, 80), 1_000)
+        self.closeDelayMilliseconds = min(max(closeDelayMilliseconds, 80), 1_000)
+    }
+
+    private enum CodingKeys: String, CodingKey { case mode, openDelayMilliseconds, closeDelayMilliseconds }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            mode: try values.decodeIfPresent(DockFolderOpeningMode.self, forKey: .mode) ?? .click,
+            openDelayMilliseconds: try values.decodeIfPresent(Int.self, forKey: .openDelayMilliseconds) ?? 180,
+            closeDelayMilliseconds: try values.decodeIfPresent(Int.self, forKey: .closeDelayMilliseconds) ?? 250
+        )
+    }
+}
+
+enum DockFolderOpeningMode: String, Codable, CaseIterable, Sendable {
+    case click
+    case hover
+    case both
+
+    var enablesHover: Bool { self == .hover || self == .both }
 }
 
 struct FolderLayoutPreset: Codable, Hashable, Identifiable, Sendable {

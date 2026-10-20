@@ -34,6 +34,17 @@ final class DockFoldersTests: XCTestCase {
         XCTAssertEqual(document.settings, AppSettings())
     }
 
+    func testHoverSettingsDefaultToClickAndClampDelays() throws {
+        let legacy = try JSONDecoder().decode(AppSettings.self, from: Data("{}".utf8))
+        XCTAssertEqual(legacy.hoverSettings.mode, .click)
+        XCTAssertEqual(legacy.hoverSettings.openDelayMilliseconds, 180)
+        XCTAssertEqual(legacy.hoverSettings.closeDelayMilliseconds, 250)
+
+        let settings = HoverSettings(mode: .both, openDelayMilliseconds: 20, closeDelayMilliseconds: 2_000)
+        XCTAssertEqual(settings.openDelayMilliseconds, 80)
+        XCTAssertEqual(settings.closeDelayMilliseconds, 1_000)
+    }
+
     func testDockFolderLinksValidateSchemePathAndIdentifier() throws {
         let id = UUID()
         let url = DockFolderLink.url(for: id)

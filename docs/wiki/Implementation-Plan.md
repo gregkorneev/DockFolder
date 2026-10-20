@@ -13,7 +13,7 @@ Last reconciled: 2026-10-20 using the current implementation and recorded verifi
 
 ## Recorded verification
 
-- 23 unit tests pass.
+- 24 unit tests pass.
 - A generated launcher was opened through Finder. It opened the Code folder while DockFolders was running and after a cold start.
 - See [Testing](Testing.md) for the detailed scope and verification gaps.
 
@@ -41,3 +41,9 @@ Last reconciled: 2026-10-20 using the current implementation and recorded verifi
 ## Completion rule
 
 Core requested features are implemented, but release readiness is not claimed until the remaining checks above are completed and documented. Report implementation status separately from host-specific or distribution verification.
+
+## Hover to Open — In progress
+
+- Live prototype confirms pointer-to-launcher detection on macOS 27 with public mouse and Accessibility APIs.
+- Settings, permission handling, delays, popup reuse and adaptive fallback are implemented.
+- Acceptance remains open for integrated hover entry/exit, pointer transfer to the popup, neighboring folder switching, permission denial, energy while active, and alternate Dock/display configurations.

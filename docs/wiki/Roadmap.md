@@ -21,7 +21,13 @@ Status: core implementation includes the requested 0.1, 0.2 and 1.0 feature scop
 - Folder SF Symbol/color customization and folder/app drag ordering.
 - Dock-aware Liquid Glass popup with Escape, focus-loss and successful-launch dismissal.
 - Grid/icon/theme settings, Control–Option–Space hotkey, `SMAppService` login-start integration, and import/export.
-- 23 unit tests pass, including migration, URL validation, launcher bundle, ordering and configuration transfer.
+- 24 unit tests pass, including migration, URL validation, launcher bundle, ordering and configuration transfer.
+
+## Hover to Open — In progress
+
+- Live Dock-item hover detection is confirmed on macOS 27 using public Accessibility and mouse-event APIs.
+- Settings, delayed panel behavior, and an adaptive event-monitor fallback are implemented.
+- The integrated popup flow and alternate Dock/display configurations still need manual acceptance checks before this item is Complete.
 
 ## Remaining release validation
 
