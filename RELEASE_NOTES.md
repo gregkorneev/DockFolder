@@ -20,6 +20,8 @@ Beta 2 adds editable folder grids and includes fixes to folder launcher startup,
 
 The DMG contains an ad-hoc-signed, unnotarized app. macOS may require manual security approval. Accessibility permission granted to an earlier ad-hoc build may need to be granted again. Developer ID signing, notarization, clean installation and upgrades, and alternate Dock/display configurations remain unverified; this is a prerelease.
 
+DMG SHA-256: `faad38481d47a262cd3f63b1d79d9d7e9a2d275ab8256596c95e50b0393832cf`
+
 ## Русский
 
 В Beta 2 появились настраиваемые сетки папок, а также исправления запуска ярлыка папки, открытия наведением и обработки ошибок сохранения.
@@ -39,3 +41,5 @@ The DMG contains an ad-hoc-signed, unnotarized app. macOS may require manual sec
 3. Для открытия наведением выберите в настройках «При наведении» или «По нажатию и наведению» и разрешите установленному DockFolders доступ к «Универсальному доступу». Для открытия нажатием это разрешение не требуется.
 
 DMG содержит приложение с временной подписью без нотариального заверения. macOS может потребовать ручного подтверждения безопасности. Разрешение, выданное прежней сборке с временной подписью, возможно, потребуется выдать заново. Подпись Developer ID, нотариальное заверение, чистая установка и обновление, а также другие конфигурации Dock и дисплеев ещё не проверены; это предварительный релиз.
+
+SHA-256 DMG: `faad38481d47a262cd3f63b1d79d9d7e9a2d275ab8256596c95e50b0393832cf`

@@ -11,7 +11,7 @@
 - Manual launcher smoke check opened the generated app through Finder and verified that it selected the Code folder both while DockFolders was running and after a cold start.
 - On the current display, manually opened the five-app Code folder in its single-column layout; all app tiles fit in the popup without scrolling.
 
-The Beta 2 Release app built on Xcode 27.1 / macOS 27.0 SDK with arm64 and a macOS 27.0 deployment target. Its ad-hoc code signature passed strict verification. The DMG checksum passed `hdiutil verify`; mounting confirmed the app, `/Applications` shortcut and bilingual install notes, and the mounted app passed strict code-signature verification. Release-configuration tests did not run because the test target could not import the non-testable Release module; all 34 release-stage tests passed in Debug; the subsequent custom-grid test also passed, bringing development coverage to 35 tests. No clean install, upgrade, Gatekeeper or notarization check was performed.
+The current Beta 2 Release app built on Xcode 27.1 / Swift 6.4 / macOS 27.0 SDK with arm64 and a macOS 27.0 deployment target. Its ad-hoc code signature passed strict verification. The DMG checksum passed `hdiutil verify`; mounting confirmed the app, `/Applications` shortcut and bilingual install notes, and the mounted app passed strict code-signature verification. All 35 Debug tests passed. Release-configuration tests were not run. No clean install, upgrade, Gatekeeper or notarization check was performed. Manual inspection of the new grid fields and scrolling remains outstanding.
 
 ## Explicitly unverified
 
