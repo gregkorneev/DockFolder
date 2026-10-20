@@ -63,10 +63,23 @@ struct FolderPopupView: View {
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, minHeight: 44)
                 } else {
-                    let activeColumns = folder.gridColumns > 0 ? min(folder.gridColumns, visibleApplications.count) : columns
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: max(activeColumns, 1)), spacing: 12) {
-                        ForEach(visibleApplications) { application in
-                            applicationButton(application, showsLabel: preset.showsAppLabels)
+                    if preset.isCustomGrid {
+                        let cellWidth = max(84, iconSize + 16)
+                        let contentWidth = CGFloat(preset.columns) * cellWidth + CGFloat(preset.columns - 1) * 12
+                        ScrollView([.horizontal, .vertical]) {
+                            LazyVGrid(columns: Array(repeating: GridItem(.fixed(cellWidth), spacing: 12), count: preset.columns), spacing: 12) {
+                                ForEach(visibleApplications) { application in
+                                    applicationButton(application, showsLabel: preset.showsAppLabels)
+                                }
+                            }
+                            .frame(width: contentWidth)
+                        }
+                    } else {
+                        let activeColumns = folder.gridColumns > 0 ? min(folder.gridColumns, visibleApplications.count) : columns
+                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: max(activeColumns, 1)), spacing: 12) {
+                            ForEach(visibleApplications) { application in
+                                applicationButton(application, showsLabel: preset.showsAppLabels)
+                            }
                         }
                     }
                 }
@@ -133,17 +146,27 @@ private struct FolderLayoutOptions: View {
     var body: some View {
         if let folder {
             Form {
-                Picker("Folder layout", selection: Binding(
-                    get: { folder.layoutPreset.id },
-                    set: { id in
-                        guard let preset = layoutChoices(for: folder).first(where: { $0.id == id }) else { return }
-                        store.setLayoutPreset(preset, for: folderID)
-                    }
-                )) {
-                    ForEach(layoutChoices(for: folder)) { preset in
-                        Text(AppLocalization.layoutPresetName(preset)).tag(preset.id)
-                    }
+                HStack {
+                    Text("Folder layout")
+                    Spacer()
+                    TextField("Rows", value: Binding(
+                        get: { self.folder.map(displayedRows) ?? 1 },
+                        set: { updateCustomGrid(rows: $0) }
+                    ), format: .number)
+                    .frame(width: 48)
+                    .multilineTextAlignment(.center)
+                    .accessibilityLabel("Rows")
+                    Text("×")
+                    TextField("Columns", value: Binding(
+                        get: { self.folder.map(displayedColumns) ?? 1 },
+                        set: { updateCustomGrid(columns: $0) }
+                    ), format: .number)
+                    .frame(width: 48)
+                    .multilineTextAlignment(.center)
+                    .accessibilityLabel("Columns")
                 }
+                Text("Enter 1–10 rows and columns. Extra apps scroll within the folder.")
+                    .font(.caption).foregroundStyle(.secondary)
                 Toggle("Show app names", isOn: Binding(
                     get: { folder.layoutPreset.showsAppLabels },
                     set: { show in store.updateFolderLayout(folderID) { $0.layoutPreset.showsAppLabels = show } }
@@ -154,12 +177,6 @@ private struct FolderLayoutOptions: View {
                 ), in: 36...128, step: 4) {
                     Text("App icon size")
                 } minimumValueLabel: { Text("Small") } maximumValueLabel: { Text("Large") }
-                Stepper(value: Binding(
-                    get: { folder.gridColumns },
-                    set: { value in store.updateFolderLayout(folderID) { $0.gridColumns = value } }
-                ), in: 0...12) {
-                    Text(verbatim: AppLocalization.gridColumns(folder.gridColumns))
-                }
                 Slider(value: Binding(
                     get: { folder.glassTransparency },
                     set: { value in store.updateFolderLayout(folderID) { $0.glassTransparency = value } }
@@ -173,11 +190,28 @@ private struct FolderLayoutOptions: View {
         }
     }
 
-    private func layoutChoices(for folder: DockFolder) -> [FolderLayoutPreset] {
-        FolderLayoutPreset.availableChoices(
-            applicationCount: folder.applications.count,
-            presets: store.settings.layoutPresets,
-            showsAppLabels: folder.layoutPreset.showsAppLabels
-        )
+    private func displayedRows(_ folder: DockFolder) -> Int {
+        if let rows = folder.layoutPreset.rows { return rows }
+        if folder.layoutPreset.isSingleRow { return 1 }
+        if folder.layoutPreset.isSingleColumn { return min(max(folder.applications.count, 1), 10) }
+        return min(max(folder.layoutPreset.columns, 1), 10)
+    }
+
+    private func displayedColumns(_ folder: DockFolder) -> Int {
+        if folder.gridColumns > 0 { return min(folder.gridColumns, 10) }
+        if folder.layoutPreset.isSingleColumn { return 1 }
+        if folder.layoutPreset.isSingleRow { return min(max(folder.applications.count, 1), 10) }
+        return min(max(folder.layoutPreset.columns, 1), 10)
+    }
+
+    private func updateCustomGrid(rows: Int? = nil, columns: Int? = nil) {
+        guard let folder else { return }
+        let newRows = rows ?? displayedRows(folder)
+        let newColumns = columns ?? displayedColumns(folder)
+        store.updateFolderLayout(folderID) { folder in
+            folder.layoutPreset = .customGrid(rows: newRows, columns: newColumns, showsAppLabels: folder.layoutPreset.showsAppLabels)
+            folder.gridColumns = 0
+        }
+        PopupWindowManager.shared.refreshLayout(folderID: folderID, store: store)
     }
 }

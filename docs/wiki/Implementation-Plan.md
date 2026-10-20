@@ -13,7 +13,8 @@ Last reconciled: 2026-10-20 using the current implementation and recorded verifi
 
 ## Recorded verification
 
-- 34 Debug unit tests pass, including adaptive popup layout sizing.
+- 35 Debug unit tests pass, including adaptive popup layout sizing.
+- Development build: each folder can store custom 1–10 row and column counts; excess apps scroll. Persistence and panel sizing have automated coverage. Manual interaction with the new fields remains to be checked.
 - A generated launcher was opened through Finder. It opened the Code folder while DockFolders was running and after a cold start.
 - See [Testing](Testing.md) for the detailed scope and verification gaps.
 
@@ -36,7 +37,7 @@ Last reconciled: 2026-10-20 using the current implementation and recorded verifi
 
 ### Distribution
 
-- Beta 2 is packaged as a drag-to-Applications DMG. The image checksum, mounted contents, arm64 architecture, macOS 27 deployment target, and app code-signature integrity were checked on this host; installation and upgrade were not exercised.
+- Beta 2 was packaged as a drag-to-Applications DMG and then withdrawn from GitHub. The image checksum, mounted contents, arm64 architecture, macOS 27 deployment target, and app code-signature integrity were checked on this host; installation and upgrade were not exercised.
 
 - Choose and verify signing/notarization and sandbox policy for the distribution route.
 - Test install/upgrade/uninstall of the packaged main app and generated launchers outside Xcode.

@@ -79,12 +79,14 @@ struct FolderLayoutPreset: Codable, Hashable, Identifiable, Sendable {
     var id: String
     var name: String
     var columns: Int
+    var rows: Int?
     var showsAppLabels: Bool
 
-    private enum CodingKeys: String, CodingKey { case id, name, columns, showsAppLabels }
+    private enum CodingKeys: String, CodingKey { case id, name, columns, rows, showsAppLabels }
 
     var isSingleRow: Bool { columns == Self.rowColumns }
     var isSingleColumn: Bool { columns == Self.columnColumns }
+    var isCustomGrid: Bool { rows != nil }
 
     func gridColumns(for applicationCount: Int) -> Int {
         if isSingleColumn { return 1 }
@@ -93,7 +95,7 @@ struct FolderLayoutPreset: Codable, Hashable, Identifiable, Sendable {
     }
 
     func fits(_ applicationCount: Int) -> Bool {
-        isSingleRow || isSingleColumn || columns >= max(1, Int(ceil(sqrt(Double(applicationCount)))))
+        isCustomGrid || isSingleRow || isSingleColumn || columns >= max(1, Int(ceil(sqrt(Double(applicationCount)))))
     }
 
     func fitting(_ applicationCount: Int) -> Self {
@@ -105,6 +107,12 @@ struct FolderLayoutPreset: Codable, Hashable, Identifiable, Sendable {
     static func dynamicGrid(side: Int, showsAppLabels: Bool) -> Self {
         let size = min(max(side, 1), 64)
         return FolderLayoutPreset(id: "dynamic-grid-\(size)", name: "\(size) × \(size)", columns: size, showsAppLabels: showsAppLabels)
+    }
+
+    static func customGrid(rows: Int, columns: Int, showsAppLabels: Bool) -> Self {
+        let rows = min(max(rows, 1), 10)
+        let columns = min(max(columns, 1), 10)
+        return Self(id: "custom-grid", name: "\(rows) × \(columns)", columns: columns, rows: rows, showsAppLabels: showsAppLabels)
     }
 
     static func availableChoices(applicationCount: Int, presets: [Self], showsAppLabels: Bool) -> [Self] {
@@ -129,10 +137,11 @@ struct FolderLayoutPreset: Codable, Hashable, Identifiable, Sendable {
         return squares + specialLayouts
     }
 
-    init(id: String = UUID().uuidString, name: String, columns: Int, showsAppLabels: Bool = true) {
+    init(id: String = UUID().uuidString, name: String, columns: Int, rows: Int? = nil, showsAppLabels: Bool = true) {
         self.id = id
         self.name = name
-        self.columns = columns == Self.rowColumns || columns == Self.columnColumns ? columns : min(max(columns, 1), 64)
+        self.rows = rows.map { min(max($0, 1), 10) }
+        self.columns = columns == Self.rowColumns || columns == Self.columnColumns ? columns : min(max(columns, 1), rows == nil ? 64 : 10)
         self.showsAppLabels = showsAppLabels
     }
 
@@ -142,6 +151,7 @@ struct FolderLayoutPreset: Codable, Hashable, Identifiable, Sendable {
             id: try values.decode(String.self, forKey: .id),
             name: try values.decode(String.self, forKey: .name),
             columns: try values.decodeIfPresent(Int.self, forKey: .columns) ?? 4,
+            rows: try values.decodeIfPresent(Int.self, forKey: .rows),
             showsAppLabels: try values.decodeIfPresent(Bool.self, forKey: .showsAppLabels) ?? true
         )
     }

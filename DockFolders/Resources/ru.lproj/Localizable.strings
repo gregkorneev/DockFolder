@@ -79,6 +79,9 @@
 "All in one column" = "В один столбец";
 "Save preset and use for new folders" = "Сохранить и применять к новым папкам";
 "Folder layout" = "Макет папки";
+"Rows" = "Строки";
+"Columns" = "Столбцы";
+"Enter 1–10 rows and columns. Extra apps scroll within the folder." = "Введите от 1 до 10 строк и столбцов. Остальные приложения доступны прокруткой.";
 "Show app names" = "Показывать названия приложений";
 "Folder layout options" = "Настройки макета папки";
 "Layout preset 4 by 4" = "4 × 4";

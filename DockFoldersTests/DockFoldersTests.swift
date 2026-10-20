@@ -299,6 +299,29 @@ final class DockFoldersTests: XCTestCase {
         XCTAssertEqual(result.columns, 2)
     }
 
+    func testCustomGridKeepsIndependentRowsAndColumnsAndScrollsOverflow() throws {
+        let preset = FolderLayoutPreset.customGrid(rows: 2, columns: 3, showsAppLabels: true)
+        let folder = DockFolder(name: "Code", applications: (1...8).map {
+            ApplicationItem(url: URL(fileURLWithPath: "/Applications/Test \($0).app"))
+        }, layoutPreset: preset)
+        let decoded = try JSONDecoder().decode(DockFolder.self, from: JSONEncoder().encode(folder))
+
+        XCTAssertEqual(decoded.layoutPreset.rows, 2)
+        XCTAssertEqual(decoded.layoutPreset.columns, 3)
+        XCTAssertEqual(decoded.layoutPreset.fitting(8), preset)
+
+        let layout = DockPopupLayout.calculate(
+            applicationCount: 8,
+            preset: decoded.layoutPreset,
+            availableSize: NSSize(width: 1_000, height: 700),
+            preferredIconSize: 68
+        )
+        XCTAssertEqual(layout.columns, 3)
+        XCTAssertEqual(layout.size.height, 72 + 2 * (68 + 32 + 5) + 12)
+        XCTAssertEqual(FolderLayoutPreset.customGrid(rows: 0, columns: 11, showsAppLabels: true).rows, 1)
+        XCTAssertEqual(FolderLayoutPreset.customGrid(rows: 0, columns: 11, showsAppLabels: true).columns, 10)
+    }
+
     func testAddingAppsAutomaticallyGrowsFolderLayoutWhenGridIsTooSmall() throws {
         let fileURL = FileManager.default.temporaryDirectory
             .appendingPathComponent(UUID().uuidString, isDirectory: true)

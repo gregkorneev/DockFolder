@@ -9,6 +9,7 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
     private var panel: NSPanel?
     private var hostingView: NSHostingView<AnyView>?
     private var dockAnchor = NSPoint.zero
+    private var presentedFolderID: UUID?
     private(set) var isHoverPresentation = false
     var panelFrame: NSRect? { panel?.frame }
     private var escapeMonitor: Any?
@@ -21,11 +22,19 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
         isLayoutOptionsPresented = isPresented
     }
 
+    func refreshLayout(folderID: UUID, store: FolderStore) {
+        guard let panel, presentedFolderID == folderID,
+              let folder = store.folders.first(where: { $0.id == folderID }) else { return }
+        let size = popupLayout(for: folder, anchor: dockAnchor).size
+        panel.setFrame(NSRect(origin: origin(for: size, anchor: dockAnchor), size: size), display: true, animate: true)
+    }
+
     func present(folderID: UUID, store: FolderStore, source: Source = .click, anchor: NSPoint? = nil) {
         guard let folder = store.folders.first(where: { $0.id == folderID }) else { return }
         isLayoutOptionsPresented = false
         let anchor = anchor ?? NSEvent.mouseLocation
         if source == .hover, let panel, let hostingView {
+            presentedFolderID = folderID
             dockAnchor = anchor
             panel.title = folder.name
             let colorScheme: ColorScheme? = switch store.settings.appearance {
@@ -45,6 +54,7 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
             return
         }
         close(animated: false)
+        presentedFolderID = folderID
         dockAnchor = anchor
         isHoverPresentation = source == .hover
         let layout = popupLayout(for: folder, anchor: anchor)
@@ -116,6 +126,7 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
 
     func close(animated: Bool = true) {
         isLayoutOptionsPresented = false
+        presentedFolderID = nil
         if let escapeMonitor {
             NSEvent.removeMonitor(escapeMonitor)
             self.escapeMonitor = nil
@@ -248,6 +259,18 @@ enum DockPopupLayout {
         let labelHeight: CGFloat = labels ? 32 : 0
         let availableWidth = max(1, availableSize.width)
         let availableHeight = max(72, availableSize.height)
+        if let requestedRows = preset.rows {
+            let iconSize = min(max(preferredIconSize, 24), 128)
+            let cellWidth = max(84, iconSize + 16)
+            let rowHeight = iconSize + labelHeight + (labels ? 5 : 0)
+            let contentWidth = outerWidth + CGFloat(preset.columns) * cellWidth + CGFloat(preset.columns - 1) * columnSpacing
+            let contentHeight = outerHeight + CGFloat(requestedRows) * rowHeight + CGFloat(requestedRows - 1) * rowSpacing
+            return Result(
+                columns: preset.columns,
+                iconSize: iconSize,
+                size: NSSize(width: min(availableWidth, max(minimumWidth, contentWidth)), height: min(availableHeight, contentHeight))
+            )
+        }
         let targetColumns = preferredColumns > 0
             ? min(count, preferredColumns)
             : (preset.isSingleColumn ? 1 : (preset.isSingleRow ? count : preset.columns))

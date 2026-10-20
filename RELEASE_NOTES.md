@@ -1,4 +1,8 @@
-# DockFolders 1.0 — Beta 2
+# DockFolders 1.0 — Beta 2 (withdrawn)
+
+The Beta 2 GitHub release and tag were removed while development continues. These notes are kept as a historical build record.
+
+Релиз и тег Beta 2 удалены с GitHub на время разработки. Эти заметки сохранены как запись о прежней сборке.
 
 ## English
 

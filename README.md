@@ -14,7 +14,7 @@ DockFolders is a native macOS app for organizing installed applications into use
 - Choose folder and Dock launcher icons from a searchable catalog of 7,752 SF Symbols 7 names, including Apple device designs; macOS renders the glyph artwork through public AppKit APIs. Set the background from curated colors or the system color picker. Dock icons use unmasked square artwork at 1024 × 1024 px and 2× resolution (512 pt), which macOS scales to Dock size. Reorder folders and apps by dragging.
 - Open a compact Liquid Glass folder popup aligned with the clicked Dock icon on its display, adapting to bottom, left, and right Dock positions.
 - Optionally open the popup on hover, on click, or both. Hover uses public Accessibility APIs and requires the macOS Accessibility permission; click remains available without it. Open/close delays are adjustable in Settings.
-- Hide or show app names, choose a grid sized for the folder's app count or a single row/column, and build named layout presets in Settings; undersized grids are hidden, larger choices are offered as needed, and the selected default applies to newly created folders.
+- Hide or show app names and enter 1–10 rows and columns for each folder; extra apps can be reached by scrolling. Named layout presets remain available in Settings, and the selected default applies to newly created folders.
 - Adjust grid, icon size, and theme; set a global Control–Option–Space shortcut and login startup preference.
 - Import and export configuration.
 - Generate a launcher app for each folder in `/Applications/DockFolders`, named after the folder (numbered only when names collide); renaming updates the launcher name while preserving its stable `dockfolders://folder/<UUID>` route.
@@ -25,9 +25,9 @@ To choose its icon, right-click the folder in the sidebar and select **Customize
 
 - macOS 27.0 or later, Apple Silicon.
 
-## Beta download
+## Development builds
 
-Download the latest `DockFolders-…-macOS-arm64.dmg` from [GitHub Releases](https://github.com/gregkorneev/DockFolder/releases). Open the disk image and drag `DockFolders.app` onto the `Applications` shortcut. Quit an older DockFolders version before replacing it. This beta is ad-hoc signed and not notarized; macOS may require a manual security approval. Xcode is required only when building from source.
+Development continues on `main`. Beta 2 and its DMG have been withdrawn from GitHub; the older Beta 1 prerelease remains available in [GitHub Releases](https://github.com/gregkorneev/DockFolder/releases). The current grid editor is available only in a development build.
 
 To build from source, use Xcode 27.1 or later with the macOS 27 SDK.
 
