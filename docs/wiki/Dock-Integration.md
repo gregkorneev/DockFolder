@@ -24,6 +24,8 @@ Folder URLs are routed directly by the application delegate using the shared sto
 
 An existing error does not replace a valid folder popup with the browser; the popup presents the error. Startup launcher migration runs only when an older bundle needs moving or renaming. Folder deletion persists the data change before removing its launcher; a failed save keeps both the folder and launcher.
 
+If folder data cannot be read, opening a stale launcher keeps the data-load error visible instead of replacing it with a generic invalid-link message.
+
 ### User setup
 
 1. Generate the folder launcher from DockFolders.

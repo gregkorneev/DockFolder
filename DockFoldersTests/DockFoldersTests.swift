@@ -113,6 +113,25 @@ final class DockFoldersTests: XCTestCase {
         XCTAssertEqual(delegate.mainWindow?.isVisible, true)
     }
 
+    func testInvalidLinkDoesNotReplaceDataLoadError() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let delegate = DockIntegrationManager()
+        defer {
+            delegate.mainWindow?.close()
+            try? FileManager.default.removeItem(at: directory)
+        }
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        try Data("invalid JSON".utf8).write(to: directory.appendingPathComponent("folders.json"))
+        delegate.folderStore = FolderStore(persistence: FolderPersistenceService(fileURL: directory.appendingPathComponent("folders.json")))
+        let loadError = delegate.folderStore.errorMessage
+
+        delegate.application(NSApp, open: [DockFolderLink.url(for: UUID())])
+
+        XCTAssertNotNil(loadError)
+        XCTAssertEqual(delegate.folderStore.errorMessage, loadError)
+        XCTAssertEqual(delegate.mainWindow?.isVisible, true)
+    }
+
     func testSystemSymbolCatalogContainsSF7NamesAndAppleDeviceSymbols() throws {
         let symbols = try SystemSymbolCatalog.load()
 

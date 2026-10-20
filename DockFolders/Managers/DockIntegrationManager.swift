@@ -42,7 +42,9 @@ final class DockIntegrationManager: NSObject, NSApplicationDelegate {
     func application(_ application: NSApplication, open urls: [URL]) {
         guard let id = urls.compactMap({ DockFolderLink.folderID(from: $0) }).first,
               folderStore.folders.contains(where: { $0.id == id }) else {
-            folderStore.errorMessage = NSLocalizedString("This DockFolders link is invalid or its folder no longer exists.", comment: "")
+            if folderStore.errorMessage == nil {
+                folderStore.errorMessage = NSLocalizedString("This DockFolders link is invalid or its folder no longer exists.", comment: "")
+            }
             showMainWindow()
             return
         }
