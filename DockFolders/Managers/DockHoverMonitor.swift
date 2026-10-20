@@ -22,7 +22,6 @@ final class DockHoverMonitor {
     private var candidateFolderID: UUID?
     private var lastPointer = NSPoint(x: CGFloat.greatestFiniteMagnitude, y: CGFloat.greatestFiniteMagnitude)
     private var lastHitTest = Date.distantPast
-
     private init() {}
 
     func configure(store: FolderStore) {
@@ -173,7 +172,7 @@ final class DockHoverMonitor {
     private func folderID(for element: AXUIElement, folders: [DockFolder]) -> UUID? {
         var value: CFTypeRef?
         guard AXUIElementCopyAttributeValue(element, kAXURLAttribute as CFString, &value) == .success,
-              let url = (value as? URL)?.standardizedFileURL,
+              let url = ((value as? URL) ?? (value as? String).flatMap(URL.init(string:)))?.standardizedFileURL,
               url.path.hasPrefix("/Applications/DockFolders/"),
               url.pathExtension == "app",
               let bundle = Bundle(url: url),

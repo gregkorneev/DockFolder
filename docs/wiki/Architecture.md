@@ -43,10 +43,10 @@ See [Dock-Integration.md](Dock-Integration.md) for the user-action constraint an
 ## Verification
 
 - macOS build succeeds with Xcode 27.1 / SDK 27.0.
-- Twenty-four unit tests pass, including popup placement calculations for bottom/left/right Dock layouts and fallback placement when no Dock inset is reported.
+- Twenty-five unit tests pass, including adaptive popup sizing and popup placement calculations for bottom/left/right Dock layouts and fallback placement when no Dock inset is reported.
 - Manual smoke check opened a generated launcher through Finder, verified it opened the selected Code folder while DockFolders was already open and after cold-start.
 - Actual popup placement on multiple physical displays, accessibility/reduced motion, ServiceManagement registration, hotkey collision, production signing, and sandbox distribution remain unverified.
 
 ## Hover to Open
 
-`DockHoverMonitor` listens to global and local `NSEvent.mouseMoved` notifications, then uses the public Accessibility hit-test API to identify the Dock item. It maps the item's bundle identifier to the folder UUID and reuses `PopupWindowManager`; no Dock preferences or private APIs are used. Settings default to click-only. Hover modes have adjustable open/close delays and request Accessibility permission only; the monitor caps hit-testing to about 30 Hz during pointer movement and provides an adaptive slow-at-rest fallback only if event monitors cannot be installed. A live prototype identified the pinned Code launcher on the development Mac. Multi-display and alternate Dock configurations still need host verification.
+`DockHoverMonitor` listens to global and local `NSEvent.mouseMoved` notifications, then uses the public Accessibility hit-test API to identify the Dock item. It maps the item's bundle identifier to the folder UUID and reuses `PopupWindowManager`; no Dock preferences or private APIs are used. Settings default to click-only. Hover modes have adjustable open/close delays and request Accessibility permission only; the monitor caps hit-testing to about 30 Hz during pointer movement and provides an adaptive slow-at-rest fallback only if event monitors cannot be installed. On macOS 27, the pinned Code launcher was manually verified end to end: hover opens the folder, pointer transfer keeps it open, and leaving closes it. Multi-display and alternate Dock configurations still need host verification.

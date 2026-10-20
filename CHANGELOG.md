@@ -34,4 +34,6 @@
 
 - Verified live pointer-to-Dock-item detection on macOS 27 using global mouse movement events and the public Accessibility API.
 - Added optional Click / Hover / Both modes, configurable open/close delays, an Accessibility permission explanation, and event-driven popup control with an adaptive low-frequency fallback.
-- Kept click opening as the default; full popup interaction and alternate display/Dock configurations still require manual validation.
+- Sized popups to the available display area and folder contents; overflowing layouts adapt to a grid without scrolling app tiles. Added adaptive layout coverage.
+- Verified in the built app that hovering Code opens its folder, moving into the popup keeps it open, and leaving closes it.
+- Kept click opening as the default; neighboring-folder switching, denied-permission behavior, active-hover energy and alternate display/Dock configurations still require validation.

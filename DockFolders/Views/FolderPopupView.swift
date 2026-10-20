@@ -4,6 +4,8 @@ import SwiftUI
 struct FolderPopupView: View {
     @Bindable var store: FolderStore
     let folderID: UUID
+    let columns: Int
+    let iconSize: CGFloat
     @State private var searchText = ""
 
     private var folder: DockFolder? { store.folders.first(where: { $0.id == folderID }) }
@@ -63,7 +65,6 @@ struct FolderPopupView: View {
                 }
 
                 let preset = folder.layoutPreset
-                let columns = preset.gridColumns(for: folder.applications.count)
                 let visibleApplications = folder.applications.filter {
                     searchText.isEmpty || $0.name.localizedCaseInsensitiveContains(searchText)
                 }
@@ -72,33 +73,12 @@ struct FolderPopupView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, minHeight: 44)
-                } else if preset.isSingleRow {
-                    ScrollView(.horizontal) {
-                        LazyHStack(spacing: 12) {
-                            ForEach(visibleApplications) { application in
-                                applicationButton(application, showsLabel: preset.showsAppLabels)
-                            }
-                        }
-                    }
-                    .scrollIndicators(.hidden)
-                } else if preset.isSingleColumn {
-                    ScrollView {
-                        LazyVStack(spacing: 12) {
-                            ForEach(visibleApplications) { application in
-                                applicationButton(application, showsLabel: preset.showsAppLabels)
-                            }
-                        }
-                    }
-                    .scrollIndicators(.hidden)
                 } else {
-                    ScrollView {
-                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: columns), spacing: 12) {
-                            ForEach(visibleApplications) { application in
-                                applicationButton(application, showsLabel: preset.showsAppLabels)
-                            }
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: columns), spacing: 12) {
+                        ForEach(visibleApplications) { application in
+                            applicationButton(application, showsLabel: preset.showsAppLabels)
                         }
                     }
-                    .scrollIndicators(.hidden)
                 }
             }
         }
@@ -124,7 +104,7 @@ struct FolderPopupView: View {
                 Image(nsImage: NSWorkspace.shared.icon(forFile: application.path))
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 56, height: 56)
+                    .frame(width: iconSize, height: iconSize)
                 if showsLabel {
                     Text(application.name)
                         .font(.system(size: 11))

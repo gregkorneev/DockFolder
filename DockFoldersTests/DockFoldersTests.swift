@@ -95,6 +95,26 @@ final class DockFoldersTests: XCTestCase {
         XCTAssertEqual(fourByFour.fitting(17).columns, 5)
     }
 
+    func testPopupLayoutSizesSingleColumnToItsContentsAndAvoidsScrollCapacityCaps() {
+        let preset = FolderLayoutPreset.defaults.first { $0.isSingleColumn } ??
+            FolderLayoutPreset(id: "single-column", name: "Single column", columns: FolderLayoutPreset.columnColumns)
+        let twoApps = DockPopupLayout.calculate(applicationCount: 2, preset: preset, availableSize: NSSize(width: 1_200, height: 800))
+        XCTAssertEqual(twoApps.columns, 1)
+        XCTAssertEqual(twoApps.iconSize, 56)
+        XCTAssertGreaterThan(twoApps.size.height, 200)
+        XCTAssertGreaterThanOrEqual(twoApps.size.width, 360)
+
+        let manyApps = DockPopupLayout.calculate(
+            applicationCount: 24,
+            preset: preset,
+            availableSize: NSSize(width: 900, height: 600)
+        )
+        XCTAssertGreaterThan(manyApps.columns, 1)
+        XCTAssertLessThanOrEqual(manyApps.size.width, 900)
+        XCTAssertLessThanOrEqual(manyApps.size.height, 600)
+        XCTAssertGreaterThanOrEqual(manyApps.columns * Int(ceil(Double(24) / Double(manyApps.columns))), 24)
+    }
+
     func testAddingAppsAutomaticallyGrowsFolderLayoutWhenGridIsTooSmall() throws {
         let fileURL = FileManager.default.temporaryDirectory
             .appendingPathComponent(UUID().uuidString, isDirectory: true)

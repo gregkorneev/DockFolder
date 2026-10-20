@@ -27,8 +27,9 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
             case .light: .light
             case .dark: .dark
             }
-            hostingView.rootView = AnyView(FolderPopupView(store: store, folderID: folderID).preferredColorScheme(colorScheme))
-            let size = popupSize(for: folder)
+            let layout = popupLayout(for: folder, anchor: anchor)
+            hostingView.rootView = AnyView(FolderPopupView(store: store, folderID: folderID, columns: layout.columns, iconSize: layout.iconSize).preferredColorScheme(colorScheme))
+            let size = layout.size
             let frame = NSRect(origin: origin(for: size, anchor: anchor), size: size)
             NSAnimationContext.runAnimationGroup { context in
                 context.duration = 0.12
@@ -40,7 +41,8 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
         close(animated: false)
         dockAnchor = anchor
         isHoverPresentation = source == .hover
-        let size = popupSize(for: folder)
+        let layout = popupLayout(for: folder, anchor: anchor)
+        let size = layout.size
         let width = size.width
         let height = size.height
         let panel = FolderPopupPanel(
@@ -66,7 +68,7 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
         case .light: .light
         case .dark: .dark
         }
-        let content = NSHostingView(rootView: AnyView(FolderPopupView(store: store, folderID: folderID).preferredColorScheme(colorScheme)))
+        let content = NSHostingView(rootView: AnyView(FolderPopupView(store: store, folderID: folderID, columns: layout.columns, iconSize: layout.iconSize).preferredColorScheme(colorScheme)))
         hostingView = content
         content.frame = NSRect(origin: .zero, size: panel.contentView?.bounds.size ?? NSSize(width: width, height: height))
         let animatedContent = NSView(frame: content.frame)
@@ -153,14 +155,14 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
 
     enum Source { case click, hover }
 
-    private func popupSize(for folder: DockFolder) -> NSSize {
-        let preset = folder.layoutPreset
-        let columns = preset.gridColumns(for: folder.applications.count)
-        let rows = max(1, Int(ceil(Double(folder.applications.count) / Double(columns))))
-        let width: CGFloat = preset.isSingleColumn ? 170 : (preset.isSingleRow ? 370 : min(900, max(250, CGFloat(columns) * 84 + 36)))
-        let rowHeight = preset.showsAppLabels ? 88 : 68
-        let height: CGFloat = preset.isSingleRow ? 160 : min(max(162, CGFloat(74 + min(rows, 5) * rowHeight)), 500)
-        return NSSize(width: width, height: height)
+    private func popupLayout(for folder: DockFolder, anchor: NSPoint) -> DockPopupLayout.Result {
+        let screen = NSScreen.screens.first(where: { $0.frame.contains(anchor) }) ?? NSScreen.main
+        let available = NSSize(width: (screen?.visibleFrame.width ?? 1_000) - 24, height: (screen?.visibleFrame.height ?? 700) - 24)
+        return DockPopupLayout.calculate(
+            applicationCount: folder.applications.count,
+            preset: folder.layoutPreset,
+            availableSize: available
+        )
     }
 
     private func origin(for size: NSSize, anchor: NSPoint) -> NSPoint {
@@ -216,6 +218,47 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
 
     private func anchorInContent(_ screenPoint: NSPoint, panel: NSWindow, content: NSView) -> NSPoint {
         content.convert(panel.convertPoint(fromScreen: screenPoint), from: nil)
+    }
+}
+
+enum DockPopupLayout {
+    struct Result: Equatable {
+        var columns: Int
+        var iconSize: CGFloat
+        var size: NSSize
+    }
+
+    static func calculate(applicationCount: Int, preset: FolderLayoutPreset, availableSize: NSSize) -> Result {
+        let count = max(1, applicationCount)
+        let labels = preset.showsAppLabels
+        let outerWidth: CGFloat = 28
+        let outerHeight: CGFloat = 56
+        let minimumWidth: CGFloat = 360
+        let columnSpacing: CGFloat = 12
+        let rowSpacing: CGFloat = 12
+        let cellWidth: CGFloat = 84
+        let labelHeight: CGFloat = labels ? 32 : 0
+        let availableWidth = max(1, availableSize.width)
+        let availableHeight = max(72, availableSize.height)
+        let maxColumns = max(1, min(count, Int((availableWidth - outerWidth + columnSpacing) / (cellWidth + columnSpacing))))
+        let targetColumns = min(maxColumns, preset.isSingleColumn ? 1 : (preset.isSingleRow ? count : preset.columns))
+
+        for iconSize in stride(from: CGFloat(56), through: CGFloat(24), by: -2) {
+            let rowHeight = iconSize + labelHeight + (labels ? 5 : 0)
+            let maxRows = max(1, Int((availableHeight - outerHeight + rowSpacing) / (rowHeight + rowSpacing)))
+            let minimumColumns = max(1, Int(ceil(Double(count) / Double(maxRows))))
+            let columns = min(maxColumns, max(targetColumns, minimumColumns))
+            let rows = Int(ceil(Double(count) / Double(columns)))
+            let width = min(availableWidth, max(minimumWidth, outerWidth + CGFloat(columns) * cellWidth + CGFloat(max(0, columns - 1)) * columnSpacing))
+            let height = outerHeight + CGFloat(rows) * rowHeight + CGFloat(max(0, rows - 1)) * rowSpacing
+            if width <= availableWidth, height <= availableHeight {
+                return Result(columns: columns, iconSize: iconSize, size: NSSize(width: width, height: height))
+            }
+        }
+
+        let columns = maxColumns
+        let rows = Int(ceil(Double(count) / Double(columns)))
+        return Result(columns: columns, iconSize: 24, size: NSSize(width: availableWidth, height: availableHeight))
     }
 }
 

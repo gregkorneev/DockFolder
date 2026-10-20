@@ -7,7 +7,7 @@ Last reviewed: 2026-10-20.
 ## Remaining product limitations / unverified behavior
 
 - Users must manually pin each generated folder launcher to Dock using macOS controls.
-- Popup geometry has not been validated on multiple displays, all Dock edges, hidden Dock, or after display configuration changes.
+- Adaptive popup sizing has unit coverage, but visual fit has not been verified on multiple displays, all Dock edges, hidden Dock, or after display configuration changes.
 - VoiceOver, keyboard-only accessibility, reduced motion, and broader accessibility checks remain unverified.
 - Login-start preference uses ServiceManagement, but actual registration/removal and restart persistence are unverified.
 - The Control–Option–Space shortcut is implemented, but collision handling and conflicts with user/system shortcuts remain unverified.
@@ -26,5 +26,6 @@ The user must pin generated launchers to Dock using standard macOS UI. The proje
 
 Track resolved issues in the changelog and move enduring constraints to [Decisions](Decisions.md).
 
-- Hover detection was confirmed by a live prototype on one macOS 27 setup, but the integrated popup's entry/exit behavior and permission-denied fallback have not been manually exercised.
+- Integrated hover opening, keeping the popup open while the pointer enters it, and closing after exit were confirmed on one macOS 27 setup. Neighbor switching and permission-denied fallback remain unverified.
+- Ad-hoc Xcode builds can lose Accessibility trust when their code requirement changes. If `AXIsProcessTrusted()` remains false while the app is enabled in System Settings, remove the stale DockFolders entry and add the exact current `.app` build again. Distribution needs a stable signing identity.
 - Accessibility coordinate mapping across multiple displays, Dock movement/restart, magnification, auto-hide and fullscreen apps remain unverified.

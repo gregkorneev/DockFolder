@@ -4,14 +4,15 @@
 
 ## Recorded verification evidence
 
-- macOS scheme build completed successfully with Xcode 27.1 / SDK 27.0.
-- Twenty-four unit tests pass, including dynamic grid capacity and automatic growth, an assertion that generated launcher artwork is a square 1024 × 1024 px bitmap at 2× resolution (512 pt), popup position calculations for all Dock edges and the popup's collapse transform targeting its Dock anchor, migration, URL validation, launcher bundles, ordering, configuration transfer, persistence, discovery and launch errors.
+- macOS scheme build and tests completed successfully with Xcode 27.1 / SDK 27.0.
+- Twenty-five unit tests pass, including adaptive popup sizing for column layouts and constrained displays, dynamic grid capacity and automatic growth, an assertion that generated launcher artwork is a square 1024 × 1024 px bitmap at 2× resolution (512 pt), popup position calculations for all Dock edges and the popup's collapse transform targeting its Dock anchor, migration, URL validation, launcher bundles, ordering, configuration transfer, persistence, discovery and launch errors.
 - Manual UI smoke check created a folder, searched for and added Calculator, launched Calculator, and verified folder persistence after relaunch.
 - Manual launcher smoke check opened the generated app through Finder and verified that it selected the Code folder both while DockFolders was running and after a cold start.
+- On the current display, manually opened the five-app Code folder in its single-column layout; all app tiles fit in the popup without scrolling.
 
 ## Explicitly unverified
 
-Actual popup placement, animation and clipping on multiple physical displays, all Dock edges, hidden/auto-hide Dock, and display attach/detach; VoiceOver, keyboard-only accessibility and runtime behavior with Reduce Motion; actual login-start registration/removal across restart; hotkey collision behavior; stale Dock alias cleanup; signing/notarization/sandbox/distribution; and clean-install pinning instructions remain unverified. Dock-edge geometry and the animation's target transform have unit coverage, but host behavior still needs manual checking.
+Actual adaptive popup sizing and clipping on multiple physical displays, all Dock edges, hidden/auto-hide Dock, and display attach/detach; VoiceOver, keyboard-only accessibility and runtime behavior with Reduce Motion; actual login-start registration/removal across restart; hotkey collision behavior; stale Dock alias cleanup; signing/notarization/sandbox/distribution; and clean-install pinning instructions remain unverified. Adaptive sizing, Dock-edge geometry and the animation's target transform have unit coverage, but host behavior still needs manual checking.
 
 ## Remaining test matrix
 
@@ -25,6 +26,10 @@ Run only checks that the environment supports; record manual setup and observed 
 
 ## Hover verification
 
-The live macOS 27 prototype observed NSEvent.mouseMoved and matched the pointer to the pinned Code.app Accessibility Dock item and its /Applications/DockFolders/Code.app URL without a click. Hover popup entry/exit, neighboring-folder switching, pointer transfer into the popup, and permission-denied behavior have not yet been manually exercised in the built application. Multiple displays, Dock movement/restart, auto-hide, magnification and fullscreen behavior remain unverified.
+On macOS 27, the built app was manually verified with the pinned Code launcher: hovering opened the matching folder without a click; moving the pointer into the popup kept it open; leaving the popup closed it. The integrated AX hit test matched folder `BAE3D00D-7F1F-4BAB-A431-061AA6A44FF2`. The user confirmed the open/retain/close behavior.
+
+The first Accessibility entry was enabled but did not match the current ad-hoc signed Xcode build (`AXIsProcessTrusted()` returned false and TCC logged a code-requirement mismatch). Removing that stale entry and adding the current `DockFolders.app` build made trust true after returning to the app. A newly built ad-hoc binary may need to be re-added in Privacy & Security → Accessibility. A stable signing identity is still required for distribution.
+
+Neighboring-folder switching, permission-denied fallback, active-hover energy, multiple displays, Dock movement/restart, auto-hide, magnification and fullscreen behavior remain unverified.
 
 A 20-second Xcode Instruments Activity Monitor trace was captured while Hover was selected but Accessibility permission was denied. Samples after startup showed 0.0% CPU and about 79 MiB physical footprint. This records the idle app with hover detection disabled; it does not measure active hover behavior or energy while moving over Dock.
