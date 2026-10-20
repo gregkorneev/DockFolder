@@ -75,7 +75,7 @@ struct FolderPopupView: View {
                         .frame(maxWidth: .infinity, minHeight: 44)
                 } else {
                     if let rows = preset.rows {
-                        let grid = LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: gridSpacing), count: preset.columns), spacing: gridSpacing) {
+                        let grid = LazyVGrid(columns: Array(repeating: GridItem(.fixed(iconSize + 8), spacing: gridSpacing), count: preset.columns), spacing: gridSpacing) {
                             ForEach(visibleApplications) { application in
                                 applicationButton(application, showsLabel: preset.showsAppLabels)
                             }
@@ -94,7 +94,7 @@ struct FolderPopupView: View {
                         }
                     } else {
                         let activeColumns = folder.gridColumns > 0 ? min(folder.gridColumns, visibleApplications.count) : columns
-                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: gridSpacing), count: max(activeColumns, 1)), spacing: gridSpacing) {
+                        LazyVGrid(columns: Array(repeating: GridItem(.fixed(iconSize + 8), spacing: gridSpacing), count: max(activeColumns, 1)), spacing: gridSpacing) {
                             ForEach(visibleApplications) { application in
                                 applicationButton(application, showsLabel: preset.showsAppLabels)
                             }

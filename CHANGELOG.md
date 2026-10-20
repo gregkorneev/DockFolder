@@ -3,6 +3,7 @@
 
 ## Unreleased — development
 
+- Tighten folder popup icon rows and columns by using icon-sized grid cells instead of stretching each cell across the panel.
 - Render generated launcher symbols with a clear secondary layer, so multicolor SF Symbols such as `macbook` keep the same outline as the folder picker instead of gaining a tinted fill.
 - Keep the DockFolders Dock icon hidden when a folder popup opens from the manager, and give popup content enough height to display complete app icons at every chosen grid size.
 - Group all SF Symbols in the icon picker by category and enlarge their previews.

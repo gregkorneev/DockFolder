@@ -16,7 +16,7 @@ The interface is available in English and Russian. DockFolders follows the prefe
 - **Verified:** 25 unit tests; manual launcher test opened the Code folder while running and after cold-start; hover opens, holds and closes the popup as expected; five app tiles fit a single-column popup without scrolling.
 - **Unverified:** multi-display and all Dock-edge behavior, accessibility/reduced motion, actual login-start registration, hotkey conflicts, signing/notarization/sandbox/distribution, and user pinning flow on a clean install.
 - **Dock pinning:** each generated launcher must be added by the user through macOS Dock controls. DockFolders will not edit Dock preferences or use private APIs.
-- **Launcher icon sizing:** per-folder launchers use a standard multi-resolution `.icns` app icon; macOS controls Dock tile size and magnification globally in Desktop & Dock settings.
+- **Launcher icon sizing:** per-folder launchers use a standard multi-resolution `.icns` app icon; macOS controls Dock tile size and magnification globally in Desktop & Dock settings. Popup grid cells stay close to their chosen icon size.
 
 ## Pages
 

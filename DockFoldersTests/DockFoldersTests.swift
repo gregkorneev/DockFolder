@@ -367,10 +367,10 @@ final class DockFoldersTests: XCTestCase {
     }
 
     func testGridSpacingShrinksWithIconSize() {
-        XCTAssertEqual(DockPopupLayout.spacing(for: 68), 12, accuracy: 0.001)
-        XCTAssertEqual(DockPopupLayout.spacing(for: 34), 6, accuracy: 0.001)
+        XCTAssertEqual(DockPopupLayout.spacing(for: 68), 8, accuracy: 0.001)
+        XCTAssertEqual(DockPopupLayout.spacing(for: 34), 4, accuracy: 0.001)
         XCTAssertLessThan(DockPopupLayout.spacing(for: 24), DockPopupLayout.spacing(for: 34))
-        XCTAssertEqual(DockPopupLayout.spacing(for: 10), 4, accuracy: 0.001)
+        XCTAssertEqual(DockPopupLayout.spacing(for: 10), 3, accuracy: 0.001)
     }
 
     func testCustomGridKeepsIndependentRowsAndColumnsAndScrollsOverflow() throws {
@@ -391,7 +391,7 @@ final class DockFoldersTests: XCTestCase {
             preferredIconSize: 68
         )
         XCTAssertEqual(layout.columns, 3)
-        XCTAssertEqual(layout.size.height, 100 + 2 * (68 + DockPopupLayout.labelHeight(for: 68) + DockPopupLayout.labelSpacing(for: 68)) + 12)
+        XCTAssertEqual(layout.size.height, 100 + 2 * (68 + DockPopupLayout.labelHeight(for: 68) + DockPopupLayout.labelSpacing(for: 68)) + 8)
         XCTAssertEqual(FolderLayoutPreset.customGrid(rows: 0, columns: 11, showsAppLabels: true).rows, 1)
         XCTAssertEqual(FolderLayoutPreset.customGrid(rows: 0, columns: 11, showsAppLabels: true).columns, 10)
 
@@ -422,7 +422,7 @@ final class DockFoldersTests: XCTestCase {
         XCTAssertEqual(layout.columns, 2)
         XCTAssertEqual(layout.iconSize, 68)
         XCTAssertEqual(layout.size.width, 360)
-        XCTAssertEqual(layout.size.height, 100 + 2 * 68 + 12)
+        XCTAssertEqual(layout.size.height, 100 + 2 * 68 + 8)
 
         let constrained = DockPopupLayout.calculate(
             applicationCount: 100,
