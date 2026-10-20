@@ -29,6 +29,43 @@ final class DockFoldersTests: XCTestCase {
         XCTAssertNil(delegate.folderStore.errorMessage)
     }
 
+    func testExistingErrorDoesNotRedirectValidFolderLinkToMainWindow() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer {
+            PopupWindowManager.shared.close(animated: false)
+            try? FileManager.default.removeItem(at: directory)
+        }
+        let delegate = DockIntegrationManager()
+        delegate.folderStore = FolderStore(persistence: FolderPersistenceService(fileURL: directory.appendingPathComponent("folders.json")))
+        delegate.folderStore.createFolder(named: "Route test")
+        let folder = try XCTUnwrap(delegate.folderStore.folders.first)
+        delegate.folderStore.errorMessage = "An earlier error"
+
+        delegate.application(NSApp, open: [DockFolderLink.url(for: folder.id)])
+
+        XCTAssertNil(delegate.mainWindow)
+        XCTAssertTrue(PopupWindowManager.shared.isVisible)
+        XCTAssertEqual(delegate.folderStore.errorMessage, "An earlier error")
+    }
+
+    func testFailedFolderDeletionPreservesFolderInMemory() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let backup = root.appendingPathExtension("backup")
+        defer {
+            try? FileManager.default.removeItem(at: root)
+            try? FileManager.default.removeItem(at: backup)
+        }
+        let store = FolderStore(persistence: FolderPersistenceService(fileURL: root.appendingPathComponent("folders.json")))
+        store.createFolder(named: "Keep me")
+        let folder = try XCTUnwrap(store.folders.first)
+        try FileManager.default.moveItem(at: root, to: backup)
+        try Data("not a directory".utf8).write(to: root)
+
+        XCTAssertFalse(store.deleteFolder(id: folder.id))
+        XCTAssertEqual(store.folders.first?.id, folder.id)
+        XCTAssertNotNil(store.errorMessage)
+    }
+
     func testOrdinaryOpenAndReopenReuseMainWindowEvenWithPopupVisible() throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         let delegate = DockIntegrationManager()

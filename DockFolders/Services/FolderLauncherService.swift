@@ -38,8 +38,8 @@ struct FolderLauncherService {
         let currentLauncher = launcherURL(for: folder)
         guard FileManager.default.fileExists(atPath: oldLauncherURL.path)
                 || FileManager.default.fileExists(atPath: oldCurrentLauncherURL.path)
-                || FileManager.default.fileExists(atPath: currentLauncher.path)
-                || FileManager.default.fileExists(atPath: legacyRootURL.path) else { return }
+                || (existingLauncherURL(for: folder.id) != nil
+                    && !FileManager.default.fileExists(atPath: currentLauncher.path)) else { return }
         _ = try createOrUpdate(for: folder)
     }
 

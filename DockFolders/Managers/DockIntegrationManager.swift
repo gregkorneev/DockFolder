@@ -47,7 +47,6 @@ final class DockIntegrationManager: NSObject, NSApplicationDelegate {
             return
         }
         PopupWindowManager.shared.present(folderID: id, store: folderStore)
-        if folderStore.errorMessage != nil { showMainWindow() }
     }
 
     private func showMainWindow() {

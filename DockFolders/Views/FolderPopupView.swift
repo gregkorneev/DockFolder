@@ -80,6 +80,14 @@ struct FolderPopupView: View {
         .glassEffect(.clear, in: RoundedRectangle(cornerRadius: 22))
         .onExitCommand { PopupWindowManager.shared.close() }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .alert("DockFolders", isPresented: Binding(
+            get: { store.errorMessage != nil },
+            set: { if !$0 { store.clearError() } }
+        )) {
+            Button("OK", role: .cancel) { store.clearError() }
+        } message: {
+            Text(verbatim: store.errorMessage ?? NSLocalizedString("An unexpected error occurred.", comment: ""))
+        }
     }
 
     private func applicationButton(_ application: ApplicationItem, showsLabel: Bool) -> some View {

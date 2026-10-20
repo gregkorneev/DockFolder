@@ -296,11 +296,11 @@ struct ContentView: View {
     }
 
     private func deleteFolder(_ folder: DockFolder) {
+        guard folderStore.deleteFolder(id: folder.id) else { return }
         if folder.hasDockLauncher {
             do { try FolderLauncherService().remove(for: folder.id) }
-            catch { folderStore.errorMessage = AppLocalization.format("The folder launcher could not be removed. %@", error.localizedDescription); return }
+            catch { folderStore.errorMessage = AppLocalization.format("The folder launcher could not be removed. %@", error.localizedDescription) }
         }
-        folderStore.deleteFolder(id: folder.id)
     }
 }
 

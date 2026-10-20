@@ -22,6 +22,8 @@ Each generated bundle declares its launcher artwork through `CFBundleIconFile` a
 
 Folder URLs are routed directly by the application delegate using the shared store. There is no automatic main `WindowGroup`: the AppKit browser window is created only for a default app launch (`NSApplication.launchIsDefaultUserInfoKey`), explicit app reopen, or error display. Startup services do not depend on the browser appearing. Regression tests cover URL startup without a browser, normal launch/reopen, and missing-folder errors. Visual validation of the new cold-start path remains outstanding.
 
+An existing error does not replace a valid folder popup with the browser; the popup presents the error. Startup launcher migration runs only when an older bundle needs moving or renaming. Folder deletion persists the data change before removing its launcher; a failed save keeps both the folder and launcher.
+
 ### User setup
 
 1. Generate the folder launcher from DockFolders.

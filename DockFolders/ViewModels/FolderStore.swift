@@ -115,7 +115,8 @@ final class FolderStore {
         }
     }
 
-    func deleteFolder(id: UUID) {
+    @discardableResult
+    func deleteFolder(id: UUID) -> Bool {
         update { $0.removeAll { $0.id == id } }
     }
 
@@ -159,15 +160,18 @@ final class FolderStore {
 
     func clearError() { errorMessage = nil }
 
-    private func update(_ change: (inout [DockFolder]) -> Void) {
-        guard !loadFailed else { return }
+    @discardableResult
+    private func update(_ change: (inout [DockFolder]) -> Void) -> Bool {
+        guard !loadFailed else { return false }
         var updatedFolders = folders
         change(&updatedFolders)
         do {
             try persistence.save(FolderDocument(folders: updatedFolders, settings: settings))
             folders = updatedFolders
+            return true
         } catch {
             errorMessage = AppLocalization.format("Changes could not be saved. Your previous folders are still available. %@", error.localizedDescription)
+            return false
         }
     }
 }
