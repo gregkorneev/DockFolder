@@ -20,7 +20,7 @@ Create its launcher in DockFolders, open the generated app from `/Applications/D
 
 - macOS 27.0 or later on Apple Silicon.
 - Hover opening was manually verified on one macOS 27 setup. Multiple-display and alternate Dock configurations, accessibility workflows, login-start registration, and shortcut conflicts have not all been verified.
-- Signing, notarization, and packaged install or upgrade workflows have not been validated for this beta.
+- The attached app is ad-hoc signed and is not notarized. macOS may show a security warning when opening it. Developer ID signing, notarization, and packaged install or upgrade workflows remain unvalidated.
 
 ## Русский
 
@@ -42,4 +42,4 @@ DockFolders собирает приложения в именованные па
 
 - macOS 27.0 или новее на Apple Silicon.
 - Открытие наведением вручную проверено на одной системе macOS 27. Работа с несколькими дисплеями и разными настройками Dock, сценарии доступности, фактическая регистрация запуска при входе и конфликты сочетаний клавиш проверены не полностью.
-- Подпись, нотариальное заверение и процессы пакетной установки или обновления для этой бета-версии не проверены.
+- Приложение в архиве подписано ad-hoc и не нотарифицировано. При запуске macOS может показать предупреждение безопасности. Подпись Developer ID, нотариальное заверение и процессы пакетной установки или обновления пока не проверены.
