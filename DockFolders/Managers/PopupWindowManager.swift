@@ -47,6 +47,10 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
 
     func present(folderID: UUID, store: FolderStore, source: Source = .click, anchor: NSPoint? = nil) {
         guard let folder = store.folders.first(where: { $0.id == folderID }) else { return }
+        for window in NSApp.windows where window !== panel && window.isVisible {
+            window.orderOut(nil)
+        }
+        NSApp.setActivationPolicy(.accessory)
         isLayoutOptionsPresented = false
         let anchor = anchor ?? NSEvent.mouseLocation
         if source == .hover, let panel, let hostingView {
@@ -130,9 +134,6 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
             Task { @MainActor in self?.close() }
         }
 
-        for window in NSApp.windows where window !== panel && window.isVisible {
-            window.orderOut(nil)
-        }
         NSApp.activate(ignoringOtherApps: true)
         panel.makeKeyAndOrderFront(nil)
         if shouldAnimate {
@@ -268,7 +269,7 @@ enum DockPopupLayout {
         let count = max(1, applicationCount)
         let labels = preset.showsAppLabels
         let outerWidth: CGFloat = 28
-        let outerHeight: CGFloat = 84
+        let outerHeight: CGFloat = 100
         let minimumWidth: CGFloat = 360
         let availableWidth = max(1, availableSize.width)
         let availableHeight = max(72, availableSize.height)

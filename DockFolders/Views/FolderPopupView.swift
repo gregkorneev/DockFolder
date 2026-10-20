@@ -82,10 +82,13 @@ struct FolderPopupView: View {
                         }
                         .frame(maxWidth: .infinity)
                         if visibleApplications.count > rows * preset.columns {
+                            let labelHeight = preset.showsAppLabels ? DockPopupLayout.labelHeight(for: iconSize) + DockPopupLayout.labelSpacing(for: iconSize) : 0
+                            let visibleGridHeight = CGFloat(rows) * (iconSize + labelHeight) + CGFloat(rows - 1) * gridSpacing
                             ScrollView(.vertical) {
                                 grid
                             }
                             .frame(maxWidth: .infinity)
+                            .frame(height: visibleGridHeight)
                         } else {
                             grid
                         }
@@ -108,6 +111,7 @@ struct FolderPopupView: View {
         .glassEffect(.clear, in: RoundedRectangle(cornerRadius: 22))
         .onExitCommand { PopupWindowManager.shared.close() }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .ignoresSafeArea()
         .alert("DockFolders", isPresented: Binding(
             get: { store.errorMessage != nil },
             set: { if !$0 { store.clearError() } }
