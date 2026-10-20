@@ -13,7 +13,7 @@ Last reconciled: 2026-10-20 using the current implementation and recorded verifi
 
 ## Recorded verification
 
-- 25 unit tests pass, including adaptive popup layout sizing.
+- 34 Debug unit tests pass, including adaptive popup layout sizing.
 - A generated launcher was opened through Finder. It opened the Code folder while DockFolders was running and after a cold start.
 - See [Testing](Testing.md) for the detailed scope and verification gaps.
 
@@ -35,6 +35,8 @@ Last reconciled: 2026-10-20 using the current implementation and recorded verifi
 - Dock pinning is intentionally a user step: open the generated app and choose **Options → Keep in Dock**. Confirm the setup instructions are clear on a clean install.
 
 ### Distribution
+
+- Beta 2 is packaged as a drag-to-Applications DMG. The image checksum, mounted contents, arm64 architecture, macOS 27 deployment target, and app code-signature integrity were checked on this host; installation and upgrade were not exercised.
 
 - Choose and verify signing/notarization and sandbox policy for the distribution route.
 - Test install/upgrade/uninstall of the packaged main app and generated launchers outside Xcode.

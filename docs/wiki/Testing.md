@@ -5,10 +5,12 @@
 ## Recorded verification evidence
 
 - macOS scheme build and tests completed successfully with Xcode 27.1 / SDK 27.0.
-- Twenty-five unit tests pass, including adaptive popup sizing for column layouts and constrained displays, dynamic grid capacity and automatic growth, an assertion that generated launcher artwork is a square 1024 × 1024 px bitmap at 2× resolution (512 pt), popup position calculations for all Dock edges and the popup's collapse transform targeting its Dock anchor, migration, URL validation, launcher bundles, ordering, configuration transfer, persistence, discovery and launch errors.
+- Thirty-four Debug unit tests pass, including adaptive popup sizing for column layouts and constrained displays, dynamic grid capacity and automatic growth, an assertion that generated launcher artwork is a square 1024 × 1024 px bitmap at 2× resolution (512 pt), popup position calculations for all Dock edges and the popup's collapse transform targeting its Dock anchor, migration, URL validation, launcher bundles, ordering, configuration transfer, persistence, discovery and launch errors.
 - Manual UI smoke check created a folder, searched for and added Calculator, launched Calculator, and verified folder persistence after relaunch.
 - Manual launcher smoke check opened the generated app through Finder and verified that it selected the Code folder both while DockFolders was running and after a cold start.
 - On the current display, manually opened the five-app Code folder in its single-column layout; all app tiles fit in the popup without scrolling.
+
+The Beta 2 Release app built on Xcode 27.1 / macOS 27.0 SDK with arm64 and a macOS 27.0 deployment target. Its ad-hoc code signature passed strict verification. The DMG checksum passed `hdiutil verify`; mounting confirmed the app, `/Applications` shortcut and bilingual install notes, and the mounted app passed strict code-signature verification. Release-configuration tests did not run because the test target could not import the non-testable Release module; all 34 tests passed in Debug. No clean install, upgrade, Gatekeeper or notarization check was performed.
 
 ## Explicitly unverified
 

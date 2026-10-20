@@ -92,3 +92,10 @@ Apple's release page listed Xcode 27.2 beta 3 as a newer prerelease; it was not 
 - Multiple displays, detailed accessibility, production signing, and sandbox/distribution policy remained for a later stage.
 
 Русская версия: [ENVIRONMENT_AUDIT.md](ENVIRONMENT_AUDIT.md).
+
+## Beta 2 release compatibility audit — 2026-10-20
+
+- Host: macOS 27.0.1. Selected Xcode 27.1 (27A9275), macOS SDK 27.0, bundled Swift compiler 6.4 in Swift 6 language mode. `xcodebuild -list` found the DockFolders scheme, and a clean Release build succeeded for Apple Silicon.
+- The Release bundle reports version 1.0 (build 2), minimum macOS 27.0, and an arm64 executable. Its imported modules and linked frameworks are public system APIs; the release source scan found no private Dock or window-server API identifiers. A successful build against the selected SDK confirms the referenced API symbols compile here, not behavior on every macOS configuration.
+- The ad-hoc signature passed `codesign --verify --deep --strict`. There is no valid Developer ID signing identity on this host. The app and DMG are not notarized.
+- All 34 tests passed in Debug. A Release test invocation could not import the non-testable Release app module; a separate clean Release build passed. The DMG passed `hdiutil verify`, and its mounted app passed strict signature verification. Clean installation, upgrade, Gatekeeper handling, and notarization were not exercised.
