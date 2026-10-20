@@ -4,7 +4,9 @@
 
 ## Stage A — One Dock icon (implemented in 0.1)
 
-The user adds DockFolders itself to the Dock. Clicking it shows the regular folder browser. The app implements `applicationShouldHandleReopen` to restore or bring that window forward through public app lifecycle APIs. The app does not add views to, patch, or otherwise modify the system Dock. Manual verification of repeated Dock activation remains outstanding.
+DockFolders runs as an accessory app while serving folder popups, so its manager icon does not stay in the Dock. A gear button in each popup opens the folder manager, switches the app to regular activation and makes its Dock icon visible while the manager window is open. Closing that window restores accessory activation and removes the app's Dock icon; the process stays available for folder launchers, hover, and shortcuts. `applicationShouldHandleReopen` restores the manager while it is open or minimized. This uses public app lifecycle APIs and does not modify the system Dock. Manual verification of these activation transitions remains outstanding.
+
+If the user previously pinned DockFolders itself, they must remove that persistent Dock item manually; macOS keeps user-pinned items regardless of an app's current activation policy. Keep the generated per-folder launchers pinned.
 
 ## Dock pinning is user-controlled
 

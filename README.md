@@ -18,8 +18,11 @@ DockFolders is a native macOS app for organizing installed applications into use
 - Adjust grid, icon size, and theme; set a global Control–Option–Space shortcut and login startup preference.
 - Import and export configuration.
 - Generate a launcher app for each folder in `/Applications/DockFolders`, named after the folder (numbered only when names collide); renaming updates the launcher name while preserving its stable `dockfolders://folder/<UUID>` route.
+- Keep folder popups running without a permanent Dock icon. Use the gear button in a popup to open the folder manager; its Dock icon appears while the manager window is open and disappears when it closes.
 
 To choose its icon, right-click the folder in the sidebar and select **Customize Folder & Dock Icon…**. To show a folder in Dock, generate its launcher from DockFolders, open the generated app from `/Applications/DockFolders` in Finder, then use its Dock menu **Options → Keep in Dock**. macOS requires this pinning step from the user; DockFolders does not modify Dock preferences. On macOS 27, the pinned Code launcher was verified end to end: hover opens its folder, moving into the popup keeps it open, and leaving closes it. Multiple displays and hidden-Dock configurations, accessibility/reduced motion, login-start registration, shortcut collisions, and signed/notarized distribution still need host verification.
+
+If DockFolders itself was previously pinned, remove that pin manually with **Options → Remove from Dock**; macOS keeps user-pinned apps in the Dock independently of whether their window is open. Keep the generated folder launchers pinned instead.
 
 ## Requirements
 

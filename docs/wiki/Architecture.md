@@ -4,10 +4,10 @@
 
 ## Current implementation
 
-- **Window lifecycle:** `DockIntegrationManager` owns the shared store, startup services, URL routing and the main AppKit window. Folder URLs open the popup without constructing the browser. SwiftUI supplies a Settings scene instead of an automatic main `WindowGroup`; the browser is shown for default launches, explicit app reopens, and errors.
+- **Window lifecycle:** `DockIntegrationManager` owns the shared store, startup services, URL routing and the main AppKit window. The process uses accessory activation while serving folder popups; opening the manager switches it to regular activation, and closing that window returns it to accessory mode so its Dock icon disappears. Folder URLs open the popup without constructing the browser. SwiftUI supplies a Settings scene instead of an automatic main `WindowGroup`; the browser is shown for default launches, explicit app reopens, and errors.
 
 - **Platform:** macOS 27.0+, Apple Silicon, Swift 6, Xcode 27.1 / SDK 27.
-- **App shape:** main foreground application plus a generated app bundle named after each folder under `/Applications/DockFolders` (a numeric suffix resolves duplicate names). Renaming updates the bundle name while preserving its validated `dockfolders://folder/<UUID>` route. The user, not DockFolders, pins each launcher in Dock.
+- **App shape:** background accessory app while folder popups run, plus a generated app bundle named after each folder under `/Applications/DockFolders` (a numeric suffix resolves duplicate names). The gear in a popup opens the foreground folder manager and temporarily adds DockFolders to the Dock. Renaming a launcher updates the bundle name while preserving its validated `dockfolders://folder/<UUID>` route. The user, not DockFolders, pins each launcher in Dock.
 - **UI:** SwiftUI owns folder management/settings and app-grid state. AppKit `NSPanel` provides a Dock-aware popup which dismisses on Escape, focus loss, and successful app launch. AppKit also handles the lifecycle and app launching.
 - **Data:** Codable folder records and settings are stored locally as versioned JSON. Writes are atomic. Version 0.1 folder JSON migrates to the expanded model; decode/import errors preserve the user's existing data.
 - **Application entries:** store stable IDs, display names, bundle identifiers when available, and a path fallback. Do not serialize `NSImage` or other transient framework objects.

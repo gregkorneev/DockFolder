@@ -43,6 +43,16 @@ struct FolderPopupView: View {
                     .onChange(of: showingLayoutOptions) { _, isPresented in
                         PopupWindowManager.shared.layoutOptionsDidChange(isPresented: isPresented)
                     }
+                    Button {
+                        PopupWindowManager.shared.openMainWindow()
+                    } label: {
+                        Image(systemName: "gearshape")
+                            .font(.system(size: 13))
+                            .foregroundStyle(.secondary)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Open folder manager")
+                    .help("Open folder manager")
                     Button { PopupWindowManager.shared.close() } label: {
                         Image(systemName: "xmark.circle.fill")
                             .font(.system(size: 14))

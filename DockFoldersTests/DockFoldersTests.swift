@@ -69,8 +69,10 @@ final class DockFoldersTests: XCTestCase {
     func testOrdinaryOpenAndReopenReuseMainWindowEvenWithPopupVisible() throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         let delegate = DockIntegrationManager()
+        let originalActivationPolicy = NSApp.activationPolicy()
         defer {
             delegate.mainWindow?.close()
+            NSApp.setActivationPolicy(originalActivationPolicy)
             PopupWindowManager.shared.close(animated: false)
             try? FileManager.default.removeItem(at: directory)
         }
@@ -84,6 +86,7 @@ final class DockFoldersTests: XCTestCase {
         ))
         let window = try XCTUnwrap(delegate.mainWindow)
         XCTAssertTrue(window.isVisible)
+        XCTAssertEqual(NSApp.activationPolicy(), .regular)
 
         delegate.application(NSApp, open: [DockFolderLink.url(for: folder.id)])
         XCTAssertFalse(window.isVisible)
@@ -93,16 +96,42 @@ final class DockFoldersTests: XCTestCase {
         XCTAssertFalse(PopupWindowManager.shared.isVisible)
 
         window.close()
+        XCTAssertEqual(NSApp.activationPolicy(), .accessory)
         XCTAssertFalse(delegate.applicationShouldHandleReopen(NSApp, hasVisibleWindows: false))
         XCTAssertTrue(delegate.mainWindow === window)
         XCTAssertTrue(window.isVisible)
+        XCTAssertEqual(NSApp.activationPolicy(), .regular)
+    }
+
+    func testFolderManagerActionOpensMainWindowAndClosingHidesDockIcon() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let delegate = DockIntegrationManager()
+        let originalActivationPolicy = NSApp.activationPolicy()
+        defer {
+            delegate.mainWindow?.close()
+            NSApp.setActivationPolicy(originalActivationPolicy)
+            PopupWindowManager.shared.onOpenMainWindow = nil
+            try? FileManager.default.removeItem(at: directory)
+        }
+        delegate.folderStore = FolderStore(persistence: FolderPersistenceService(fileURL: directory.appendingPathComponent("folders.json")))
+        delegate.applicationWillFinishLaunching(Notification(name: NSApplication.willFinishLaunchingNotification, object: NSApp))
+
+        PopupWindowManager.shared.openMainWindow()
+
+        let window = try XCTUnwrap(delegate.mainWindow)
+        XCTAssertTrue(window.isVisible)
+        XCTAssertEqual(NSApp.activationPolicy(), .regular)
+        window.close()
+        XCTAssertEqual(NSApp.activationPolicy(), .accessory)
     }
 
     func testMissingFolderLinkShowsErrorInMainWindow() {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         let delegate = DockIntegrationManager()
+        let originalActivationPolicy = NSApp.activationPolicy()
         defer {
             delegate.mainWindow?.close()
+            NSApp.setActivationPolicy(originalActivationPolicy)
             try? FileManager.default.removeItem(at: directory)
         }
         delegate.folderStore = FolderStore(persistence: FolderPersistenceService(fileURL: directory.appendingPathComponent("folders.json")))
@@ -116,8 +145,10 @@ final class DockFoldersTests: XCTestCase {
     func testInvalidLinkDoesNotReplaceDataLoadError() throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         let delegate = DockIntegrationManager()
+        let originalActivationPolicy = NSApp.activationPolicy()
         defer {
             delegate.mainWindow?.close()
+            NSApp.setActivationPolicy(originalActivationPolicy)
             try? FileManager.default.removeItem(at: directory)
         }
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)

@@ -15,11 +15,16 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
     private var escapeMonitor: Any?
     private var deactivationObserver: NSObjectProtocol?
     private var isLayoutOptionsPresented = false
+    var onOpenMainWindow: (() -> Void)?
 
     var isVisible: Bool { panel?.isVisible == true }
 
     func layoutOptionsDidChange(isPresented: Bool) {
         isLayoutOptionsPresented = isPresented
+    }
+
+    func openMainWindow() {
+        onOpenMainWindow?()
     }
 
     func shouldDismissHoverPopup(at point: NSPoint) -> Bool {

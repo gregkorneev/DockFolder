@@ -3,6 +3,7 @@
 
 ## Unreleased — development
 
+- Keep DockFolders out of the Dock while it runs folder popups; add a gear button to open the manager, showing the app in Dock only while its window is open.
 - Keep a hover-open folder visible while its layout settings are open, hide the visible row/column captions, and resize the popup grid continuously with the icon-size slider.
 - Make custom grid cells expand across the popup and fit every selected row and column on screen. The selected capacity is visible without scrolling; only apps beyond that capacity scroll, and labels/icons scale down on constrained displays.
 

@@ -2,11 +2,15 @@ import AppKit
 import SwiftUI
 
 @MainActor
-final class DockIntegrationManager: NSObject, NSApplicationDelegate {
+final class DockIntegrationManager: NSObject, NSApplicationDelegate, NSWindowDelegate {
     var folderStore = FolderStore()
     private(set) var mainWindow: NSWindow?
 
     func applicationWillFinishLaunching(_ notification: Notification) {
+        NSApp.setActivationPolicy(.accessory)
+        PopupWindowManager.shared.onOpenMainWindow = { [weak self] in
+            self?.showMainWindow()
+        }
         let service = FolderLauncherService()
         for folder in folderStore.folders where folder.hasDockLauncher {
             do { try service.migrateLegacyLauncherIfNeeded(for: folder) }
@@ -53,6 +57,7 @@ final class DockIntegrationManager: NSObject, NSApplicationDelegate {
 
     private func showMainWindow() {
         PopupWindowManager.shared.close(animated: false)
+        NSApp.setActivationPolicy(.regular)
         if mainWindow == nil {
             // Keep window creation explicit: URL launches must never show the manager first.
             let window = NSWindow(
@@ -63,6 +68,7 @@ final class DockIntegrationManager: NSObject, NSApplicationDelegate {
             )
             window.title = "DockFolders"
             window.isReleasedWhenClosed = false
+            window.delegate = self
             window.contentView = NSHostingView(rootView: ContentView()
                 .environment(folderStore)
                 .frame(minWidth: 760, minHeight: 520))
@@ -73,5 +79,10 @@ final class DockIntegrationManager: NSObject, NSApplicationDelegate {
         mainWindow?.deminiaturize(nil)
         mainWindow?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
+    }
+
+    func windowWillClose(_ notification: Notification) {
+        guard let window = notification.object as? NSWindow, window === mainWindow else { return }
+        NSApp.setActivationPolicy(.accessory)
     }
 }
