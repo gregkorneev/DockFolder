@@ -6,9 +6,9 @@ All fixed interface labels, explanatory text, dialogs, help text, accessibility 
 
 ## Implemented
 
-The popup Layout editor accepts separate row and column counts from 1 to 10. Saved presets and legacy single-row or single-column layouts still load. Editing either count creates a per-folder custom grid. The full selected capacity is visible at once without scrolling; only apps beyond that capacity scroll. Cells use the popup width, and icon/label sizes shrink as needed to fit the selected rows on the current display.
+The popup Layout editor accepts separate row and column counts from 1 to 10. Saved presets and legacy single-row or single-column layouts still load. Editing either count creates a per-folder custom grid. The full selected capacity is visible at once without scrolling; only apps beyond that capacity scroll. Cells stay close to the icon width, and icon/label sizes shrink as needed to fit the selected rows on the current display.
 
-The row and column fields have no visible captions and keep accessibility labels. A hover-open popup stays visible while its layout popover is open. Changing the icon-size slider updates both icon cells and popup dimensions immediately.
+The row and column fields have no visible captions and keep accessibility labels. A hover-open popup stays visible while its layout popover is open. Changing the icon-size slider updates both icon cells and popup dimensions immediately. During that adjustment, the popup keeps its right edge fixed so the layout popover stays under the pointer.
 
 The popup reserves additional bottom padding below the app icons so they do not sit against the lower glass edge. Its content ignores the transparent titlebar safe area and has enough measured height to show complete icons.
 

@@ -15,12 +15,14 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
     private var escapeMonitor: Any?
     private var deactivationObserver: NSObjectProtocol?
     private var isLayoutOptionsPresented = false
+    private var iconResizeRightEdge: CGFloat?
     var onOpenMainWindow: (() -> Void)?
 
     var isVisible: Bool { panel?.isVisible == true }
 
     func layoutOptionsDidChange(isPresented: Bool) {
         isLayoutOptionsPresented = isPresented
+        if !isPresented { iconResizeRightEdge = nil }
     }
 
     func openMainWindow() {
@@ -32,7 +34,7 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
         return panel?.frame.insetBy(dx: -12, dy: -12).contains(point) != true
     }
 
-    func refreshLayout(folderID: UUID, store: FolderStore, animated: Bool = true) {
+    func refreshLayout(folderID: UUID, store: FolderStore, animated: Bool = true, preservingRightEdge: Bool = false) {
         guard let panel, let hostingView, presentedFolderID == folderID,
               let folder = store.folders.first(where: { $0.id == folderID }) else { return }
         let layout = popupLayout(for: folder, anchor: dockAnchor)
@@ -42,7 +44,16 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
         case .dark: .dark
         }
         hostingView.rootView = AnyView(FolderPopupView(store: store, folderID: folderID, columns: layout.columns, iconSize: layout.iconSize).preferredColorScheme(colorScheme))
-        panel.setFrame(NSRect(origin: origin(for: layout.size, anchor: dockAnchor), size: layout.size), display: true, animate: animated)
+        var newOrigin = origin(for: layout.size, anchor: dockAnchor)
+        if preservingRightEdge {
+            let rightEdge = iconResizeRightEdge ?? panel.frame.maxX
+            iconResizeRightEdge = rightEdge
+            let screen = NSScreen.screens.first(where: { $0.frame.contains(dockAnchor) }) ?? NSScreen.main
+            if let screen {
+                newOrigin.x = DockPopupPositioning.trailingX(for: layout.size.width, rightEdge: rightEdge, screenFrame: screen.frame)
+            }
+        }
+        panel.setFrame(NSRect(origin: newOrigin, size: layout.size), display: true, animate: animated)
     }
 
     func present(folderID: UUID, store: FolderStore, source: Source = .click, anchor: NSPoint? = nil) {
@@ -52,6 +63,7 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
         }
         NSApp.setActivationPolicy(.accessory)
         isLayoutOptionsPresented = false
+        iconResizeRightEdge = nil
         let anchor = anchor ?? NSEvent.mouseLocation
         if source == .hover, let panel, let hostingView {
             presentedFolderID = folderID
@@ -143,6 +155,7 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
 
     func close(animated: Bool = true) {
         isLayoutOptionsPresented = false
+        iconResizeRightEdge = nil
         presentedFolderID = nil
         if let escapeMonitor {
             NSEvent.removeMonitor(escapeMonitor)
@@ -397,6 +410,11 @@ enum DockPopupAnimation {
 enum DockPopupPositioning {
     private enum Edge {
         case bottom, left, right
+    }
+
+    static func trailingX(for width: CGFloat, rightEdge: CGFloat, screenFrame: NSRect) -> CGFloat {
+        let margin: CGFloat = 12
+        return clamp(rightEdge - width, screenFrame.minX + margin, screenFrame.maxX - width - margin)
     }
 
     static func origin(for size: NSSize, anchor: NSPoint, screenFrame: NSRect, visibleFrame: NSRect) -> NSPoint {

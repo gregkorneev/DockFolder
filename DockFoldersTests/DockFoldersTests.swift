@@ -514,6 +514,14 @@ final class DockFoldersTests: XCTestCase {
         XCTAssertEqual(right, NSPoint(x: 566, y: 290))
     }
 
+    func testIconResizeKeepsPopupRightEdgeFixedUntilScreenEdge() {
+        let screen = NSRect(x: 0, y: 0, width: 1_200, height: 800)
+
+        XCTAssertEqual(DockPopupPositioning.trailingX(for: 360, rightEdge: 1_000, screenFrame: screen), 640)
+        XCTAssertEqual(DockPopupPositioning.trailingX(for: 720, rightEdge: 1_000, screenFrame: screen), 280)
+        XCTAssertEqual(DockPopupPositioning.trailingX(for: 1_000, rightEdge: 1_000, screenFrame: screen), 12)
+    }
+
     func testPopupPositioningRespectsScreenInsetsWithAutoHideDock() {
         let screen = NSRect(x: 0, y: 0, width: 1_000, height: 800)
         let popup = NSSize(width: 360, height: 220)

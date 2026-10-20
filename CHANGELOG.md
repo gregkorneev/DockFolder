@@ -1,6 +1,10 @@
 # Changelog
 Русская версия: [CHANGELOG.ru.md](CHANGELOG.ru.md)
 
+## Unreleased — development
+
+- Keep the folder popup’s right edge fixed while changing icon size, so the layout popover and slider stay under the pointer as a wide row grows.
+
 ## 2026-10-21 — 1.0.0 Beta 3
 
 - Show the DockFolders app icon in the macOS menu bar while it runs in the background, with commands to open the manager or quit the app completely.

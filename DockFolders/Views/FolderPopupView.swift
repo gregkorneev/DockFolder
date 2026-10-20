@@ -194,7 +194,7 @@ private struct FolderLayoutOptions: View {
                     get: { folder.iconSize },
                     set: { value in
                         store.updateFolderLayout(folderID) { $0.iconSize = value }
-                        PopupWindowManager.shared.refreshLayout(folderID: folderID, store: store, animated: false)
+                        PopupWindowManager.shared.refreshLayout(folderID: folderID, store: store, animated: false, preservingRightEdge: true)
                     }
                 ), in: 36...128, step: 4) {
                     Text("App icon size")
