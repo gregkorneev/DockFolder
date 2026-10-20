@@ -22,6 +22,10 @@ Create its launcher in DockFolders, open the generated app from `/Applications/D
 - Hover opening was manually verified on one macOS 27 setup. Multiple-display and alternate Dock configurations, accessibility workflows, login-start registration, and shortcut conflicts have not all been verified.
 - The attached app is ad-hoc signed and is not notarized. macOS may show a security warning when opening it. Developer ID signing, notarization, and packaged install or upgrade workflows remain unvalidated.
 
+Download: `DockFolders-1.0.0-beta.1-macOS-arm64.zip`
+
+SHA-256: `2dcb533f945b3a4bcb3e865ffcb99371fa07b8444bef9ffb42b6dd963f9b3cf9`
+
 ## Русский
 
 DockFolders собирает приложения в именованные папки, которые можно открывать из Dock macOS.
@@ -43,3 +47,7 @@ DockFolders собирает приложения в именованные па
 - macOS 27.0 или новее на Apple Silicon.
 - Открытие наведением вручную проверено на одной системе macOS 27. Работа с несколькими дисплеями и разными настройками Dock, сценарии доступности, фактическая регистрация запуска при входе и конфликты сочетаний клавиш проверены не полностью.
 - Приложение в архиве подписано ad-hoc и не нотарифицировано. При запуске macOS может показать предупреждение безопасности. Подпись Developer ID, нотариальное заверение и процессы пакетной установки или обновления пока не проверены.
+
+Файл: `DockFolders-1.0.0-beta.1-macOS-arm64.zip`
+
+SHA-256: `2dcb533f945b3a4bcb3e865ffcb99371fa07b8444bef9ffb42b6dd963f9b3cf9`
