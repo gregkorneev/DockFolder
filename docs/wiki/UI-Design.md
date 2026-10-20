@@ -8,6 +8,8 @@ All fixed interface labels, explanatory text, dialogs, help text, accessibility 
 
 The popup Layout editor accepts separate row and column counts from 1 to 10. Saved presets and legacy single-row or single-column layouts still load. Editing either count creates a per-folder custom grid. Extra apps remain accessible by scrolling the grid; the popup itself stays within the available display area.
 
+The row and column fields have no visible captions and keep accessibility labels. A hover-open popup stays visible while its layout popover is open. Changing the icon-size slider updates both icon cells and popup dimensions immediately.
+
 The popup reserves additional bottom padding below the app icons so they do not sit against the lower glass edge.
 
 Each folder's Folder Layout popover contains its own icon size, custom rows and columns, app label visibility, and matte-to-clear glass transparency. These values are persisted per folder and control its app grid and Dock popup. The default glass transparency is 55%.

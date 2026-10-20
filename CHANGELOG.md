@@ -1,6 +1,10 @@
 # Changelog
 Русская версия: [CHANGELOG.ru.md](CHANGELOG.ru.md)
 
+## Unreleased — development
+
+- Keep a hover-open folder visible while its layout settings are open, hide the visible row/column captions, and resize the popup grid continuously with the icon-size slider.
+
 ## 2026-10-20 — 1.0.0 Beta 2
 
 - Added editable row and column counts from 1 to 10 in each folder's layout menu. Custom grids keep their chosen dimensions and scroll when apps exceed the visible cells or screen space.

@@ -22,11 +22,22 @@ final class PopupWindowManager: NSObject, NSWindowDelegate {
         isLayoutOptionsPresented = isPresented
     }
 
-    func refreshLayout(folderID: UUID, store: FolderStore) {
-        guard let panel, presentedFolderID == folderID,
+    func shouldDismissHoverPopup(at point: NSPoint) -> Bool {
+        guard isHoverPresentation, !isLayoutOptionsPresented else { return false }
+        return panel?.frame.insetBy(dx: -12, dy: -12).contains(point) != true
+    }
+
+    func refreshLayout(folderID: UUID, store: FolderStore, animated: Bool = true) {
+        guard let panel, let hostingView, presentedFolderID == folderID,
               let folder = store.folders.first(where: { $0.id == folderID }) else { return }
-        let size = popupLayout(for: folder, anchor: dockAnchor).size
-        panel.setFrame(NSRect(origin: origin(for: size, anchor: dockAnchor), size: size), display: true, animate: true)
+        let layout = popupLayout(for: folder, anchor: dockAnchor)
+        let colorScheme: ColorScheme? = switch store.settings.appearance {
+        case .system: nil
+        case .light: .light
+        case .dark: .dark
+        }
+        hostingView.rootView = AnyView(FolderPopupView(store: store, folderID: folderID, columns: layout.columns, iconSize: layout.iconSize).preferredColorScheme(colorScheme))
+        panel.setFrame(NSRect(origin: origin(for: layout.size, anchor: dockAnchor), size: layout.size), display: true, animate: animated)
     }
 
     func present(folderID: UUID, store: FolderStore, source: Source = .click, anchor: NSPoint? = nil) {
@@ -261,7 +272,7 @@ enum DockPopupLayout {
         let availableHeight = max(72, availableSize.height)
         if let requestedRows = preset.rows {
             let iconSize = min(max(preferredIconSize, 24), 128)
-            let cellWidth = max(84, iconSize + 16)
+            let cellWidth = iconSize + 16
             let rowHeight = iconSize + labelHeight + (labels ? 5 : 0)
             let contentWidth = outerWidth + CGFloat(preset.columns) * cellWidth + CGFloat(preset.columns - 1) * columnSpacing
             let contentHeight = outerHeight + CGFloat(requestedRows) * rowHeight + CGFloat(requestedRows - 1) * rowSpacing
@@ -277,7 +288,7 @@ enum DockPopupLayout {
         let startIconSize = min(max(preferredIconSize, 24), 128)
 
         for iconSize in stride(from: startIconSize, through: CGFloat(24), by: -2) {
-            let cellWidth = max(84, iconSize + 16)
+            let cellWidth = iconSize + 16
             let maxColumns = max(1, min(count, Int((availableWidth - outerWidth + columnSpacing) / (cellWidth + columnSpacing))))
             let rowHeight = iconSize + labelHeight + (labels ? 5 : 0)
             let maxRows = max(1, Int((availableHeight - outerHeight + rowSpacing) / (rowHeight + rowSpacing)))
@@ -291,8 +302,7 @@ enum DockPopupLayout {
             }
         }
 
-        let columns = max(1, min(count, Int((availableWidth - outerWidth + columnSpacing) / (84 + columnSpacing))))
-        let rows = Int(ceil(Double(count) / Double(columns)))
+        let columns = max(1, min(count, Int((availableWidth - outerWidth + columnSpacing) / (40 + columnSpacing))))
         return Result(columns: columns, iconSize: 24, size: NSSize(width: availableWidth, height: availableHeight))
     }
 }

@@ -64,7 +64,7 @@ struct FolderPopupView: View {
                         .frame(maxWidth: .infinity, minHeight: 44)
                 } else {
                     if preset.isCustomGrid {
-                        let cellWidth = max(84, iconSize + 16)
+                        let cellWidth = iconSize + 16
                         let contentWidth = CGFloat(preset.columns) * cellWidth + CGFloat(preset.columns - 1) * 12
                         ScrollView([.horizontal, .vertical]) {
                             LazyVGrid(columns: Array(repeating: GridItem(.fixed(cellWidth), spacing: 12), count: preset.columns), spacing: 12) {
@@ -149,7 +149,7 @@ private struct FolderLayoutOptions: View {
                 HStack {
                     Text("Folder layout")
                     Spacer()
-                    TextField("Rows", value: Binding(
+                    TextField("", value: Binding(
                         get: { self.folder.map(displayedRows) ?? 1 },
                         set: { updateCustomGrid(rows: $0) }
                     ), format: .number)
@@ -157,7 +157,7 @@ private struct FolderLayoutOptions: View {
                     .multilineTextAlignment(.center)
                     .accessibilityLabel("Rows")
                     Text("×")
-                    TextField("Columns", value: Binding(
+                    TextField("", value: Binding(
                         get: { self.folder.map(displayedColumns) ?? 1 },
                         set: { updateCustomGrid(columns: $0) }
                     ), format: .number)
@@ -173,7 +173,10 @@ private struct FolderLayoutOptions: View {
                 ))
                 Slider(value: Binding(
                     get: { folder.iconSize },
-                    set: { value in store.updateFolderLayout(folderID) { $0.iconSize = value } }
+                    set: { value in
+                        store.updateFolderLayout(folderID) { $0.iconSize = value }
+                        PopupWindowManager.shared.refreshLayout(folderID: folderID, store: store, animated: false)
+                    }
                 ), in: 36...128, step: 4) {
                     Text("App icon size")
                 } minimumValueLabel: { Text("Small") } maximumValueLabel: { Text("Large") }

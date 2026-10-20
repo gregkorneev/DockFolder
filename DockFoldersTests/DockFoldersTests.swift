@@ -320,6 +320,42 @@ final class DockFoldersTests: XCTestCase {
         XCTAssertEqual(layout.size.height, 72 + 2 * (68 + 32 + 5) + 12)
         XCTAssertEqual(FolderLayoutPreset.customGrid(rows: 0, columns: 11, showsAppLabels: true).rows, 1)
         XCTAssertEqual(FolderLayoutPreset.customGrid(rows: 0, columns: 11, showsAppLabels: true).columns, 10)
+
+        let compact = DockPopupLayout.calculate(
+            applicationCount: 8,
+            preset: .customGrid(rows: 1, columns: 6, showsAppLabels: true),
+            availableSize: NSSize(width: 1_000, height: 700),
+            preferredIconSize: 36
+        )
+        let enlarged = DockPopupLayout.calculate(
+            applicationCount: 8,
+            preset: .customGrid(rows: 1, columns: 6, showsAppLabels: true),
+            availableSize: NSSize(width: 1_000, height: 700),
+            preferredIconSize: 96
+        )
+        XCTAssertLessThan(compact.size.width, enlarged.size.width)
+        XCTAssertLessThan(compact.size.height, enlarged.size.height)
+    }
+
+    func testHoverPopupStaysOpenWhileLayoutOptionsArePresented() throws {
+        let manager = PopupWindowManager.shared
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        let store = FolderStore(persistence: FolderPersistenceService(fileURL: directory.appendingPathComponent("folders.json")))
+        store.createFolder(named: "Hover options")
+        let folder = try XCTUnwrap(store.folders.first)
+        defer {
+            manager.close(animated: false)
+            try? FileManager.default.removeItem(at: directory)
+        }
+
+        manager.present(folderID: folder.id, store: store, source: .hover, anchor: NSPoint(x: 500, y: 500))
+        manager.layoutOptionsDidChange(isPresented: true)
+        let frame = try XCTUnwrap(manager.panelFrame)
+        let outsidePoint = NSPoint(x: frame.minX - 100, y: frame.minY - 100)
+
+        XCTAssertFalse(manager.shouldDismissHoverPopup(at: outsidePoint))
+        manager.layoutOptionsDidChange(isPresented: false)
+        XCTAssertTrue(manager.shouldDismissHoverPopup(at: outsidePoint))
     }
 
     func testAddingAppsAutomaticallyGrowsFolderLayoutWhenGridIsTooSmall() throws {

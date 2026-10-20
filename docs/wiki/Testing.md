@@ -5,13 +5,13 @@
 ## Recorded verification evidence
 
 - macOS scheme build and tests completed successfully with Xcode 27.1 / SDK 27.0.
-- Thirty-five Debug unit tests pass, including adaptive popup sizing for column layouts and constrained displays, dynamic grid capacity and automatic growth, an assertion that generated launcher artwork is a square 1024 × 1024 px bitmap at 2× resolution (512 pt), popup position calculations for all Dock edges and the popup's collapse transform targeting its Dock anchor, migration, URL validation, launcher bundles, ordering, configuration transfer, persistence, discovery and launch errors.
+- Thirty-six Debug unit tests pass, including hover retention while layout settings are open, icon-size-dependent popup sizing, adaptive popup sizing for column layouts and constrained displays, dynamic grid capacity and automatic growth, an assertion that generated launcher artwork is a square 1024 × 1024 px bitmap at 2× resolution (512 pt), popup position calculations for all Dock edges and the popup's collapse transform targeting its Dock anchor, migration, URL validation, launcher bundles, ordering, configuration transfer, persistence, discovery and launch errors.
 - The development custom-grid test covers independent row/column persistence, overflow capacity, and 1–10 clamping. The new text fields and scrolling have not yet been manually inspected in a running app.
 - Manual UI smoke check created a folder, searched for and added Calculator, launched Calculator, and verified folder persistence after relaunch.
 - Manual launcher smoke check opened the generated app through Finder and verified that it selected the Code folder both while DockFolders was running and after a cold start.
 - On the current display, manually opened the five-app Code folder in its single-column layout; all app tiles fit in the popup without scrolling.
 
-The current Beta 2 Release app built on Xcode 27.1 / Swift 6.4 / macOS 27.0 SDK with arm64 and a macOS 27.0 deployment target. Its ad-hoc code signature passed strict verification. The DMG checksum passed `hdiutil verify`; mounting confirmed the app, `/Applications` shortcut and bilingual install notes, and the mounted app passed strict code-signature verification. All 35 Debug tests passed. Release-configuration tests were not run. No clean install, upgrade, Gatekeeper or notarization check was performed. Manual inspection of the new grid fields and scrolling remains outstanding.
+The current Beta 2 Release app built on Xcode 27.1 / Swift 6.4 / macOS 27.0 SDK with arm64 and a macOS 27.0 deployment target. Its ad-hoc code signature passed strict verification. The DMG checksum passed `hdiutil verify`; mounting confirmed the app, `/Applications` shortcut and bilingual install notes, and the mounted app passed strict code-signature verification. All 35 release-stage Debug tests passed. Release-configuration tests were not run. No clean install, upgrade, Gatekeeper or notarization check was performed. Manual inspection of the grid fields and scrolling remains outstanding.
 
 ## Explicitly unverified
 

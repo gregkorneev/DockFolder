@@ -229,8 +229,7 @@ final class DockHoverMonitor {
         let previouslyHovering = candidateFolderID != nil
         candidateFolderID = nil
         guard PopupWindowManager.shared.isHoverPresentation else { return }
-        let popupContainsPointer = PopupWindowManager.shared.panelFrame?.insetBy(dx: -12, dy: -12).contains(point) == true
-        if popupContainsPointer {
+        guard PopupWindowManager.shared.shouldDismissHoverPopup(at: point) else {
             closeTask?.cancel()
             closeTask = nil
             return
@@ -243,7 +242,7 @@ final class DockHoverMonitor {
             guard !Task.isCancelled, self.candidateFolderID == nil,
                   PopupWindowManager.shared.isHoverPresentation else { return }
             let currentPoint = NSEvent.mouseLocation
-            if PopupWindowManager.shared.panelFrame?.insetBy(dx: -12, dy: -12).contains(currentPoint) != true {
+            if PopupWindowManager.shared.shouldDismissHoverPopup(at: currentPoint) {
                 PopupWindowManager.shared.close()
             }
             self.closeTask = nil
