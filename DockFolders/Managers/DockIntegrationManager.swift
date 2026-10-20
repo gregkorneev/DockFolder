@@ -6,11 +6,13 @@ final class DockIntegrationManager: NSObject, NSApplicationDelegate, NSWindowDel
     var folderStore = FolderStore()
     private(set) var mainWindow: NSWindow?
     private(set) var welcomeWindow: NSWindow?
+    private var statusItem: NSStatusItem?
     var showsWelcomeOnFirstLaunch = true
     private static let welcomeCompletedKey = "DockFolders.welcomeCompleted"
 
     func applicationWillFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
+        installStatusItem()
         PopupWindowManager.shared.onOpenMainWindow = { [weak self] in
             self?.showMainWindow()
         }
@@ -114,5 +116,33 @@ final class DockIntegrationManager: NSObject, NSApplicationDelegate, NSWindowDel
     func windowWillClose(_ notification: Notification) {
         guard let window = notification.object as? NSWindow, window === mainWindow else { return }
         NSApp.setActivationPolicy(.accessory)
+    }
+
+    private func installStatusItem() {
+        let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+        let icon = NSApp.applicationIconImage.copy() as? NSImage
+        icon?.size = NSSize(width: 18, height: 18)
+        item.button?.image = icon
+        item.button?.imagePosition = .imageOnly
+        item.button?.setAccessibilityLabel("DockFolders")
+
+        let menu = NSMenu()
+        let openItem = NSMenuItem(title: NSLocalizedString("Open DockFolders", comment: ""), action: #selector(openFromStatusBar), keyEquivalent: "")
+        openItem.target = self
+        menu.addItem(openItem)
+        menu.addItem(.separator())
+        let quitItem = NSMenuItem(title: NSLocalizedString("Quit DockFolders", comment: ""), action: #selector(quitFromStatusBar), keyEquivalent: "")
+        quitItem.target = self
+        menu.addItem(quitItem)
+        item.menu = menu
+        statusItem = item
+    }
+
+    @objc private func openFromStatusBar() {
+        showMainWindow()
+    }
+
+    @objc private func quitFromStatusBar() {
+        NSApp.terminate(nil)
     }
 }

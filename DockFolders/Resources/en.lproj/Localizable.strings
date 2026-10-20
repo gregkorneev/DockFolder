@@ -6,6 +6,8 @@
 "Rename Folder" = "Rename Folder";
 "Save" = "Save";
 "DockFolders" = "DockFolders";
+"Open DockFolders" = "Open DockFolders";
+"Quit DockFolders" = "Quit DockFolders";
 "OK" = "OK";
 "An unexpected error occurred." = "An unexpected error occurred.";
 "Dock icon created" = "Dock icon created";

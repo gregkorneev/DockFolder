@@ -22,6 +22,8 @@ DockFolders generates one launcher app per folder under `/Applications/DockFolde
 
 Each generated bundle declares its launcher artwork through `CFBundleIconFile` and contains a multi-resolution `.icns` resource generated from the 1024 × 1024 px design. This lets macOS present it as a normal application icon and apply the system's Dock treatment. There is no per-icon Dock size setting exposed to applications: macOS controls tile size and pointer magnification through Desktop & Dock settings ([Apple Support: Change Desktop & Dock settings](https://support.apple.com/en-ie/guide/mac-help/mchlp1119/27/mac/27)).
 
+While DockFolders runs in the background, its app icon stays in the macOS menu bar. The icon menu opens the folder manager or quits DockFolders completely. Closing the manager hides its Dock tile but leaves the menu bar icon until the app quits.
+
 Folder URLs are routed directly by the application delegate using the shared store. There is no automatic main `WindowGroup`: the AppKit browser window is created only for a default app launch (`NSApplication.launchIsDefaultUserInfoKey`), explicit app reopen, or error display. Startup services do not depend on the browser appearing. Regression tests cover URL startup without a browser, normal launch/reopen, and missing-folder errors. Visual validation of the new cold-start path remains outstanding.
 
 An existing error does not replace a valid folder popup with the browser; the popup presents the error. Startup launcher migration runs only when an older bundle needs moving or renaming. Folder deletion persists the data change before removing its launcher; a failed save keeps both the folder and launcher.

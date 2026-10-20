@@ -6,6 +6,8 @@
 "Rename Folder" = "Переименовать папку";
 "Save" = "Сохранить";
 "DockFolders" = "DockFolders";
+"Open DockFolders" = "Открыть DockFolders";
+"Quit DockFolders" = "Завершить DockFolders";
 "OK" = "ОК";
 "An unexpected error occurred." = "Произошла непредвиденная ошибка.";
 "Dock icon created" = "Значок Dock создан";
