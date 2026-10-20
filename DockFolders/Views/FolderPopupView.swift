@@ -83,8 +83,7 @@ struct FolderPopupView: View {
             }
         }
         .padding(14)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 22))
-        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 22))
+        .glassEffect(store.settings.glassStyle == .transparent ? .clear : .regular, in: RoundedRectangle(cornerRadius: 22))
         .onExitCommand { PopupWindowManager.shared.close() }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

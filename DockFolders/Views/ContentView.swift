@@ -460,6 +460,7 @@ private extension Color {
 }
 
 struct ApplicationTile: View {
+    @Environment(FolderStore.self) private var store
     let application: ApplicationItem
     var iconSize: CGFloat = 56
     var onDrop: (UUID) -> Void = { _ in }
@@ -488,7 +489,7 @@ struct ApplicationTile: View {
             .contentShape(RoundedRectangle(cornerRadius: 18))
         }
         .buttonStyle(.plain)
-        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 18))
+        .glassEffect(store.settings.glassStyle == .transparent ? .clear : .regular, in: RoundedRectangle(cornerRadius: 18))
         .draggable(application.id.uuidString)
         .dropDestination(for: String.self) { values, _ in
             guard let value = values.first, let id = UUID(uuidString: value) else { return false }

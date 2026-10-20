@@ -1,6 +1,8 @@
 # Wiki changelog
 Русская версия: [Changelog.ru.md](Changelog.ru.md)
 
+- Added app-wide glass style options for maximum transparency and maximum matte, persisted in settings and applied to the main folder surface and Dock popup.
+
 
 
 ## 2026-10-20 — Full feature implementation and status reconciliation

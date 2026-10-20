@@ -24,6 +24,13 @@ struct SettingsView: View {
                     Text("Light").tag(AppearanceMode.light)
                     Text("Dark").tag(AppearanceMode.dark)
                 }
+                Picker("Glass style", selection: Binding(
+                    get: { store.settings.glassStyle },
+                    set: { value in store.updateSettings { $0.glassStyle = value } }
+                )) {
+                    Text("Maximum transparency").tag(GlassStyle.transparent)
+                    Text("Maximum matte").tag(GlassStyle.matte)
+                }
                 Slider(value: Binding(
                     get: { store.settings.iconSize },
                     set: { value in store.updateSettings { $0.iconSize = value } }

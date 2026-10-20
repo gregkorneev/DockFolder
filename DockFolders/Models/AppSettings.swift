@@ -4,16 +4,18 @@ struct AppSettings: Codable, Hashable, Sendable {
     var iconSize: Double
     var gridColumns: Int
     var appearance: AppearanceMode
+    var glassStyle: GlassStyle
     var launchAtLogin: Bool
     var globalShortcutEnabled: Bool
     var layoutPresets: [FolderLayoutPreset]
     var defaultLayoutPresetID: String
     var hoverSettings: HoverSettings
 
-    init(iconSize: Double = 68, gridColumns: Int = 0, appearance: AppearanceMode = .system, launchAtLogin: Bool = false, globalShortcutEnabled: Bool = false, layoutPresets: [FolderLayoutPreset] = FolderLayoutPreset.defaults, defaultLayoutPresetID: String = FolderLayoutPreset.defaultID, hoverSettings: HoverSettings = HoverSettings()) {
+    init(iconSize: Double = 68, gridColumns: Int = 0, appearance: AppearanceMode = .system, glassStyle: GlassStyle = .matte, launchAtLogin: Bool = false, globalShortcutEnabled: Bool = false, layoutPresets: [FolderLayoutPreset] = FolderLayoutPreset.defaults, defaultLayoutPresetID: String = FolderLayoutPreset.defaultID, hoverSettings: HoverSettings = HoverSettings()) {
         self.iconSize = min(max(iconSize, 36), 128)
         self.gridColumns = min(max(gridColumns, 0), 12)
         self.appearance = appearance
+        self.glassStyle = glassStyle
         self.launchAtLogin = launchAtLogin
         self.globalShortcutEnabled = globalShortcutEnabled
         let presets = layoutPresets.isEmpty ? FolderLayoutPreset.defaults : layoutPresets
@@ -22,7 +24,7 @@ struct AppSettings: Codable, Hashable, Sendable {
         self.hoverSettings = hoverSettings
     }
 
-    private enum CodingKeys: String, CodingKey { case iconSize, gridColumns, appearance, launchAtLogin, globalShortcutEnabled, layoutPresets, defaultLayoutPresetID, hoverSettings }
+    private enum CodingKeys: String, CodingKey { case iconSize, gridColumns, appearance, glassStyle, launchAtLogin, globalShortcutEnabled, layoutPresets, defaultLayoutPresetID, hoverSettings }
 
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
@@ -31,6 +33,7 @@ struct AppSettings: Codable, Hashable, Sendable {
             iconSize: try values.decodeIfPresent(Double.self, forKey: .iconSize) ?? 68,
             gridColumns: try values.decodeIfPresent(Int.self, forKey: .gridColumns) ?? 0,
             appearance: try values.decodeIfPresent(AppearanceMode.self, forKey: .appearance) ?? .system,
+            glassStyle: try values.decodeIfPresent(GlassStyle.self, forKey: .glassStyle) ?? .matte,
             launchAtLogin: try values.decodeIfPresent(Bool.self, forKey: .launchAtLogin) ?? false,
             globalShortcutEnabled: try values.decodeIfPresent(Bool.self, forKey: .globalShortcutEnabled) ?? false,
             layoutPresets: presets,
@@ -135,4 +138,9 @@ enum AppearanceMode: String, Codable, CaseIterable, Sendable {
     case system
     case light
     case dark
+}
+
+enum GlassStyle: String, Codable, CaseIterable, Sendable {
+    case transparent
+    case matte
 }

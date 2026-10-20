@@ -45,6 +45,15 @@ final class DockFoldersTests: XCTestCase {
         XCTAssertEqual(settings.closeDelayMilliseconds, 1_000)
     }
 
+    func testGlassStyleDefaultsToMatteAndPersists() throws {
+        let oldSettings = try JSONDecoder().decode(AppSettings.self, from: Data("{}".utf8))
+        XCTAssertEqual(oldSettings.glassStyle, .matte)
+
+        let settings = AppSettings(glassStyle: .transparent)
+        let decoded = try JSONDecoder().decode(AppSettings.self, from: JSONEncoder().encode(settings))
+        XCTAssertEqual(decoded.glassStyle, .transparent)
+    }
+
     func testDockFolderLinksValidateSchemePathAndIdentifier() throws {
         let id = UUID()
         let url = DockFolderLink.url(for: id)
