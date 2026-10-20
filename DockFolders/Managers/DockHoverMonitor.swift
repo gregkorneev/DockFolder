@@ -3,7 +3,7 @@ import ApplicationServices
 import Darwin
 import Foundation
 
-/// Event-driven Dock hover detection. Accessibility is used only to identify the
+/// Dock hover detection with mouse events and adaptive polling. Accessibility identifies the
 /// Dock item under the pointer; a folder opens through its existing stable UUID.
 @MainActor
 final class DockHoverMonitor {
@@ -42,15 +42,19 @@ final class DockHoverMonitor {
             stopMonitoring()
             return
         }
-        guard globalMouseMonitor == nil else { return }
-        globalMouseMonitor = NSEvent.addGlobalMonitorForEvents(matching: .mouseMoved) { [weak self] _ in
-            Task { @MainActor in self?.inspectPointer() }
+        if globalMouseMonitor == nil {
+            globalMouseMonitor = NSEvent.addGlobalMonitorForEvents(matching: .mouseMoved) { [weak self] _ in
+                Task { @MainActor in self?.inspectPointer() }
+            }
         }
-        localMouseMonitor = NSEvent.addLocalMonitorForEvents(matching: .mouseMoved) { [weak self] event in
-            Task { @MainActor in self?.inspectPointer() }
-            return event
+        if localMouseMonitor == nil {
+            localMouseMonitor = NSEvent.addLocalMonitorForEvents(matching: .mouseMoved) { [weak self] event in
+                Task { @MainActor in self?.inspectPointer() }
+                return event
+            }
         }
-        if globalMouseMonitor == nil { startAdaptiveFallback() }
+        // The Dock can slide under a stationary pointer after the last mouse event.
+        startAdaptiveFallback()
     }
 
     func settingsDidChange(store: FolderStore) {
@@ -76,7 +80,7 @@ final class DockHoverMonitor {
         }
     }
 
-    private func inspectPointer() {
+    private func inspectPointer(force: Bool = false) {
         guard let store, store.settings.hoverSettings.mode.enablesHover, AXIsProcessTrusted() else {
             if store?.settings.hoverSettings.mode.enablesHover == true { stopMonitoring() }
             return
@@ -85,7 +89,7 @@ final class DockHoverMonitor {
         let now = Date()
         // Mouse movement can arrive at very high rates. Skip duplicate/nearby
         // points and cap AX queries at about 30 Hz while the pointer is moving.
-        guard hypot(point.x - lastPointer.x, point.y - lastPointer.y) >= 2,
+        guard (force || hypot(point.x - lastPointer.x, point.y - lastPointer.y) >= 2),
               now.timeIntervalSince(lastHitTest) >= 1.0 / 30.0 else { return }
         lastPointer = point
         lastHitTest = now
@@ -129,7 +133,7 @@ final class DockHoverMonitor {
                     self.fallbackTimer = nil
                     self.startAdaptiveFallback()
                 } else if nearDock {
-                    self.inspectPointer()
+                    self.inspectPointer(force: true)
                 }
             }
         }

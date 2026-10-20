@@ -5,6 +5,8 @@
 
 ## Unreleased — feature-complete implementation; release validation outstanding
 
+- Fixed hover opening when the Dock appears beneath a stationary pointer: an adaptive timer now rechecks the Dock item even when a global mouse monitor is installed.
+
 - Preserved the original folder-data load error when a stale or invalid launcher URL is opened, so the recovery problem remains visible.
 
 - Fixed folder deletion after a persistence failure: the launcher remains in place when the folder could not be saved, and launcher removal now follows a successful save. Existing errors no longer redirect valid folder links to the main window; the folder popup can show those errors. Startup migration skips launchers already in their current location.
