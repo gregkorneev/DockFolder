@@ -68,9 +68,9 @@
 "Close folder popup" = "Close folder popup";
 "Search apps" = "Search apps";
 "Appearance" = "Appearance";
-"Glass style" = "Glass style";
-"Maximum transparency" = "Maximum transparency";
-"Maximum matte" = "Maximum matte";
+"Glass transparency" = "Glass transparency";
+"Matte" = "Matte";
+"Clear" = "Clear";
 "Folder layout presets" = "Folder layout presets";
 "Default for new folders" = "Default for new folders";
 "Preset name" = "Preset name";

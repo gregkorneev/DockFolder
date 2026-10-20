@@ -489,7 +489,11 @@ struct ApplicationTile: View {
             .contentShape(RoundedRectangle(cornerRadius: 18))
         }
         .buttonStyle(.plain)
-        .glassEffect(store.settings.glassStyle == .transparent ? .clear : .regular, in: RoundedRectangle(cornerRadius: 18))
+        .background {
+            RoundedRectangle(cornerRadius: 18)
+                .fill(Color(nsColor: NSColor.windowBackgroundColor).opacity((1 - store.settings.glassTransparency) * 0.7))
+        }
+        .glassEffect(.clear, in: RoundedRectangle(cornerRadius: 18))
         .draggable(application.id.uuidString)
         .dropDestination(for: String.self) { values, _ in
             guard let value = values.first, let id = UUID(uuidString: value) else { return false }

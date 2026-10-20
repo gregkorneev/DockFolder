@@ -68,9 +68,9 @@
 "Close folder popup" = "Закрыть окно папки";
 "Search apps" = "Поиск приложений";
 "Appearance" = "Внешний вид";
-"Glass style" = "Стиль стекла";
-"Maximum transparency" = "Максимальная прозрачность";
-"Maximum matte" = "Максимальная матовость";
+"Glass transparency" = "Прозрачность стекла";
+"Matte" = "Матово";
+"Clear" = "Прозрачно";
 "Folder layout presets" = "Макеты папок";
 "Default for new folders" = "Для новых папок";
 "Preset name" = "Название пресета";

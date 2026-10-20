@@ -83,7 +83,11 @@ struct FolderPopupView: View {
             }
         }
         .padding(14)
-        .glassEffect(store.settings.glassStyle == .transparent ? .clear : .regular, in: RoundedRectangle(cornerRadius: 22))
+        .background {
+            RoundedRectangle(cornerRadius: 22)
+                .fill(Color(nsColor: NSColor.windowBackgroundColor).opacity((1 - store.settings.glassTransparency) * 0.7))
+        }
+        .glassEffect(.clear, in: RoundedRectangle(cornerRadius: 22))
         .onExitCommand { PopupWindowManager.shared.close() }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

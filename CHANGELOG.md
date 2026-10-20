@@ -5,7 +5,7 @@
 
 ## Unreleased — feature-complete implementation; release validation outstanding
 
-- Added app-wide glass style options for maximum transparency and maximum matte, persisted in settings and applied to the main folder surface and Dock popup.
+- Replaced the two glass style presets with a persisted transparency slider, ranging from matte to clear and applied to app tiles and the Dock popup; the balanced default is 55%.
 - Fixed selected folder text contrast in the sidebar for light and dark appearances.
 - Installed the supplied `Preview_Light.png` as the DockFolders app icon without image edits; preserved the original layered draft for future Icon Composer work.
 - Expanded the icon picker from a curated subset to the searchable SF Symbols 7.0 catalog (7,752 identifiers), including Apple device designs; artwork remains provided at runtime by macOS.

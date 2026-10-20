@@ -1,7 +1,7 @@
 # Wiki changelog
 Русская версия: [Changelog.ru.md](Changelog.ru.md)
 
-- Added app-wide glass style options for maximum transparency and maximum matte, persisted in settings and applied to the main folder surface and Dock popup.
+- Replaced the two glass style presets with a persisted transparency slider, ranging from matte to clear and applied to app tiles and the Dock popup; the balanced default is 55%.
 
 
 
