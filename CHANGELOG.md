@@ -5,6 +5,7 @@
 
 ## Unreleased — feature-complete implementation; release validation outstanding
 
+- Fixed selected folder text contrast in the sidebar for light and dark appearances.
 - Installed the supplied `Preview_Light.png` as the DockFolders app icon without image edits; preserved the original layered draft for future Icon Composer work.
 - Expanded the icon picker from a curated subset to the searchable SF Symbols 7.0 catalog (7,752 identifiers), including Apple device designs; artwork remains provided at runtime by macOS.
 - Added a categorized, searchable SF Symbols picker, curated background colors and the system color picker for folder and Dock launcher icons; launcher icons are now bundled as standard multi-resolution `.icns` app icons from a 1024 × 1024 px source, so macOS applies its normal Dock icon treatment. The tile size and magnification remain controlled by macOS Dock settings.

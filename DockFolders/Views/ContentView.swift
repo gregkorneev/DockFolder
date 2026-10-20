@@ -152,7 +152,7 @@ struct ContentView: View {
                     List(selection: $selectedFolderID) {
                         ForEach(folderStore.folders) { folder in
                             Label(folder.name, systemImage: folder.iconName)
-                                .foregroundStyle(Color(hex: folder.colorHex))
+                                .foregroundStyle(selectedFolderID == folder.id ? Color.white : Color(hex: folder.colorHex))
                                 .tag(folder.id)
                                 .draggable(folder.id.uuidString)
                                 .dropDestination(for: String.self) { values, _ in
