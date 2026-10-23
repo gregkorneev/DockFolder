@@ -6,4 +6,4 @@ The supplied `AppIcon.icon` document was opened in Icon Composer 27.1 and reject
 
 Per-folder launcher apps use the folder's selected SF Symbol and color in a standard `.icns` bundle icon. Secondary symbol layers are transparent, preserving outlined details such as the `macbook` screen shown in the folder picker.
 
-See the paired [Russian page](App-Icon.ru.md) and the [design source notes](../../Design/DockFolders_IconComposer/README.md).
+See the paired [Russian page](App-Icon.ru.md), the [design source notes](../../Design/DockFolders_IconComposer/README.md), and the [Icon Composer 27.1 import set](../../Design/DockFolders_IconComposer_27_1_Import/README_Import_Icon_Composer_27.1.md).

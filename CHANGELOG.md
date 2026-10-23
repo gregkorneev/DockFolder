@@ -3,6 +3,7 @@
 
 ## Unreleased — development
 
+- Add the Icon Composer 27.1 import set, preserving its SVG/PNG layers, previews, and unverified `.icon` draft under `Design/`.
 - Keep the folder popup’s right edge fixed while changing icon size, so the layout popover and slider stay under the pointer as a wide row grows.
 
 ## 2026-10-21 — 1.0.0 Beta 3

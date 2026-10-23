@@ -1,6 +1,7 @@
 # Wiki changelog
 Русская версия: [Changelog.ru.md](Changelog.ru.md)
 
+- Added the Icon Composer 27.1 import set under `Design/`; the supplied `.icon` bundle is retained as an unverified draft.
 - Added per-folder icon size, grid columns, and glass transparency controls inside the Folder Layout popover; each folder now keeps its own display settings instead of inheriting app-wide values.
 
 

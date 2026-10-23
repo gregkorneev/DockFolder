@@ -6,4 +6,4 @@
 
 Ярлык каждой папки использует выбранные для неё SF Symbol и цвет в стандартном значке `.icns`. Вторичные слои символа прозрачны, поэтому контурные детали, например экран `macbook`, выглядят так же, как при выборе значка.
 
-См. [английскую страницу](App-Icon.md) и [заметки об исходных материалах](../../Design/DockFolders_IconComposer/README.ru.md).
+См. [английскую страницу](App-Icon.md), [заметки об исходных материалах](../../Design/DockFolders_IconComposer/README.ru.md) и [набор для импорта в Icon Composer 27.1](../../Design/DockFolders_IconComposer_27_1_Import/README_Import_Icon_Composer_27.1.ru.md).
